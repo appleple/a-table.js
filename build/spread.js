@@ -6488,6 +6488,21 @@ var Spread = function (_aTemplate) {
       } else {
         return;
       }
+      var points = this.getAllPoints();
+      var point1 = this.getLargePoint.apply(null, points);
+      var newpoint = { x: parseInt(i), y: 0, width: 1, height: point1.height };
+      var targetPoints = [];
+      var self = this;
+      points.forEach(function (point) {
+        if (self.hitTest(newpoint, point)) {
+          targetPoints.push(point);
+        }
+      });
+      targetPoints.forEach(function (point) {
+        var index = self.getCellIndexByPos(point.x, point.y);
+        var cell = self.getCellByPos(point.x, point.y);
+        cell.selected = true;
+      });
       this.data.mode = 'col';
       this.data.selectedColNo = -1;
       this.data.selectedRowNo = i;
@@ -6505,6 +6520,21 @@ var Spread = function (_aTemplate) {
       } else {
         return;
       }
+      var points = this.getAllPoints();
+      var point1 = this.getLargePoint.apply(null, points);
+      var newpoint = { x: 0, y: parseInt(i), width: point1.width, height: 1 };
+      var targetPoints = [];
+      var self = this;
+      points.forEach(function (point) {
+        if (self.hitTest(newpoint, point)) {
+          targetPoints.push(point);
+        }
+      });
+      targetPoints.forEach(function (point) {
+        var index = self.getCellIndexByPos(point.x, point.y);
+        var cell = self.getCellByPos(point.x, point.y);
+        cell.selected = true;
+      });
       this.data.mode = 'row';
       this.data.selectedRowNo = -1;
       this.data.selectedColNo = i;
