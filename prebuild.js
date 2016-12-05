@@ -271,7 +271,6 @@ var style = `.spread-table-wrapper {
 	width: 15px;
 }
 `
-var equals = require('array-equal')
 var ids = []
 $('body').append('<style>' + style + '</style>')
 $('body').append("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>")

@@ -10,11 +10,6 @@
  * a-template:
  *   version: 0.0.9
  *
- * array-equal:
- *   license: MIT (http://opensource.org/licenses/MIT)
- *   author: Jonathan Ong <me@jongleberry.com>
- *   version: 1.0.0
- *
  * base64-js:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: T. Jameson Little <t.jameson.little@gmail.com>
@@ -2230,17 +2225,6 @@ module.exports.Zepto = Zepto;
 })(Zepto)
 
 },{}],3:[function(require,module,exports){
-
-module.exports = function equal(arr1, arr2) {
-  var length = arr1.length
-  if (length !== arr2.length) return false
-  for (var i = 0; i < length; i++)
-    if (arr1[i] !== arr2[i])
-      return false
-  return true
-}
-
-},{}],4:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -2356,7 +2340,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -4149,7 +4133,7 @@ function isnan (val) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":4,"ieee754":7,"isarray":8}],6:[function(require,module,exports){
+},{"base64-js":3,"ieee754":6,"isarray":7}],5:[function(require,module,exports){
 (function (Buffer){
 var clone = (function() {
 'use strict';
@@ -4382,7 +4366,7 @@ if (typeof module === 'object' && module.exports) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":5}],7:[function(require,module,exports){
+},{"buffer":4}],6:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -4468,14 +4452,14 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 /* Zepto v1.1.6 - zepto event ajax form ie - zeptojs.com/license */
 
 var Zepto = (function() {
@@ -6068,7 +6052,7 @@ exports.$ = window.$
   }
 })(Zepto)
 ;
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -6086,7 +6070,6 @@ var toMarkdown = require('./table2md.js');
 var template = require('./table.html');
 var returnTable = require('./return-table.html');
 var style = require('./spread.css');
-var equals = require('array-equal');
 var ids = [];
 $('body').append('<style>' + style + '</style>');
 $('body').append("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>");
@@ -6972,16 +6955,16 @@ var Spread = function (_aTemplate) {
 
 module.exports = Spread;
 
-},{"./return-table.html":11,"./spread.css":12,"./table.html":13,"./table2md.js":14,"a-template":1,"array-equal":3,"clone":6,"zepto-browserify":9}],11:[function(require,module,exports){
+},{"./return-table.html":10,"./spread.css":11,"./table.html":12,"./table2md.js":13,"a-template":1,"clone":5,"zepto-browserify":8}],10:[function(require,module,exports){
 module.exports = "<table>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<!-- \\BEGIN type:touch#th -->\n\t\t<th<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 --><!-- \\BEGIN align:exist -->\\{align\\}[getStyleByAlign]<!-- \\END align:exist -->>\\{value\\}</th>\n\t\t<!-- \\END type:touch#th -->\n\t\t<!-- \\BEGIN type:touch#td -->\n\t\t<td<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 --><!-- \\BEGIN align:exist -->\\{align\\}[getStyleByAlign]<!-- \\END align:exist -->>\\{value\\}</td>\n\t\t<!-- \\END type:touch#td -->\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>\n";
 
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports = ".spread-table-wrapper {\n\tposition: relative;\n\tz-index: 0;\n\twidth: 100%;\n}\n\n.spread-table-pseudo {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 100%;\n\theight: 100%;\n\tz-index: -1;\n}\n\n.spread-table-wrapper {\n\twidth: 100%;\n\t-ms-overflow-x: scroll;\n\toverflow-x: scroll;\n}\n\n.spread-table {\n\tborder-collapse: collapse;\n\ttable-layout: fixed;\n\tfont-family: \"Open Sans\", Helvetica, Arial, sans-serif;\n}\n\n.spread-table input {\n\twidth: 100%;\n\theight: 100%;\n\tdisplay: block;\n}\n\n.spread-table td,\n.spread-table th {\n\ttext-align: left;\n\twidth: 100px;\n\theight: 15px;\n\twhite-space: nowrap;\n\toverflow: hidden;\n\tposition: relative;\n\tz-index: 0;\n\tborder: 1px solid #cccccc;\n}\n\n.spread-table td:first-child,\n.spread-table th:first-child {\n\twidth: 50px;\n}\n\n.spread-table th {\n\tbackground-color: #eee;\n\tfont-weight: normal;\n}\n\n.spread-table .left {\n\ttext-align: left;\n}\n\n.spread-table .right {\n\ttext-align: right;\n}\n\n.spread-table .center {\n\ttext-align: center;\n}\n\n.spread-table .spread-table-th {\n\tbackground-color: #ddd;\n\tfont-weight: bold;\n}\n\n.spread-table .spread-table-selected {\n\tbackground-color: #eaf2f9;\n}\n\n.spread-table-editable {\n\twidth: 100%;\n\theight: 100%;\n}\n\n.spread-table-pseudo {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 100%;\n\theight: 100%;\n\tz-index: -1;\n}\n\n.spread-table-menu {\n\tdisplay: block;\n\tlist-style-type: none;\n\tpadding: 0;\n\tmargin: 0;\n\tposition: fixed;\n\ttop: 0;\n\tleft: 0;\n\tz-index: 999999;\n\tbackground-color: #fff;\n\tborder: 1px solid #666;\n\tcolor: #474747;\n\tfont-size: 13px;\n}\n\n.spread-table-menu li {\n\tdisplay: block;\n\tfont-size: 14px;\n\tpadding: 5px 7px;\n\tline-height: 1;\n\tborder-bottom: 1px solid #ddd;\n\tcursor: pointer;\n}\n\n.spread-table-menu li:hover {\n\tbackground-color: #eee;\n}\n\n.spread-table-header th {\n\ttext-align: center;\n\tposition: relative;\n}\n\n.spread-table-header .selected {\n\tbackground-color: #eaf2f9;\n}\n\n.spread-table-side.selected {\n\tbackground-color: #eaf2f9;\n}\n\n.spread-table .spread-table-side {\n\ttext-align: center;\n\tposition: relative;\n}\n\n.spread-table-btn-list {\n\tmargin-bottom: 10px;\n\tdisplay: table;\n}\n\n.spread-table-btn {\n\tdisplay: table-cell;\n\tborder-left: none;\n\tborder: 1px solid #d9d9d9;\n\tbackground-color: #f2f2f2;\n\tfont-size: 12px;\n\tpadding: 3px 5px;\n}\n\n.spread-table-btn:first-child {\n\tborder-top-left-radius: 3px;\n\tborder-bottom-left-radius: 3px;\n}\n\n.spread-table-btn:last-child {\n\tborder-top-right-radius: 3px;\n\tborder-bottom-right-radius: 3px;\n}\n\n.spread-table-toggle-btn {\n\tdisplay: inline-block;\n\tborder: 1px solid #ccc;\n\tpadding: 5px;\n\tposition: absolute;\n\tright: 5px;\n\ttop: 5px;\n\tcursor: pointer;\n\tdisplay: none;\n}\n\n.spread-table-header th:hover .spread-table-toggle-btn {\n\tdisplay: block;\n}\n\n.spread-table-side:hover .spread-table-toggle-btn {\n\tdisplay: block;\n}\n\n.spread-table-toggle-btn:after {\n\tcontent: \"\";\n\tdisplay: block;\n\tborder: solid transparent;\n\tcontent: \" \";\n\theight: 0;\n\twidth: 0;\n\tborder-color: rgba(136, 183, 213, 0);\n\tborder-top-color: #88b7d5;\n\tborder-width: 5px;\n\tmargin-left: -5px;\n\tposition: absolute;\n\ttop: 2px;\n\tleft: 5px;\n}\n\n.spread-table-first {\n\twidth: 15px;\n}\n";
 
-},{}],13:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = "<!-- BEGIN showMenu:exist -->\n<ul class=\"spread-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t<!-- BEGIN mode:touch#cell -->\n\t<li data-action-click=\"mergeCells\"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"changeCellTypeTo(th)\"><!-- BEGIN lang:touch#ja -->thに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to th<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"changeCellTypeTo(td)\"><!-- BEGIN lang:touch#ja -->tdに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to td<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"align(left)\"><!-- BEGIN lang:touch#ja -->左寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align left<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"align(center)\"><!-- BEGIN lang:touch#ja -->中央寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align center<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"align(right)\"><!-- BEGIN lang:touch#ja -->右寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align right<!-- END lang:touch#en --></li>\n\t <li data-action-click=\"splitCell()\"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></li>\n\t<!-- END mode:touch#cell -->\n\t<!-- BEGIN mode:touch#col -->\n\t<li data-action-click=\"insertColLeft({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->左に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the left<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"insertColRight({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->右に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the right<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"removeCol({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->列を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove column<!-- END lang:touch#en --></li>\n\t<!-- END mode:touch#col -->\n\t<!-- BEGIN mode:touch#row -->\n\t<li data-action-click=\"insertRowAbove({selectedColNo})\"><!-- BEGIN lang:touch#ja -->上に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row above<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"insertRowBelow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->下に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row below<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"removeRow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->行を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove row<!-- END lang:touch#en --></li>\n\t<!-- END mode:touch#row -->\n</ul>\n<!-- END showMenu:exist -->\n<!-- BEGIN showBtnList:exist -->\n<div class=\"spread-table-btn-list\">\n\t<!-- <button class=\"spread-table-btn\" data-action-click=\"backToState(1)\"><i class=\"fa fa-rotate-left\"></i></button> -->\n\t<button class=\"spread-table-btn\" data-action-click=\"mergeCells\"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></button>\n\t<button class=\"spread-table-btn\" data-action-click=\"splitCell()\"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></button>\n\t<button class=\"spread-table-btn\" data-action-click=\"undo()\"><!-- BEGIN lang:touch#ja -->元に戻す<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->undo<!-- END lang:touch#en --></button>\n\t<button class=\"spread-table-btn\" data-action-click=\"changeCellTypeTo(td)\">td</button>\n\t<button class=\"spread-table-btn\" data-action-click=\"changeCellTypeTo(th)\">th</button>\n\t<button class=\"spread-table-btn\" data-action-click=\"align(left)\"><i class=\"fa fa-align-left\"></i></button>\n\t<button class=\"spread-table-btn\" data-action-click=\"align(center)\"><i class=\"fa fa-align-center\"></i></button>\n\t<button class=\"spread-table-btn\" data-action-click=\"align(right)\"><i class=\"fa fa-align-right\"></i></button>\n</div>\n<!-- END showBtnList:exist -->\n<div class=\"spread-table-wrapper\">\n\t<table class=\"spread-table\">\n\t\t<tr class=\"spread-table-header js-table-header\">\n\t\t\t<th class=\"spread-table-first\"></th>\n\t\t\t<!-- BEGIN highestRow:loop -->\n\t\t\t<th data-action=\"selectRow({i})\"<!-- \\BEGIN selectedRowNo:touch#{i} -->class=\"selected\"<!-- \\END selectedRowNo:touch#{i} -->>{i}[noToEn]<span class=\"spread-table-toggle-btn\" data-action-click=\"selectRowViaBtn({i})\"></span></th>\n\t\t\t<!-- END highestRow:loop -->\n\t\t</tr>\n\t\t<!-- BEGIN row:loop -->\n\t\t<tr>\n\t\t\t<th class=\"spread-table-side js-table-side<!-- \\BEGIN selectedColNo:touch#{i} --> selected<!-- \\END selectedColNo:touch#{i} -->\"data-action=\"selectCol({i})\">{i}<span class=\"spread-table-toggle-btn\" data-action-click=\"selectColViaBtn({i})\"></span></th>\n\t\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->spread-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> spread-table-th<!-- END \\type:touch#th -->\"><div class='spread-table-editable \\{align\\}' contenteditable>\\{value\\}</div><div class='spread-table-pseudo'></div></td>\n\t\t\t<!-- \\END row.{i}.col:loop -->\n\t\t</tr>\n\t\t<!-- END row:loop -->\n\t</table>\n</div>\n";
 
-},{}],14:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 var $ = require('zepto-browserify').$;
@@ -7007,5 +6990,5 @@ var table2md = function table2md(html) {
 };
 module.exports = table2md;
 
-},{"zepto-browserify":9}]},{},[10])(10)
+},{"zepto-browserify":8}]},{},[9])(9)
 });
