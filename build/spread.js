@@ -4,7 +4,7 @@
  *
  * spread-js:
  *   license: MIT (http://opensource.org/licenses/MIT)
- *   author: steelydylan
+ *   author: appleple
  *   version: 0.0.2
  *
  * a-template:

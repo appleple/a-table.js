@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "main": "./index.js",
   "description": "SpreadSheet like Editable table library",
-  "author": "steelydylan",
+  "author": "appleple",
   "license": "MIT",
   "scripts": {
     "bundle": "browserify ./src/index.js -t [ babelify --presets [ es2015 ] ] -t [ stringify --extensions [.html .css] ] -p licensify --standalone Spread -o ./build/spread.js",
