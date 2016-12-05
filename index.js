@@ -365,7 +365,8 @@ var Spread = function (_aTemplate) {
       if (this.data.history.length === 0) {
         return;
       }
-      while (equals(data, this.data.row)) {
+
+      while (JSON.stringify(data) === JSON.stringify(this.data.row)) {
         data = this.data.history.pop();
       }
 
