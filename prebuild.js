@@ -1,7 +1,7 @@
 var aTemplate = require('a-template')
 var $ = require('zepto-browserify').$
 var clone = require('clone')
-var toMarkdown = require('./table2md.js')
+var toMarkdown = require('./src/table2md.js')
 var template = `<!-- BEGIN showMenu:exist -->
 <ul class="spread-table-menu" style="top:{menuY}px;left:{menuX}px;">
 	<!-- BEGIN mode:touch#cell -->

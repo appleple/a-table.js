@@ -9,7 +9,7 @@
     "bundle": "browserify ./src/index.js -t [ babelify --presets [ es2015 ] ] -t [ stringify --extensions [.html .css] ] -p licensify --standalone Spread -o ./build/spread.js",
     "minifyjs": "uglifyjs ./build/spread.js --comments 'license' -o ./build/spread.min.js",
     "build": "npm run bundle && npm run minifyjs",
-    "build:lib": "node ./bin/index.js && babel ./src/prebuild.js --presets es2015 --out-file ./index.js",
+    "build:lib": "node ./bin/index.js && babel ./prebuild.js --presets es2015 --out-file ./index.js",
     "watch": "watch 'npm run build:lib && npm run build' ./src/",
     "format": "standard-format -w ./src/**.js"
   },
