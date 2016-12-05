@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div class="main">
+		<table class="table">
+			<tr>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+			</tr>
+			<tr>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+			</tr>
+			<tr>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+			</tr>
+			<tr>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+			</tr>
+			<tr>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+			</tr>
+		</table>
+		<div class="column">
+			<p>html</p>
+			<div class="source-area">
+				<pre class="test"></pre>
+			</div>
+		</div>
+		<div class="column">
+			<p>markdown</p>
+			<div class="source-area">
+				<pre class="markdown"></pre>
+			</div>
+		</div>
+	</div>
+	<script src="../build/spread.min.js"></script>
+	<script>
+		var spread = new Spread(".table");
+		spread.afterRendered =
+		spread.afterEntered = function(){
+			document.querySelector(".test").innerText = this.getTable();
+			document.querySelector(".markdown").innerText = this.getMarkdown();
+		}
+		spread.afterRendered();
+	</script>
+</body>
+</html>

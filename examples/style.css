@@ -1,0 +1,23 @@
+* {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.source-area {
+	margin-top: 10px;
+	padding: 5px;
+	width: 100%;
+	background-color: #eee;
+	overflow-x: scroll;
+}
+
+.main {
+	padding: 10px;
+}
+
+.column {
+	padding: 5px;
+	float: left;
+	width: 50%;
+}

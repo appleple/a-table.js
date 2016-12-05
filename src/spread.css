@@ -1,0 +1,198 @@
+.spread-table-wrapper {
+	position: relative;
+	z-index: 0;
+	width: 100%;
+}
+
+.spread-table-pseudo {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+}
+
+.spread-table-wrapper {
+	width: 100%;
+	-ms-overflow-x: scroll;
+	overflow-x: scroll;
+}
+
+.spread-table {
+	border-collapse: collapse;
+	table-layout: fixed;
+	font-family: "Open Sans", Helvetica, Arial, sans-serif;
+}
+
+.spread-table input {
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+
+.spread-table td,
+.spread-table th {
+	text-align: left;
+	width: 100px;
+	height: 15px;
+	white-space: nowrap;
+	overflow: hidden;
+	position: relative;
+	z-index: 0;
+	border: 1px solid #cccccc;
+}
+
+.spread-table td:first-child,
+.spread-table th:first-child {
+	width: 50px;
+}
+
+.spread-table th {
+	background-color: #eee;
+	font-weight: normal;
+}
+
+.spread-table .left {
+	text-align: left;
+}
+
+.spread-table .right {
+	text-align: right;
+}
+
+.spread-table .center {
+	text-align: center;
+}
+
+.spread-table .spread-table-th {
+	background-color: #ddd;
+	font-weight: bold;
+}
+
+.spread-table .spread-table-selected {
+	background-color: #eaf2f9;
+}
+
+.spread-table-editable {
+	width: 100%;
+	height: 100%;
+}
+
+.spread-table-pseudo {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+}
+
+.spread-table-menu {
+	display: block;
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 999999;
+	background-color: #fff;
+	border: 1px solid #666;
+	color: #474747;
+	font-size: 13px;
+}
+
+.spread-table-menu li {
+	display: block;
+	font-size: 14px;
+	padding: 5px 7px;
+	line-height: 1;
+	border-bottom: 1px solid #ddd;
+	cursor: pointer;
+}
+
+.spread-table-menu li:hover {
+	background-color: #eee;
+}
+
+.spread-table-header th {
+	text-align: center;
+	position: relative;
+}
+
+.spread-table-header .selected {
+	background-color: #eaf2f9;
+}
+
+.spread-table-side.selected {
+	background-color: #eaf2f9;
+}
+
+.spread-table .spread-table-side {
+	text-align: center;
+	position: relative;
+}
+
+.spread-table-btn-list {
+	margin-bottom: 10px;
+	display: table;
+}
+
+.spread-table-btn {
+	display: table-cell;
+	border-left: none;
+	border: 1px solid #d9d9d9;
+	background-color: #f2f2f2;
+	font-size: 12px;
+	padding: 3px 5px;
+}
+
+.spread-table-btn:first-child {
+	border-top-left-radius: 3px;
+	border-bottom-left-radius: 3px;
+}
+
+.spread-table-btn:last-child {
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 3px;
+}
+
+.spread-table-toggle-btn {
+	display: inline-block;
+	border: 1px solid #ccc;
+	padding: 5px;
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	cursor: pointer;
+	display: none;
+}
+
+.spread-table-header th:hover .spread-table-toggle-btn {
+	display: block;
+}
+
+.spread-table-side:hover .spread-table-toggle-btn {
+	display: block;
+}
+
+.spread-table-toggle-btn:after {
+	content: "";
+	display: block;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	border-color: rgba(136, 183, 213, 0);
+	border-top-color: #88b7d5;
+	border-width: 5px;
+	margin-left: -5px;
+	position: absolute;
+	top: 2px;
+	left: 5px;
+}
+
+.spread-table-first {
+	width: 15px;
+}

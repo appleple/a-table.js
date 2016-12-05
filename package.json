@@ -1,0 +1,33 @@
+{
+  "name": "spread-js",
+  "version": "0.0.2",
+  "main": "./index.js",
+  "description": "SpreadSheet like Editable table library",
+  "author": "steelydylan",
+  "license": "MIT",
+  "scripts": {
+    "bundle": "browserify ./src/index.js -t [ babelify --presets [ es2015 ] ] -t [ stringify --extensions [.html .css] ] -p licensify --standalone Spread -o ./build/spread.js",
+    "minifyjs": "uglifyjs ./build/spread.js --comments 'license' -o ./build/spread.min.js",
+    "build": "npm run bundle && npm run minifyjs",
+    "build:lib": "node ./bin/index.js && babel ./src/prebuild.js --presets es2015 --out-file ./index.js",
+    "watch": "watch 'npm run build:lib && npm run build' ./src/",
+    "format": "standard-format -w ./src/**.js"
+  },
+  "dependencies": {
+    "a-template": "0.0.9",
+    "array-equal": "^1.0.0",
+    "clone": "^2.0.0",
+    "zepto-browserify": "^1.1.6-1"
+  },
+  "devDependencies": {
+  	"stringify": "^5.1.0",
+    "babel-cli": "^6.18.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.1",
+    "licensify": "^3.1.2",
+    "uglifyjs": "^2.4.10",
+    "watch": "^1.0.1",
+    "watchify": "^3.7.0"
+  }
+}
