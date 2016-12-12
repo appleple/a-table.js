@@ -24,6 +24,7 @@
 
 .acms-admin-btn-group {
   display: table;
+  padding-left: 0;
 }
 
 .acms-admin-btn-group .acms-admin-btn-admin {
