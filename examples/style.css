@@ -28,19 +28,19 @@
   float: left;
 }
 
-.acms-admin-btn-group .acms-admin-btn-admin {
+.acms-admin-btn-group .acms-admin-btn {
   border-radius: 0;
   display: table-cell;
   height: 28px;
   border-right: none;
 }
 
-.acms-admin-btn-group .acms-admin-btn-admin:first-child {
+.acms-admin-btn-group .acms-admin-btn:first-child {
   border-top-left-radius: 3px;
   border-bottom-left-radius: 3px;
 }
 
-.acms-admin-btn-group .acms-admin-btn-admin:last-child {
+.acms-admin-btn-group .acms-admin-btn:last-child {
   border-top-right-radius: 3px;
   border-bottom-right-radius: 3px;
   border-right: 1px solid #a7a7aa;

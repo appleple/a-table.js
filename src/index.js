@@ -20,7 +20,8 @@ var defs = {
   	},
     btn:{
       group:'spread-table-btn-list',
-      item:'spread-table-btn'
+      item:'spread-table-btn',
+      itemActive:'spread-table-btn-active'
     }
   }
 }

@@ -31,7 +31,7 @@ var template = `<!-- BEGIN showMenu:exist -->
     <button class="\{mark.btn.item\}" data-action-click="changeInputMode(source)">ソース</button>
     <!-- END inputMode:touch#table -->
     <!-- BEGIN inputMode:touch#source -->
-    <button class="\{mark.btn.item\}" data-action-click="changeInputMode(table)">テーブル</button>
+    <button class="\{mark.btn.itemActive\}" data-action-click="changeInputMode(table)">ソース</button>
     <!-- END inputMode:touch#source -->
   </div>
   <div class="\{mark.btn.group\}">
@@ -356,7 +356,8 @@ var defs = {
   	},
     btn:{
       group:'spread-table-btn-list',
-      item:'spread-table-btn'
+      item:'spread-table-btn',
+      itemActive:'spread-table-btn-active'
     }
   }
 }
