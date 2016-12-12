@@ -332,8 +332,10 @@ var style = `.spread-table-wrapper {
 }
 
 .spread-table-textarea {
-  width: 500px;
-  height: 300px;
+  width: 100%;
+  height: 50px;
+  margin-bottom: 10px;
+  line-height: 1.7;
   border: 1px solid #ccc;
   -webkit-border-radius: 5px;
   border-radius: 5px;
