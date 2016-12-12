@@ -23,7 +23,12 @@
 <!-- END showMenu:exist -->
 <!-- BEGIN showBtnList:exist -->
 <div class="spread-table-btn-list">
-	<!-- <button class="spread-table-btn" data-action-click="backToState(1)"><i class="fa fa-rotate-left"></i></button> -->
+  <!-- BEGIN inputMode:touch#table -->
+	<button class="spread-table-btn" data-action-click="changeInputMode(source)">ソース</button>
+  <!-- END inputMode:touch#table -->
+  <!-- BEGIN inputMode:touch#source -->
+  <button class="spread-table-btn" data-action-click="changeInputMode(table)">テーブル</button>
+  <!-- END inputMode:touch#source -->
 	<button class="spread-table-btn" data-action-click="mergeCells"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></button>
 	<button class="spread-table-btn" data-action-click="splitCell()"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></button>
 	<button class="spread-table-btn" data-action-click="undo()"><!-- BEGIN lang:touch#ja -->元に戻す<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->undo<!-- END lang:touch#en --></button>
@@ -35,20 +40,25 @@
 </div>
 <!-- END showBtnList:exist -->
 <div class="spread-table-wrapper">
+  <!-- BEGIN inputMode:touch#table -->
 	<table class="spread-table">
 		<tr class="spread-table-header js-table-header">
 			<th class="spread-table-first"></th>
 			<!-- BEGIN highestRow:loop -->
-			<th data-action="selectRow({i})"<!-- \BEGIN selectedRowNo:touch#{i} -->class="selected"<!-- \END selectedRowNo:touch#{i} -->>{i}[noToEn]<span class="spread-table-toggle-btn" data-action-click="selectRowViaBtn({i})"></span></th>
+			<th data-action="selectRow({i})"<!-- \BEGIN selectedRowNo:touch#{i} -->class="selected"<!-- \END selectedRowNo:touch#{i} -->><span class="spread-table-toggle-btn" data-action-click="selectRowViaBtn({i})"></span></th>
 			<!-- END highestRow:loop -->
 		</tr>
 		<!-- BEGIN row:loop -->
 		<tr>
-			<th class="spread-table-side js-table-side<!-- \BEGIN selectedColNo:touch#{i} --> selected<!-- \END selectedColNo:touch#{i} -->"data-action="selectCol({i})">{i}<span class="spread-table-toggle-btn" data-action-click="selectColViaBtn({i})"></span></th>
+			<th class="spread-table-side js-table-side<!-- \BEGIN selectedColNo:touch#{i} --> selected<!-- \END selectedColNo:touch#{i} -->"data-action="selectCol({i})"><span class="spread-table-toggle-btn" data-action-click="selectColViaBtn({i})"></span></th>
 			<!-- \BEGIN row.{i}.col:loop -->
 			<td colspan="\{colspan\}" rowspan="\{rowspan\}" data-action="updateTable(\{i\},{i})" data-cell-id="\{i\}-{i}" class="<!-- \BEGIN selected:exist -->spread-table-selected<!-- \END selected:exist --><!-- \BEGIN type:touch#th --> spread-table-th<!-- END \type:touch#th --><!-- \BEGIN mark.top:exist --> spread-table-border-top<!-- \END mark.top:exist --><!-- \BEGIN mark.right:exist --> spread-table-border-right<!-- \END mark.right:exist --><!-- \BEGIN mark.bottom:exist --> spread-table-border-bottom<!-- \END mark.bottom:exist --><!-- \BEGIN mark.left:exist --> spread-table-border-left<!-- \END mark.left:exist -->"><div class='spread-table-editable \{align\}' contenteditable>\{value\}</div><div class='spread-table-pseudo'></div></td>
 			<!-- \END row.{i}.col:loop -->
 		</tr>
 		<!-- END row:loop -->
 	</table>
+  <!-- END inputMode:touch#table -->
+  <!-- BEGIN inputMode:touch#source -->
+  <textarea data-bind="tableResult" class="spread-table-textarea"></textarea>
+  <!-- END inputMode:touch#source -->
 </div>

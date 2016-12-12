@@ -27,7 +27,12 @@ var template = `<!-- BEGIN showMenu:exist -->
 <!-- END showMenu:exist -->
 <!-- BEGIN showBtnList:exist -->
 <div class="spread-table-btn-list">
-	<!-- <button class="spread-table-btn" data-action-click="backToState(1)"><i class="fa fa-rotate-left"></i></button> -->
+  <!-- BEGIN inputMode:touch#table -->
+	<button class="spread-table-btn" data-action-click="changeInputMode(source)">ソース</button>
+  <!-- END inputMode:touch#table -->
+  <!-- BEGIN inputMode:touch#source -->
+  <button class="spread-table-btn" data-action-click="changeInputMode(table)">テーブル</button>
+  <!-- END inputMode:touch#source -->
 	<button class="spread-table-btn" data-action-click="mergeCells"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></button>
 	<button class="spread-table-btn" data-action-click="splitCell()"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></button>
 	<button class="spread-table-btn" data-action-click="undo()"><!-- BEGIN lang:touch#ja -->元に戻す<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->undo<!-- END lang:touch#en --></button>
@@ -39,22 +44,27 @@ var template = `<!-- BEGIN showMenu:exist -->
 </div>
 <!-- END showBtnList:exist -->
 <div class="spread-table-wrapper">
+  <!-- BEGIN inputMode:touch#table -->
 	<table class="spread-table">
 		<tr class="spread-table-header js-table-header">
 			<th class="spread-table-first"></th>
 			<!-- BEGIN highestRow:loop -->
-			<th data-action="selectRow({i})"<!-- \BEGIN selectedRowNo:touch#{i} -->class="selected"<!-- \END selectedRowNo:touch#{i} -->>{i}[noToEn]<span class="spread-table-toggle-btn" data-action-click="selectRowViaBtn({i})"></span></th>
+			<th data-action="selectRow({i})"<!-- \BEGIN selectedRowNo:touch#{i} -->class="selected"<!-- \END selectedRowNo:touch#{i} -->><span class="spread-table-toggle-btn" data-action-click="selectRowViaBtn({i})"></span></th>
 			<!-- END highestRow:loop -->
 		</tr>
 		<!-- BEGIN row:loop -->
 		<tr>
-			<th class="spread-table-side js-table-side<!-- \BEGIN selectedColNo:touch#{i} --> selected<!-- \END selectedColNo:touch#{i} -->"data-action="selectCol({i})">{i}<span class="spread-table-toggle-btn" data-action-click="selectColViaBtn({i})"></span></th>
+			<th class="spread-table-side js-table-side<!-- \BEGIN selectedColNo:touch#{i} --> selected<!-- \END selectedColNo:touch#{i} -->"data-action="selectCol({i})"><span class="spread-table-toggle-btn" data-action-click="selectColViaBtn({i})"></span></th>
 			<!-- \BEGIN row.{i}.col:loop -->
 			<td colspan="\{colspan\}" rowspan="\{rowspan\}" data-action="updateTable(\{i\},{i})" data-cell-id="\{i\}-{i}" class="<!-- \BEGIN selected:exist -->spread-table-selected<!-- \END selected:exist --><!-- \BEGIN type:touch#th --> spread-table-th<!-- END \type:touch#th --><!-- \BEGIN mark.top:exist --> spread-table-border-top<!-- \END mark.top:exist --><!-- \BEGIN mark.right:exist --> spread-table-border-right<!-- \END mark.right:exist --><!-- \BEGIN mark.bottom:exist --> spread-table-border-bottom<!-- \END mark.bottom:exist --><!-- \BEGIN mark.left:exist --> spread-table-border-left<!-- \END mark.left:exist -->"><div class='spread-table-editable \{align\}' contenteditable>\{value\}</div><div class='spread-table-pseudo'></div></td>
 			<!-- \END row.{i}.col:loop -->
 		</tr>
 		<!-- END row:loop -->
 	</table>
+  <!-- END inputMode:touch#table -->
+  <!-- BEGIN inputMode:touch#source -->
+  <textarea data-bind="tableResult" class="spread-table-textarea"></textarea>
+  <!-- END inputMode:touch#source -->
 </div>
 `
 var returnTable = `<table>
@@ -109,9 +119,9 @@ var style = `.spread-table-wrapper {
 .spread-table th {
   text-align: left;
   width: 100px;
-  height: 15px;
+  height: 27px;
   white-space: nowrap;
-  overflow: hidden;
+  /*  overflow: hidden;*/
   position: relative;
   z-index: 0;
   border: 1px solid #cccccc;
@@ -172,22 +182,23 @@ var style = `.spread-table-wrapper {
   left: 0;
   z-index: 999999;
   background-color: #fff;
-  border: 1px solid #666;
+  border: 1px solid #cccccc;
   color: #474747;
   font-size: 13px;
+  -webkit-box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);
 }
 
 .spread-table-menu li {
   display: block;
-  font-size: 14px;
-  padding: 5px 7px;
-  line-height: 1;
+  font-size: 13px;
+  padding: 9px 7px;
   border-bottom: 1px solid #ddd;
   cursor: pointer;
 }
 
 .spread-table-menu li:hover {
-  background-color: #eee;
+  background-color: #ebf0f6;
 }
 
 .spread-table-header th {
@@ -272,19 +283,53 @@ var style = `.spread-table-wrapper {
 }
 
 .spread-table .spread-table-border-left .spread-table-pseudo {
-  border-left: 1px solid red;
+  border-left: 2px solid #006dec;
 }
 
 .spread-table .spread-table-border-top .spread-table-pseudo {
-  border-top: 1px solid red;
+  border-top: 2px solid #006dec;
 }
 
 .spread-table .spread-table-border-right .spread-table-pseudo {
-  border-right: 1px solid red;
+  border-right: 2px solid #006dec;
 }
 
 .spread-table .spread-table-border-bottom .spread-table-pseudo {
-  border-bottom: 1px solid red;
+  border-bottom: 2px solid #006dec;
+}
+
+.spread-table-border-top.spread-table-border-left .spread-table-pseudo:before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 6px;
+  height: 6px;
+  background-color: #006dec;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+
+.spread-table-border-bottom.spread-table-border-right .spread-table-pseudo:before {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  width: 6px;
+  height: 6px;
+  background-color: #006dec;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+
+.spread-table-textarea {
+  width: 500px;
+  height: 300px;
+  border: 1px solid #ccc;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
 }
 `
 var ids = []
@@ -316,6 +361,7 @@ class Spread extends aTemplate {
     this.data.row = this.parse($(ele).html())
     this.data.highestRow = this.highestRow
     this.data.history = []
+    this.data.inputMode = "table";
     this.data.history.push(clone(this.data.row))
     this.convert = {}
     this.convert.noToEn = this.noToEn
@@ -478,18 +524,17 @@ class Spread extends aTemplate {
       item.col.forEach(function (obj, t) {
         var point = self.getCellInfoByIndex(t, i)
         var mark = {};
-        console.log(point1.width);
         if (obj.selected){
           if(point.x == point1.x){
             mark.left = true;
           }
-          if(point.x == point1.x + point1.width -1){
+          if(point.x + point.width == point1.x + point1.width){
             mark.right = true;
           }
           if(point.y == point1.y){
             mark.top = true;
           }
-          if(point.y == point1.y + point1.height -1){
+          if(point.y + point.height == point1.y + point1.height){
             mark.bottom = true;
           }
         }
@@ -518,7 +563,6 @@ class Spread extends aTemplate {
       })
     })
     if (points.length > 1) {
-      this.markup()
       this.update()
     }
   }
@@ -934,6 +978,9 @@ class Spread extends aTemplate {
     this.data.history.push(clone(this.data.row))
     this.update()
   }
+  beforeUpdated () {
+    this.markup()
+  }
   insertRowBelow (selectedno) {
     this.data.showMenu = false
     this.data.selectedColNo = parseInt(selectedno)
@@ -1137,6 +1184,16 @@ class Spread extends aTemplate {
   		return '';
   	}
   	return ' '+this.data.mark.align[align];
+  }
+
+  changeInputMode(source){
+    this.data.inputMode = source;
+    if(source === "source"){
+      this.data.tableResult = this.getTable();
+    }else{
+      this.data.row = this.parse(this.data.tableResult);
+    }
+    this.update();
   }
 }
 

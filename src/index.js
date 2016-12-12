@@ -34,6 +34,7 @@ class Spread extends aTemplate {
     this.data.row = this.parse($(ele).html())
     this.data.highestRow = this.highestRow
     this.data.history = []
+    this.data.inputMode = "table";
     this.data.history.push(clone(this.data.row))
     this.convert = {}
     this.convert.noToEn = this.noToEn
@@ -196,18 +197,17 @@ class Spread extends aTemplate {
       item.col.forEach(function (obj, t) {
         var point = self.getCellInfoByIndex(t, i)
         var mark = {};
-        console.log(point1.width);
         if (obj.selected){
           if(point.x == point1.x){
             mark.left = true;
           }
-          if(point.x == point1.x + point1.width -1){
+          if(point.x + point.width == point1.x + point1.width){
             mark.right = true;
           }
           if(point.y == point1.y){
             mark.top = true;
           }
-          if(point.y == point1.y + point1.height -1){
+          if(point.y + point.height == point1.y + point1.height){
             mark.bottom = true;
           }
         }
@@ -236,7 +236,6 @@ class Spread extends aTemplate {
       })
     })
     if (points.length > 1) {
-      this.markup()
       this.update()
     }
   }
@@ -652,6 +651,9 @@ class Spread extends aTemplate {
     this.data.history.push(clone(this.data.row))
     this.update()
   }
+  beforeUpdated () {
+    this.markup()
+  }
   insertRowBelow (selectedno) {
     this.data.showMenu = false
     this.data.selectedColNo = parseInt(selectedno)
@@ -855,6 +857,16 @@ class Spread extends aTemplate {
   		return '';
   	}
   	return ' '+this.data.mark.align[align];
+  }
+
+  changeInputMode(source){
+    this.data.inputMode = source;
+    if(source === "source"){
+      this.data.tableResult = this.getTable();
+    }else{
+      this.data.row = this.parse(this.data.tableResult);
+    }
+    this.update();
   }
 }
 
