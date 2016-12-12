@@ -22,21 +22,28 @@
 </ul>
 <!-- END showMenu:exist -->
 <!-- BEGIN showBtnList:exist -->
-<div class="\{mark.btn.group\}">
-  <!-- BEGIN inputMode:touch#table -->
-	<button class="\{mark.btn.item\}" data-action-click="changeInputMode(source)">ソース</button>
-  <!-- END inputMode:touch#table -->
-  <!-- BEGIN inputMode:touch#source -->
-  <button class="\{mark.btn.item\}" data-action-click="changeInputMode(table)">テーブル</button>
-  <!-- END inputMode:touch#source -->
-	<button class="\{mark.btn.item\}" data-action-click="mergeCells"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></button>
-	<button class="\{mark.btn.item\}" data-action-click="splitCell()"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></button>
-	<button class="\{mark.btn.item\}" data-action-click="undo()"><!-- BEGIN lang:touch#ja -->元に戻す<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->undo<!-- END lang:touch#en --></button>
-	<button class="\{mark.btn.item\}" data-action-click="changeCellTypeTo(td)">td</button>
-	<button class="\{mark.btn.item\}" data-action-click="changeCellTypeTo(th)">th</button>
-	<button class="\{mark.btn.item\}" data-action-click="align(left)"><i class="fa fa-align-left"></i></button>
-	<button class="\{mark.btn.item\}" data-action-click="align(center)"><i class="fa fa-align-center"></i></button>
-	<button class="\{mark.btn.item\}" data-action-click="align(right)"><i class="fa fa-align-right"></i></button>
+  <div class="\{mark.btn.group\}">
+    <!-- BEGIN inputMode:touch#table -->
+    <button class="\{mark.btn.item\}" data-action-click="changeInputMode(source)">ソース</button>
+    <!-- END inputMode:touch#table -->
+    <!-- BEGIN inputMode:touch#source -->
+    <button class="\{mark.btn.item\}" data-action-click="changeInputMode(table)">テーブル</button>
+    <!-- END inputMode:touch#source -->
+  </div>
+  <div class="\{mark.btn.group\}">
+  	<button class="\{mark.btn.item\}" data-action-click="mergeCells"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></button>
+  	<button class="\{mark.btn.item\}" data-action-click="splitCell()"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></button>
+  	<button class="\{mark.btn.item\}" data-action-click="undo()"><!-- BEGIN lang:touch#ja -->元に戻す<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->undo<!-- END lang:touch#en --></button>
+  </div>
+  <div class="\{mark.btn.group\}">
+  	<button class="\{mark.btn.item\}" data-action-click="changeCellTypeTo(td)">td</button>
+  	<button class="\{mark.btn.item\}" data-action-click="changeCellTypeTo(th)">th</button>
+  </div>
+  <div class="\{mark.btn.group\}">
+  	<button class="\{mark.btn.item\}" data-action-click="align(left)"><i class="fa fa-align-left"></i></button>
+  	<button class="\{mark.btn.item\}" data-action-click="align(center)"><i class="fa fa-align-center"></i></button>
+  	<button class="\{mark.btn.item\}" data-action-click="align(right)"><i class="fa fa-align-right"></i></button>
+  </div>
 </div>
 <!-- END showBtnList:exist -->
 <div class="spread-table-wrapper">
