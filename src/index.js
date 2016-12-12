@@ -17,7 +17,11 @@ var defs = {
   		left:'class="left"',
   		center:'class="center"',
   		right:'class="right"'
-  	}
+  	},
+    btn:{
+      group:'spread-table-btn-list',
+      item:'spread-table-btn'
+    }
   }
 }
 
@@ -37,7 +41,6 @@ class Spread extends aTemplate {
     this.data.inputMode = "table";
     this.data.history.push(clone(this.data.row))
     this.convert = {}
-    this.convert.noToEn = this.noToEn
     this.convert.getStyleByAlign = this.getStyleByAlign
     $(ele).wrap("<div data-id='" + this.id + "'></div>")
     $(ele).remove()
@@ -846,10 +849,6 @@ class Spread extends aTemplate {
     this.data.showMenu = false
     this.data.history.push(clone(this.data.row))
     this.update()
-  }
-
-  noToEn (i) {
-    return String.fromCharCode(97 + parseInt(i))
   }
 
   getStyleByAlign(align){

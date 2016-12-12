@@ -26,21 +26,21 @@ var template = `<!-- BEGIN showMenu:exist -->
 </ul>
 <!-- END showMenu:exist -->
 <!-- BEGIN showBtnList:exist -->
-<div class="spread-table-btn-list">
+<div class="\{mark.btn.group\}">
   <!-- BEGIN inputMode:touch#table -->
-	<button class="spread-table-btn" data-action-click="changeInputMode(source)">ソース</button>
+	<button class="\{mark.btn.item\}" data-action-click="changeInputMode(source)">ソース</button>
   <!-- END inputMode:touch#table -->
   <!-- BEGIN inputMode:touch#source -->
-  <button class="spread-table-btn" data-action-click="changeInputMode(table)">テーブル</button>
+  <button class="\{mark.btn.item\}" data-action-click="changeInputMode(table)">テーブル</button>
   <!-- END inputMode:touch#source -->
-	<button class="spread-table-btn" data-action-click="mergeCells"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></button>
-	<button class="spread-table-btn" data-action-click="splitCell()"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></button>
-	<button class="spread-table-btn" data-action-click="undo()"><!-- BEGIN lang:touch#ja -->元に戻す<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->undo<!-- END lang:touch#en --></button>
-	<button class="spread-table-btn" data-action-click="changeCellTypeTo(td)">td</button>
-	<button class="spread-table-btn" data-action-click="changeCellTypeTo(th)">th</button>
-	<button class="spread-table-btn" data-action-click="align(left)"><i class="fa fa-align-left"></i></button>
-	<button class="spread-table-btn" data-action-click="align(center)"><i class="fa fa-align-center"></i></button>
-	<button class="spread-table-btn" data-action-click="align(right)"><i class="fa fa-align-right"></i></button>
+	<button class="\{mark.btn.item\}" data-action-click="mergeCells"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></button>
+	<button class="\{mark.btn.item\}" data-action-click="splitCell()"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></button>
+	<button class="\{mark.btn.item\}" data-action-click="undo()"><!-- BEGIN lang:touch#ja -->元に戻す<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->undo<!-- END lang:touch#en --></button>
+	<button class="\{mark.btn.item\}" data-action-click="changeCellTypeTo(td)">td</button>
+	<button class="\{mark.btn.item\}" data-action-click="changeCellTypeTo(th)">th</button>
+	<button class="\{mark.btn.item\}" data-action-click="align(left)"><i class="fa fa-align-left"></i></button>
+	<button class="\{mark.btn.item\}" data-action-click="align(center)"><i class="fa fa-align-center"></i></button>
+	<button class="\{mark.btn.item\}" data-action-click="align(right)"><i class="fa fa-align-right"></i></button>
 </div>
 <!-- END showBtnList:exist -->
 <div class="spread-table-wrapper">
@@ -344,7 +344,11 @@ var defs = {
   		left:'class="left"',
   		center:'class="center"',
   		right:'class="right"'
-  	}
+  	},
+    btn:{
+      group:'spread-table-btn-list',
+      item:'spread-table-btn'
+    }
   }
 }
 
@@ -364,7 +368,6 @@ class Spread extends aTemplate {
     this.data.inputMode = "table";
     this.data.history.push(clone(this.data.row))
     this.convert = {}
-    this.convert.noToEn = this.noToEn
     this.convert.getStyleByAlign = this.getStyleByAlign
     $(ele).wrap("<div data-id='" + this.id + "'></div>")
     $(ele).remove()
@@ -1173,10 +1176,6 @@ class Spread extends aTemplate {
     this.data.showMenu = false
     this.data.history.push(clone(this.data.row))
     this.update()
-  }
-
-  noToEn (i) {
-    return String.fromCharCode(97 + parseInt(i))
   }
 
   getStyleByAlign(align){
