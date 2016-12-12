@@ -50,7 +50,7 @@ var template = `<!-- BEGIN showMenu:exist -->
 		<tr>
 			<th class="spread-table-side js-table-side<!-- \BEGIN selectedColNo:touch#{i} --> selected<!-- \END selectedColNo:touch#{i} -->"data-action="selectCol({i})">{i}<span class="spread-table-toggle-btn" data-action-click="selectColViaBtn({i})"></span></th>
 			<!-- \BEGIN row.{i}.col:loop -->
-			<td colspan="\{colspan\}" rowspan="\{rowspan\}" data-action="updateTable(\{i\},{i})" data-cell-id="\{i\}-{i}" class="<!-- \BEGIN selected:exist -->spread-table-selected<!-- \END selected:exist --><!-- \BEGIN type:touch#th --> spread-table-th<!-- END \type:touch#th -->"><div class='spread-table-editable \{align\}' contenteditable>\{value\}</div><div class='spread-table-pseudo'></div></td>
+			<td colspan="\{colspan\}" rowspan="\{rowspan\}" data-action="updateTable(\{i\},{i})" data-cell-id="\{i\}-{i}" class="<!-- \BEGIN selected:exist -->spread-table-selected<!-- \END selected:exist --><!-- \BEGIN type:touch#th --> spread-table-th<!-- END \type:touch#th --><!-- \BEGIN mark.top:exist --> spread-table-border-top<!-- \END mark.top:exist --><!-- \BEGIN mark.right:exist --> spread-table-border-right<!-- \END mark.right:exist --><!-- \BEGIN mark.bottom:exist --> spread-table-border-bottom<!-- \END mark.bottom:exist --><!-- \BEGIN mark.left:exist --> spread-table-border-left<!-- \END mark.left:exist -->"><div class='spread-table-editable \{align\}' contenteditable>\{value\}</div><div class='spread-table-pseudo'></div></td>
 			<!-- \END row.{i}.col:loop -->
 		</tr>
 		<!-- END row:loop -->
@@ -73,202 +73,218 @@ var returnTable = `<table>
 </table>
 `
 var style = `.spread-table-wrapper {
-	position: relative;
-	z-index: 0;
-	width: 100%;
+  position: relative;
+  z-index: 0;
+  width: 100%;
 }
 
 .spread-table-pseudo {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
 }
 
 .spread-table-wrapper {
-	width: 100%;
-	-ms-overflow-x: scroll;
-	overflow-x: scroll;
+  width: 100%;
+  -ms-overflow-x: scroll;
+  overflow-x: scroll;
 }
 
 .spread-table {
-	border-collapse: collapse;
-	table-layout: fixed;
-	font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
 }
 
 .spread-table input {
-	width: 100%;
-	height: 100%;
-	display: block;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .spread-table td,
 .spread-table th {
-	text-align: left;
-	width: 100px;
-	height: 15px;
-	white-space: nowrap;
-	overflow: hidden;
-	position: relative;
-	z-index: 0;
-	border: 1px solid #cccccc;
+  text-align: left;
+  width: 100px;
+  height: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+  border: 1px solid #cccccc;
 }
 
 .spread-table td:first-child,
 .spread-table th:first-child {
-	width: 50px;
+  width: 50px;
 }
 
 .spread-table th {
-	background-color: #eee;
-	font-weight: normal;
+  background-color: #eee;
+  font-weight: normal;
 }
 
 .spread-table .left {
-	text-align: left;
+  text-align: left;
 }
 
 .spread-table .right {
-	text-align: right;
+  text-align: right;
 }
 
 .spread-table .center {
-	text-align: center;
+  text-align: center;
 }
 
 .spread-table .spread-table-th {
-	background-color: #ddd;
-	font-weight: bold;
+  background-color: #ddd;
+  font-weight: bold;
 }
 
 .spread-table .spread-table-selected {
-	background-color: #eaf2f9;
+  background-color: #eaf2f9;
 }
 
 .spread-table-editable {
-	width: 100%;
-	height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .spread-table-pseudo {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
 }
 
 .spread-table-menu {
-	display: block;
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
-	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: 999999;
-	background-color: #fff;
-	border: 1px solid #666;
-	color: #474747;
-	font-size: 13px;
+  display: block;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999999;
+  background-color: #fff;
+  border: 1px solid #666;
+  color: #474747;
+  font-size: 13px;
 }
 
 .spread-table-menu li {
-	display: block;
-	font-size: 14px;
-	padding: 5px 7px;
-	line-height: 1;
-	border-bottom: 1px solid #ddd;
-	cursor: pointer;
+  display: block;
+  font-size: 14px;
+  padding: 5px 7px;
+  line-height: 1;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
 }
 
 .spread-table-menu li:hover {
-	background-color: #eee;
+  background-color: #eee;
 }
 
 .spread-table-header th {
-	text-align: center;
-	position: relative;
+  text-align: center;
+  position: relative;
 }
 
 .spread-table-header .selected {
-	background-color: #eaf2f9;
+  background-color: #eaf2f9;
 }
 
 .spread-table-side.selected {
-	background-color: #eaf2f9;
+  background-color: #eaf2f9;
 }
 
 .spread-table .spread-table-side {
-	text-align: center;
-	position: relative;
+  text-align: center;
+  position: relative;
 }
 
 .spread-table-btn-list {
-	margin-bottom: 10px;
-	display: table;
+  margin-bottom: 10px;
+  display: table;
 }
 
 .spread-table-btn {
-	display: table-cell;
-	border-left: none;
-	border: 1px solid #d9d9d9;
-	background-color: #f2f2f2;
-	font-size: 12px;
-	padding: 3px 5px;
+  display: table-cell;
+  border-left: none;
+  border: 1px solid #d9d9d9;
+  background-color: #f2f2f2;
+  font-size: 12px;
+  padding: 3px 5px;
 }
 
 .spread-table-btn:first-child {
-	border-top-left-radius: 3px;
-	border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
 }
 
 .spread-table-btn:last-child {
-	border-top-right-radius: 3px;
-	border-bottom-right-radius: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
 }
 
 .spread-table-toggle-btn {
-	display: inline-block;
-	border: 1px solid #ccc;
-	padding: 5px;
-	position: absolute;
-	right: 5px;
-	top: 5px;
-	cursor: pointer;
-	display: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  padding: 5px;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  cursor: pointer;
+  display: none;
 }
 
 .spread-table-header th:hover .spread-table-toggle-btn {
-	display: block;
+  display: block;
 }
 
 .spread-table-side:hover .spread-table-toggle-btn {
-	display: block;
+  display: block;
 }
 
 .spread-table-toggle-btn:after {
-	content: "";
-	display: block;
-	border: solid transparent;
-	content: " ";
-	height: 0;
-	width: 0;
-	border-color: rgba(136, 183, 213, 0);
-	border-top-color: #88b7d5;
-	border-width: 5px;
-	margin-left: -5px;
-	position: absolute;
-	top: 2px;
-	left: 5px;
+  content: "";
+  display: block;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  border-color: rgba(136, 183, 213, 0);
+  border-top-color: #88b7d5;
+  border-width: 5px;
+  margin-left: -5px;
+  position: absolute;
+  top: 2px;
+  left: 5px;
 }
 
 .spread-table-first {
-	width: 15px;
+  width: 15px;
+}
+
+.spread-table .spread-table-border-left .spread-table-pseudo {
+  border-left: 1px solid red;
+}
+
+.spread-table .spread-table-border-top .spread-table-pseudo {
+  border-top: 1px solid red;
+}
+
+.spread-table .spread-table-border-right .spread-table-pseudo {
+  border-right: 1px solid red;
+}
+
+.spread-table .spread-table-border-bottom .spread-table-pseudo {
+  border-bottom: 1px solid red;
 }
 `
 var ids = []
@@ -451,6 +467,37 @@ class Spread extends aTemplate {
     }
   }
 
+  markup () {
+    var points = this.getSelectedPoints()
+    var point1 = this.getLargePoint.apply(null, points)
+    var self = this;
+    this.data.row.forEach(function (item, i) {
+      if (!item || !item.col) {
+        return false
+      }
+      item.col.forEach(function (obj, t) {
+        var point = self.getCellInfoByIndex(t, i)
+        var mark = {};
+        console.log(point1.width);
+        if (obj.selected){
+          if(point.x == point1.x){
+            mark.left = true;
+          }
+          if(point.x == point1.x + point1.width -1){
+            mark.right = true;
+          }
+          if(point.y == point1.y){
+            mark.top = true;
+          }
+          if(point.y == point1.y + point1.height -1){
+            mark.bottom = true;
+          }
+        }
+        obj.mark = mark;
+      })
+    })
+  }
+
   selectRange (a, b) {
     if (!this.data.point) {
       return
@@ -471,6 +518,7 @@ class Spread extends aTemplate {
       })
     })
     if (points.length > 1) {
+      this.markup()
       this.update()
     }
   }

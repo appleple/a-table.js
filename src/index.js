@@ -185,6 +185,37 @@ class Spread extends aTemplate {
     }
   }
 
+  markup () {
+    var points = this.getSelectedPoints()
+    var point1 = this.getLargePoint.apply(null, points)
+    var self = this;
+    this.data.row.forEach(function (item, i) {
+      if (!item || !item.col) {
+        return false
+      }
+      item.col.forEach(function (obj, t) {
+        var point = self.getCellInfoByIndex(t, i)
+        var mark = {};
+        console.log(point1.width);
+        if (obj.selected){
+          if(point.x == point1.x){
+            mark.left = true;
+          }
+          if(point.x == point1.x + point1.width -1){
+            mark.right = true;
+          }
+          if(point.y == point1.y){
+            mark.top = true;
+          }
+          if(point.y == point1.y + point1.height -1){
+            mark.bottom = true;
+          }
+        }
+        obj.mark = mark;
+      })
+    })
+  }
+
   selectRange (a, b) {
     if (!this.data.point) {
       return
@@ -205,6 +236,7 @@ class Spread extends aTemplate {
       })
     })
     if (points.length > 1) {
+      this.markup()
       this.update()
     }
   }
