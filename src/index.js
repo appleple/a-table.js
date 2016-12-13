@@ -397,15 +397,8 @@ class Spread extends aTemplate {
   }
 
   selectRow (i) {
-    if (this.e.type == 'contextmenu') {
-      this.unselectCells()
-      this.contextmenu()
-    }else if (this.e.type == 'click') {
-      this.unselectCells()
-      this.data.showMenu = false
-    } else {
-      return
-    }
+    this.unselectCells()
+    this.data.showMenu = false
     var points = this.getAllPoints()
     var point1 = this.getLargePoint.apply(null, points)
     var newpoint = {x: parseInt(i),y: 0,width: 1,height: point1.height}
@@ -428,20 +421,13 @@ class Spread extends aTemplate {
     this.update()
   }
   selectCol (i) {
-    if (this.e.type == 'contextmenu') {
-      this.unselectCells()
-      this.contextmenu()
-    } else if (this.e.type == 'click') {
-      this.unselectCells()
-      this.data.showMenu = false
-    } else {
-      return
-    }
     var points = this.getAllPoints()
     var point1 = this.getLargePoint.apply(null, points)
     var newpoint = {x: 0,y: parseInt(i),width: point1.width,height: 1}
     var targetPoints = []
     var self = this;
+    this.unselectCells()
+    this.data.showMenu = false
     points.forEach(function (point) {
       if (self.hitTest(newpoint, point)) {
         targetPoints.push(point)
@@ -849,6 +835,10 @@ class Spread extends aTemplate {
   		return '';
   	}
   	return ' '+this.data.mark.align[align];
+  }
+
+  isSelectedCellsRectangle(){
+
   }
 
   changeInputMode(source){

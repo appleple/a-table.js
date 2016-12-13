@@ -64,12 +64,12 @@ var template = `<!-- BEGIN showMenu:exist -->
 		<tr class="spread-table-header js-table-header">
 			<th class="spread-table-first"></th>
 			<!-- BEGIN highestRow:loop -->
-			<th data-action="selectRow({i})"<!-- \BEGIN selectedRowNo:touch#{i} -->class="selected"<!-- \END selectedRowNo:touch#{i} -->><span class="spread-table-toggle-btn"></span></th>
+			<th data-action-click="selectRow({i})"<!-- \BEGIN selectedRowNo:touch#{i} -->class="selected"<!-- \END selectedRowNo:touch#{i} -->><span class="spread-table-toggle-btn"></span></th>
 			<!-- END highestRow:loop -->
 		</tr>
 		<!-- BEGIN row:loop -->
 		<tr>
-			<th class="spread-table-side js-table-side<!-- \BEGIN selectedColNo:touch#{i} --> selected<!-- \END selectedColNo:touch#{i} -->" data-action="selectCol({i})"><span class="spread-table-toggle-btn"></span></th>
+			<th class="spread-table-side js-table-side<!-- \BEGIN selectedColNo:touch#{i} --> selected<!-- \END selectedColNo:touch#{i} -->" data-action-click="selectCol({i})"><span class="spread-table-toggle-btn"></span></th>
 			<!-- \BEGIN row.{i}.col:loop -->
 			<td colspan="\{colspan\}" rowspan="\{rowspan\}" data-action="updateTable(\{i\},{i})" data-cell-id="\{i\}-{i}" class="<!-- \BEGIN selected:exist -->spread-table-selected<!-- \END selected:exist --><!-- \BEGIN type:touch#th --> spread-table-th<!-- END \type:touch#th --><!-- \BEGIN mark.top:exist --> spread-table-border-top<!-- \END mark.top:exist --><!-- \BEGIN mark.right:exist --> spread-table-border-right<!-- \END mark.right:exist --><!-- \BEGIN mark.bottom:exist --> spread-table-border-bottom<!-- \END mark.bottom:exist --><!-- \BEGIN mark.left:exist --> spread-table-border-left<!-- \END mark.left:exist --><!-- \BEGIN cellClass:exist --> \{cellClass\}<!-- \END cellClass:exist -->"><div class='spread-table-editable \{align\}' contenteditable>\{value\}</div><div class='spread-table-pseudo'></div></td>
 			<!-- \END row.{i}.col:loop -->
@@ -750,15 +750,8 @@ class Spread extends aTemplate {
   }
 
   selectRow (i) {
-    if (this.e.type == 'contextmenu') {
-      this.unselectCells()
-      this.contextmenu()
-    }else if (this.e.type == 'click') {
-      this.unselectCells()
-      this.data.showMenu = false
-    } else {
-      return
-    }
+    this.unselectCells()
+    this.data.showMenu = false
     var points = this.getAllPoints()
     var point1 = this.getLargePoint.apply(null, points)
     var newpoint = {x: parseInt(i),y: 0,width: 1,height: point1.height}
@@ -781,20 +774,13 @@ class Spread extends aTemplate {
     this.update()
   }
   selectCol (i) {
-    if (this.e.type == 'contextmenu') {
-      this.unselectCells()
-      this.contextmenu()
-    } else if (this.e.type == 'click') {
-      this.unselectCells()
-      this.data.showMenu = false
-    } else {
-      return
-    }
     var points = this.getAllPoints()
     var point1 = this.getLargePoint.apply(null, points)
     var newpoint = {x: 0,y: parseInt(i),width: point1.width,height: 1}
     var targetPoints = []
     var self = this;
+    this.unselectCells()
+    this.data.showMenu = false
     points.forEach(function (point) {
       if (self.hitTest(newpoint, point)) {
         targetPoints.push(point)
@@ -1202,6 +1188,10 @@ class Spread extends aTemplate {
   		return '';
   	}
   	return ' '+this.data.mark.align[align];
+  }
+
+  isSelectedCellsRectangle(){
+
   }
 
   changeInputMode(source){
