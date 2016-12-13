@@ -64,12 +64,12 @@ var template = `<!-- BEGIN showMenu:exist -->
 		<tr class="spread-table-header js-table-header">
 			<th class="spread-table-first"></th>
 			<!-- BEGIN highestRow:loop -->
-			<th data-action="selectRow({i})"<!-- \BEGIN selectedRowNo:touch#{i} -->class="selected"<!-- \END selectedRowNo:touch#{i} -->><span class="spread-table-toggle-btn" data-action-click="selectRowViaBtn({i})"></span></th>
+			<th data-action="selectRow({i})"<!-- \BEGIN selectedRowNo:touch#{i} -->class="selected"<!-- \END selectedRowNo:touch#{i} -->><span class="spread-table-toggle-btn"></span></th>
 			<!-- END highestRow:loop -->
 		</tr>
 		<!-- BEGIN row:loop -->
 		<tr>
-			<th class="spread-table-side js-table-side<!-- \BEGIN selectedColNo:touch#{i} --> selected<!-- \END selectedColNo:touch#{i} -->"data-action="selectCol({i})"><span class="spread-table-toggle-btn" data-action-click="selectColViaBtn({i})"></span></th>
+			<th class="spread-table-side js-table-side<!-- \BEGIN selectedColNo:touch#{i} --> selected<!-- \END selectedColNo:touch#{i} -->" data-action="selectCol({i})"><span class="spread-table-toggle-btn"></span></th>
 			<!-- \BEGIN row.{i}.col:loop -->
 			<td colspan="\{colspan\}" rowspan="\{rowspan\}" data-action="updateTable(\{i\},{i})" data-cell-id="\{i\}-{i}" class="<!-- \BEGIN selected:exist -->spread-table-selected<!-- \END selected:exist --><!-- \BEGIN type:touch#th --> spread-table-th<!-- END \type:touch#th --><!-- \BEGIN mark.top:exist --> spread-table-border-top<!-- \END mark.top:exist --><!-- \BEGIN mark.right:exist --> spread-table-border-right<!-- \END mark.right:exist --><!-- \BEGIN mark.bottom:exist --> spread-table-border-bottom<!-- \END mark.bottom:exist --><!-- \BEGIN mark.left:exist --> spread-table-border-left<!-- \END mark.left:exist --><!-- \BEGIN cellClass:exist --> \{cellClass\}<!-- \END cellClass:exist -->"><div class='spread-table-editable \{align\}' contenteditable>\{value\}</div><div class='spread-table-pseudo'></div></td>
 			<!-- \END row.{i}.col:loop -->
@@ -145,6 +145,7 @@ var style = `.spread-table-wrapper {
   border: 1px dashed #a7a7aa;
   background-color: transparent;
   font-weight: normal;
+  cursor: pointer;
 }
 
 .spread-table th:hover {
@@ -297,8 +298,8 @@ var style = `.spread-table-wrapper {
   left: 5px;
 }
 
-.spread-table-header th:hover .spread-table-toggle-btn {
-  border-color: #999;
+.spread-table-header th:hover .spread-table-toggle-btn:after {
+  border-top-color: #999;
 }
 
 .spread-table-first {
@@ -748,15 +749,6 @@ class Spread extends aTemplate {
     }
   }
 
-  selectRowViaBtn (i) {
-    this.unselectCells()
-    this.data.mode = 'col'
-    this.data.selectedColNo = -1
-    this.data.selectedRowNo = i
-    this.contextmenu()
-    this.update()
-  }
-
   selectRow (i) {
     if (this.e.type == 'contextmenu') {
       this.unselectCells()
@@ -785,6 +777,7 @@ class Spread extends aTemplate {
     this.data.mode = 'col'
     this.data.selectedColNo = -1
     this.data.selectedRowNo = i
+    this.contextmenu()
     this.update()
   }
   selectCol (i) {
@@ -812,13 +805,6 @@ class Spread extends aTemplate {
       var cell = self.getCellByPos(point.x, point.y)
       cell.selected = true;
     });
-    this.data.mode = 'row'
-    this.data.selectedRowNo = -1
-    this.data.selectedColNo = i
-    this.update()
-  }
-  selectColViaBtn (i) {
-    this.unselectCells()
     this.data.mode = 'row'
     this.data.selectedRowNo = -1
     this.data.selectedColNo = i

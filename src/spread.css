@@ -46,6 +46,7 @@
   border: 1px dashed #a7a7aa;
   background-color: transparent;
   font-weight: normal;
+  cursor: pointer;
 }
 
 .spread-table th:hover {
@@ -198,8 +199,8 @@
   left: 5px;
 }
 
-.spread-table-header th:hover .spread-table-toggle-btn {
-  border-color: #999;
+.spread-table-header th:hover .spread-table-toggle-btn:after {
+  border-top-color: #999;
 }
 
 .spread-table-first {

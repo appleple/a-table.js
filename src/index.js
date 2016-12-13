@@ -396,15 +396,6 @@ class Spread extends aTemplate {
     }
   }
 
-  selectRowViaBtn (i) {
-    this.unselectCells()
-    this.data.mode = 'col'
-    this.data.selectedColNo = -1
-    this.data.selectedRowNo = i
-    this.contextmenu()
-    this.update()
-  }
-
   selectRow (i) {
     if (this.e.type == 'contextmenu') {
       this.unselectCells()
@@ -433,6 +424,7 @@ class Spread extends aTemplate {
     this.data.mode = 'col'
     this.data.selectedColNo = -1
     this.data.selectedRowNo = i
+    this.contextmenu()
     this.update()
   }
   selectCol (i) {
@@ -460,13 +452,6 @@ class Spread extends aTemplate {
       var cell = self.getCellByPos(point.x, point.y)
       cell.selected = true;
     });
-    this.data.mode = 'row'
-    this.data.selectedRowNo = -1
-    this.data.selectedColNo = i
-    this.update()
-  }
-  selectColViaBtn (i) {
-    this.unselectCells()
     this.data.mode = 'row'
     this.data.selectedRowNo = -1
     this.data.selectedColNo = i
