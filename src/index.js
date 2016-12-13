@@ -6,18 +6,16 @@ var template = require('./table.html')
 var returnTable = require('./return-table.html')
 var style = require('./spread.css')
 var ids = []
-$('body').append('<style>' + style + '</style>')
-$('body').append("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>")
 var defs = {
   showBtnList: true,
   lang: 'en',
   mark:{
-  	align:{
-  		default:'left',
-  		left:'class="left"',
-  		center:'class="center"',
-  		right:'class="right"'
-  	},
+    align:{
+      default:'left',
+      left:'left',
+      center:'center',
+      right:'right'
+    },
     btn:{
       group:'spread-table-btn-list',
       item:'spread-table-btn',
@@ -25,6 +23,9 @@ var defs = {
     }
   }
 }
+$('body').append('<style>' + style + '</style>')
+$('body').append("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>")
+
 
 class Spread extends aTemplate {
   constructor (ele, option) {
@@ -44,6 +45,7 @@ class Spread extends aTemplate {
     this.data.history.push(clone(this.data.row))
     this.convert = {}
     this.convert.getStyleByAlign = this.getStyleByAlign
+    this.convert.setClass = this.setClass
     $(ele).wrap("<div data-id='" + this.id + "'></div>")
     $(ele).remove()
     this.update()
@@ -341,7 +343,10 @@ class Spread extends aTemplate {
   }
 
   getTable () {
-    return this.getHtml(returnTable, true)
+    return this
+    .getHtml(returnTable, true)
+    .replace(/ class=""/g,"")
+    .replace(/class="(.*)? "/g,'class="$1"');
   }
 
   getMarkdown () {
@@ -753,7 +758,7 @@ class Spread extends aTemplate {
   splitCell () {
     var selectedPoints = this.getSelectedPoints()
     if(selectedPoints.length > 1){
-      alert("結合解除するには、セルが一つだけ選択されている必要があります。");
+      alert("結合解除するには、セルが一つだけ選択されている必要があります");
       return;
     }
     var selectedPoint = this.getSelectedPoint()
@@ -843,7 +848,7 @@ class Spread extends aTemplate {
   	if(this.data.mark.align.default === align){
   		return '';
   	}
-  	return ' '+this.data.mark.align[align];
+  	return this.data.mark.align[align];
   }
 
   isSelectedCellsRectangle(){

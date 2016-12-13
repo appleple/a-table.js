@@ -10,7 +10,7 @@
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: steelydylan
- *   version: 0.0.12
+ *   version: 0.0.13
  *
  * base64-js:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -79,6 +79,10 @@ var getObjectById = function getObjectById(id) {
 	}
 	return null;
 };
+if (typeof jQuery !== "undefined") {
+	// for IE
+	$ = jQuery;
+}
 if (typeof document !== "undefined") {
 	//data binding
 	$(document).on("input change click", "[data-bind]", function (e) {
@@ -6073,17 +6077,15 @@ var template = require('./table.html');
 var returnTable = require('./return-table.html');
 var style = require('./spread.css');
 var ids = [];
-$('body').append('<style>' + style + '</style>');
-$('body').append("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>");
 var defs = {
   showBtnList: true,
   lang: 'en',
   mark: {
     align: {
       default: 'left',
-      left: 'class="left"',
-      center: 'class="center"',
-      right: 'class="right"'
+      left: 'left',
+      center: 'center',
+      right: 'right'
     },
     btn: {
       group: 'spread-table-btn-list',
@@ -6092,6 +6094,8 @@ var defs = {
     }
   }
 };
+$('body').append('<style>' + style + '</style>');
+$('body').append("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>");
 
 var Spread = function (_aTemplate) {
   _inherits(Spread, _aTemplate);
@@ -6116,6 +6120,7 @@ var Spread = function (_aTemplate) {
     _this.data.history.push(clone(_this.data.row));
     _this.convert = {};
     _this.convert.getStyleByAlign = _this.getStyleByAlign;
+    _this.convert.setClass = _this.setClass;
     $(ele).wrap("<div data-id='" + _this.id + "'></div>");
     $(ele).remove();
     _this.update();
@@ -6432,7 +6437,7 @@ var Spread = function (_aTemplate) {
   }, {
     key: 'getTable',
     value: function getTable() {
-      return this.getHtml(returnTable, true);
+      return this.getHtml(returnTable, true).replace(/ class=""/g, "").replace(/class="(.*)? "/g, 'class="$1"');
     }
   }, {
     key: 'getMarkdown',
@@ -6873,7 +6878,7 @@ var Spread = function (_aTemplate) {
     value: function splitCell() {
       var selectedPoints = this.getSelectedPoints();
       if (selectedPoints.length > 1) {
-        alert("結合解除するには、セルが一つだけ選択されている必要があります。");
+        alert("結合解除するには、セルが一つだけ選択されている必要があります");
         return;
       }
       var selectedPoint = this.getSelectedPoint();
@@ -6968,7 +6973,7 @@ var Spread = function (_aTemplate) {
       if (this.data.mark.align.default === align) {
         return '';
       }
-      return ' ' + this.data.mark.align[align];
+      return this.data.mark.align[align];
     }
   }, {
     key: 'isSelectedCellsRectangle',
@@ -7043,7 +7048,7 @@ var Spread = function (_aTemplate) {
 module.exports = Spread;
 
 },{"./return-table.html":10,"./spread.css":11,"./table.html":12,"./table2md.js":13,"a-template":1,"clone":5,"zepto-browserify":8}],10:[function(require,module,exports){
-module.exports = "<table>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<!-- \\BEGIN type:touch#th -->\n\t\t<th<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 --><!-- \\BEGIN align:exist -->\\{align\\}[getStyleByAlign]<!-- \\END align:exist -->>\\{value\\}</th>\n\t\t<!-- \\END type:touch#th -->\n\t\t<!-- \\BEGIN type:touch#td -->\n\t\t<td<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 --><!-- \\BEGIN align:exist -->\\{align\\}[getStyleByAlign]<!-- \\END align:exist -->>\\{value\\}</td>\n\t\t<!-- \\END type:touch#td -->\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>\n";
+module.exports = "<table>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<!-- \\BEGIN type:touch#th -->\n\t\t<th<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 --> class=\"<!-- \\BEGIN align:exist -->\\{align\\}[getStyleByAlign]<!-- \\END align:exist --><!-- \\BEGIN cellClass:exist --> \\{cellClass\\}<!-- \\END cellClass:exist -->\">\\{value\\}</th>\n\t\t<!-- \\END type:touch#th -->\n\t\t<!-- \\BEGIN type:touch#td -->\n\t\t<td<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 --> class=\"<!-- \\BEGIN align:exist -->\\{align\\}[getStyleByAlign] <!-- \\END align:exist --><!-- \\BEGIN cellClass:exist -->\\{cellClass\\}<!-- \\END cellClass:exist -->\">\\{value\\}</td>\n\t\t<!-- \\END type:touch#td -->\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>\n";
 
 },{}],11:[function(require,module,exports){
 module.exports = ".spread-table-wrapper {\n  position: relative;\n  z-index: 0;\n  width: 100%;\n}\n\n.spread-table-pseudo {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: -1;\n}\n\n.spread-table-wrapper {\n  width: 100%;\n  -ms-overflow-x: scroll;\n  overflow-x: scroll;\n}\n\n.spread-table {\n  border-collapse: collapse;\n  table-layout: fixed;\n  font-family: \"Open Sans\", Helvetica, Arial, sans-serif;\n}\n\n.spread-table input {\n  width: 100%;\n  height: 100%;\n  display: block;\n}\n\n.spread-table td,\n.spread-table th {\n  text-align: left;\n  width: 100px;\n  height: 27px;\n  white-space: nowrap;\n  /*  overflow: hidden;*/\n  position: relative;\n  z-index: 0;\n}\n\n.spread-table th {\n  border: 1px dashed #a7a7aa;\n  background-color: transparent;\n  font-weight: normal;\n  cursor: pointer;\n}\n\n.spread-table th:hover {\n  background-image: -webkit-linear-gradient(#f8f8f8 0%, #e1e1e1 100%);\n  background-image: -o-linear-gradient(#f8f8f8 0%, #e1e1e1 100%);\n  background-image: linear-gradient(#f8f8f8 0%, #e1e1e1 100%);\n  border: 1px solid #a7a7aa;\n}\n\n.spread-table td {\n  background-color: #fff;\n  border: 1px solid #cccccc;\n}\n\n.spread-table td:first-child,\n.spread-table th:first-child {\n  width: 30px;\n}\n\n.spread-table .left {\n  text-align: left;\n}\n\n.spread-table .right {\n  text-align: right;\n}\n\n.spread-table .center {\n  text-align: center;\n}\n\n.spread-table .spread-table-th {\n  background-color: #ddd;\n  font-weight: bold;\n}\n\n.spread-table .spread-table-selected {\n  background-color: #eaf2f9;\n}\n\n.spread-table-editable {\n  width: 100%;\n  height: 100%;\n}\n\n.spread-table-pseudo {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: -1;\n}\n\n.spread-table-menu {\n  display: block;\n  list-style-type: none;\n  padding: 0;\n  margin: 0;\n  position: fixed;\n  top: 0;\n  left: 0;\n  z-index: 999999;\n  background-color: #fff;\n  border: 1px solid #cccccc;\n  color: #474747;\n  font-size: 13px;\n  -webkit-box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);\n  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);\n}\n\n.spread-table-menu li {\n  display: block;\n  font-size: 13px;\n  padding: 9px 7px;\n  border-bottom: 1px solid #ddd;\n  cursor: pointer;\n}\n\n.spread-table-menu li:hover {\n  background-color: #ebf0f6;\n}\n\n.spread-table-header th {\n  text-align: center;\n  position: relative;\n}\n\n.spread-table-header .selected {\n  background-color: #eaf2f9;\n}\n\n.spread-table-side.selected {\n  background-color: #eaf2f9;\n}\n\n.spread-table .spread-table-side {\n  text-align: center;\n  position: relative;\n}\n\n.spread-table-btn-list {\n  margin-bottom: 10px;\n  display: table;\n}\n\n.spread-table-btn {\n  display: table-cell;\n  border-left: none;\n  border: 1px solid #d9d9d9;\n  background-color: #f2f2f2;\n  font-size: 12px;\n  padding: 3px 5px;\n}\n\n.spread-table-btn:first-child {\n  border-top-left-radius: 3px;\n  border-bottom-left-radius: 3px;\n}\n\n.spread-table-btn:last-child {\n  border-top-right-radius: 3px;\n  border-bottom-right-radius: 3px;\n}\n\n.spread-table-toggle-btn {\n  display: inline-block;\n  padding: 5px;\n  position: absolute;\n  cursor: pointer;\n  top: 50%;\n  left: 50%;\n  margin-top: -2.5px;\n  margin-left: -2.5px;\n}\n\n.spread-table-toggle-btn:after {\n  content: \"\";\n  display: block;\n  border: solid transparent;\n  content: \" \";\n  height: 0;\n  width: 0;\n  border-color: rgba(136, 183, 213, 0);\n  border-top-color: #fff;\n  border-width: 5px;\n  margin-left: -5px;\n  position: absolute;\n  top: 2px;\n  left: 5px;\n}\n\n.spread-table-header th:hover .spread-table-toggle-btn:after {\n  border-top-color: #999;\n}\n\n.spread-table-side .spread-table-toggle-btn:after {\n  border: solid transparent;\n  border-left-color: #fff;\n  border-width: 5px;\n  top: 0;\n}\n\n.spread-table-side:hover .spread-table-toggle-btn:after {\n  border-left-color: #999;\n}\n\n.spread-table-first {\n  width: 15px;\n}\n\n.spread-table .spread-table-border-left .spread-table-pseudo {\n  border-left: 2px solid #006dec;\n}\n\n.spread-table .spread-table-border-top .spread-table-pseudo {\n  border-top: 2px solid #006dec;\n}\n\n.spread-table .spread-table-border-right .spread-table-pseudo {\n  border-right: 2px solid #006dec;\n}\n\n.spread-table .spread-table-border-bottom .spread-table-pseudo {\n  border-bottom: 2px solid #006dec;\n}\n\n.spread-table-border-top.spread-table-border-left .spread-table-pseudo:before {\n  content: \"\";\n  display: block;\n  position: absolute;\n  top: -3px;\n  left: -3px;\n  width: 6px;\n  height: 6px;\n  background-color: #006dec;\n  -webkit-border-radius: 5px;\n  border-radius: 5px;\n}\n\n.spread-table-border-bottom.spread-table-border-right .spread-table-pseudo:before {\n  content: \"\";\n  display: block;\n  position: absolute;\n  bottom: -3px;\n  right: -3px;\n  width: 6px;\n  height: 6px;\n  background-color: #006dec;\n  -webkit-border-radius: 5px;\n  border-radius: 5px;\n}\n\n.spread-table-textarea {\n  width: 100%;\n  height: 200px;\n  margin-bottom: 10px;\n  line-height: 1.7;\n  border: 1px solid #ccc;\n  -webkit-border-radius: 5px;\n  border-radius: 5px;\n}\n";
