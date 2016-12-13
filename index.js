@@ -797,6 +797,10 @@ var Spread = function (_aTemplate) {
   }, {
     key: 'mergeCells',
     value: function mergeCells() {
+      if (!this.isSelectedCellsRectangle()) {
+        alert("結合/結合解除するには、結合範囲のすべてのセルを選択する必要があります。");
+        return;
+      }
       var points = this.getSelectedPoints();
       var point = this.getLargePoint.apply(null, points);
       var cell = this.getCellByPos(point.x, point.y);
@@ -906,7 +910,22 @@ var Spread = function (_aTemplate) {
     }
   }, {
     key: 'isSelectedCellsRectangle',
-    value: function isSelectedCellsRectangle() {}
+    value: function isSelectedCellsRectangle() {
+      var selectedPoints = this.getSelectedPoints();
+      var largePoint = this.getLargePoint.apply(null, selectedPoints);
+      var points = this.getAllPoints();
+      var flag = true;
+      var self = this;
+      points.forEach(function (point) {
+        if (self.hitTest(largePoint, point)) {
+          var cell = self.getCellByPos(point.x, point.y);
+          if (!cell.selected) {
+            flag = false;
+          }
+        }
+      });
+      return flag;
+    }
   }, {
     key: 'changeInputMode',
     value: function changeInputMode(source) {
