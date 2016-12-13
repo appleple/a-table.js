@@ -6404,6 +6404,7 @@ var Spread = function (_aTemplate) {
   }, {
     key: 'parse',
     value: function parse(html) {
+      var self = this;
       var arr1 = [];
       $('tr', html).each(function () {
         var ret2 = {};
@@ -6419,6 +6420,17 @@ var Spread = function (_aTemplate) {
           obj.colspan = $(this).attr('colspan') || 1;
           obj.rowspan = $(this).attr('rowspan') || 1;
           obj.value = $(this).html();
+          var classList = $(this).prop("classList");
+          var cellClass = "";
+          classList.forEach(function (item) {
+            var align = self.getAlignByStyle(item);
+            if (align) {
+              obj.align = align;
+            } else {
+              cellClass += " " + item;
+            }
+          });
+          obj.cellClass = cellClass.substr(1);
           arr2.push(obj);
         });
         arr1.push(ret2);
@@ -6974,6 +6986,18 @@ var Spread = function (_aTemplate) {
         return '';
       }
       return this.data.mark.align[align];
+    }
+  }, {
+    key: 'getAlignByStyle',
+    value: function getAlignByStyle(style) {
+      var align = this.data.mark.align;
+      if (align.right === style) {
+        return "right";
+      } else if (align.center === style) {
+        return "center";
+      } else if (align.left === style) {
+        return "left";
+      }
     }
   }, {
     key: 'isSelectedCellsRectangle',

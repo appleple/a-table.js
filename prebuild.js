@@ -684,6 +684,7 @@ class Spread extends aTemplate {
   }
 
   parse (html) {
+    var self = this;
     var arr1 = []
     $('tr', html).each(function () {
       var ret2 = {}
@@ -699,6 +700,17 @@ class Spread extends aTemplate {
         obj.colspan = $(this).attr('colspan') || 1
         obj.rowspan = $(this).attr('rowspan') || 1
         obj.value = $(this).html()
+        var classList = $(this).prop("classList");
+        var cellClass = "";
+        classList.forEach(function(item){
+          var align = self.getAlignByStyle(item)
+          if(align){
+            obj.align = align;
+          }else{
+            cellClass += " "+item;
+          }
+        })
+        obj.cellClass = cellClass.substr(1);
         arr2.push(obj)
       })
       arr1.push(ret2)
@@ -1222,6 +1234,17 @@ class Spread extends aTemplate {
   		return '';
   	}
   	return this.data.mark.align[align];
+  }
+
+  getAlignByStyle(style){
+    var align = this.data.mark.align
+    if(align.right === style){
+      return "right";
+    }else if (align.center === style){
+      return "center";
+    }else if (align.left === style){
+      return "left";
+    }
   }
 
   isSelectedCellsRectangle(){
