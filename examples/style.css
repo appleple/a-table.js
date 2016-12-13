@@ -46,3 +46,15 @@
   border-right: 1px solid #a7a7aa;
 }
 
+.spread-table td.red {
+  color: red;
+}
+
+.spread-table td.blue {
+  color: blue;
+}
+
+.spread-table td.yellow {
+  color: yellow;
+}
+

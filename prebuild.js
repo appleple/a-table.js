@@ -49,7 +49,7 @@ var template = `<!-- BEGIN showMenu:exist -->
   	<button class="\{mark.btn.item\}" data-action-click="align(right)"><i class="fa fa-align-right"></i></button>
   </div>
   <div class="\{mark.btn.group\}">
-    <select class="\{mark.selector.self\}">
+    <select class="\{mark.selector.self\}" data-bind="cellClass" data-action-change="changeCellClass()">
       <option value=""></option>
       <!-- BEGIN selector.option:loop -->
       <option value="{value}">{label}</option>
@@ -71,7 +71,7 @@ var template = `<!-- BEGIN showMenu:exist -->
 		<tr>
 			<th class="spread-table-side js-table-side<!-- \BEGIN selectedColNo:touch#{i} --> selected<!-- \END selectedColNo:touch#{i} -->"data-action="selectCol({i})"><span class="spread-table-toggle-btn" data-action-click="selectColViaBtn({i})"></span></th>
 			<!-- \BEGIN row.{i}.col:loop -->
-			<td colspan="\{colspan\}" rowspan="\{rowspan\}" data-action="updateTable(\{i\},{i})" data-cell-id="\{i\}-{i}" class="<!-- \BEGIN selected:exist -->spread-table-selected<!-- \END selected:exist --><!-- \BEGIN type:touch#th --> spread-table-th<!-- END \type:touch#th --><!-- \BEGIN mark.top:exist --> spread-table-border-top<!-- \END mark.top:exist --><!-- \BEGIN mark.right:exist --> spread-table-border-right<!-- \END mark.right:exist --><!-- \BEGIN mark.bottom:exist --> spread-table-border-bottom<!-- \END mark.bottom:exist --><!-- \BEGIN mark.left:exist --> spread-table-border-left<!-- \END mark.left:exist -->"><div class='spread-table-editable \{align\}' contenteditable>\{value\}</div><div class='spread-table-pseudo'></div></td>
+			<td colspan="\{colspan\}" rowspan="\{rowspan\}" data-action="updateTable(\{i\},{i})" data-cell-id="\{i\}-{i}" class="<!-- \BEGIN selected:exist -->spread-table-selected<!-- \END selected:exist --><!-- \BEGIN type:touch#th --> spread-table-th<!-- END \type:touch#th --><!-- \BEGIN mark.top:exist --> spread-table-border-top<!-- \END mark.top:exist --><!-- \BEGIN mark.right:exist --> spread-table-border-right<!-- \END mark.right:exist --><!-- \BEGIN mark.bottom:exist --> spread-table-border-bottom<!-- \END mark.bottom:exist --><!-- \BEGIN mark.left:exist --> spread-table-border-left<!-- \END mark.left:exist --><!-- \BEGIN cellClass:exist --> \{cellClass\}<!-- \END cellClass:exist -->"><div class='spread-table-editable \{align\}' contenteditable>\{value\}</div><div class='spread-table-pseudo'></div></td>
 			<!-- \END row.{i}.col:loop -->
 		</tr>
 		<!-- END row:loop -->
@@ -376,7 +376,7 @@ class Spread extends aTemplate {
     super()
     this.id = this.getRandText(10)
     this.addTemplate(template, this.id)
-    this.data = $.extend({}, defs, option)
+    this.data = $.extend(true, {}, defs, option)
     this.data.point = {x: -1, y: -1}
     this.data.selectedRowNo = -1
     this.data.selectedColNo = -1
@@ -385,6 +385,7 @@ class Spread extends aTemplate {
     this.data.highestRow = this.highestRow
     this.data.history = []
     this.data.inputMode = "table";
+    this.data.cellClass = "";
     this.data.history.push(clone(this.data.row))
     this.convert = {}
     this.convert.getStyleByAlign = this.getStyleByAlign
@@ -1005,6 +1006,7 @@ class Spread extends aTemplate {
     this.update()
   }
   beforeUpdated () {
+    this.changeSelectOption()
     this.markup()
   }
   insertRowBelow (selectedno) {
@@ -1218,6 +1220,42 @@ class Spread extends aTemplate {
     }
     this.update();
   }
+
+  changeCellClass(){
+    var cellClass = this.data.cellClass;
+    this.data.row.forEach(function (item, i) {
+      item.col.forEach(function (obj, t) {
+        if (obj.selected) {
+          obj.cellClass = cellClass;
+        }
+      })
+    })
+    this.data.history.push(clone(this.data.row))
+    this.update();
+  }
+
+  changeSelectOption(){
+    var cellClass;
+    var flag = true;
+    this.data.row.forEach(function(item, i){
+      item.col.forEach(function (obj, t) {
+        if (obj.selected) {
+          if(!cellClass){
+            cellClass = obj.cellClass;
+          } else if(cellClass && cellClass != obj.cellClass){
+            flag = false;
+          }
+        }
+      })
+    });
+    if(flag){
+      this.data.cellClass = cellClass;
+    }else{
+      this.data.cellClass = "";
+    }
+  }
 }
+
+
 
 module.exports = Spread

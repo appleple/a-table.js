@@ -31,7 +31,7 @@ class Spread extends aTemplate {
     super()
     this.id = this.getRandText(10)
     this.addTemplate(template, this.id)
-    this.data = $.extend({}, defs, option)
+    this.data = $.extend(true, {}, defs, option)
     this.data.point = {x: -1, y: -1}
     this.data.selectedRowNo = -1
     this.data.selectedColNo = -1
@@ -40,6 +40,7 @@ class Spread extends aTemplate {
     this.data.highestRow = this.highestRow
     this.data.history = []
     this.data.inputMode = "table";
+    this.data.cellClass = "";
     this.data.history.push(clone(this.data.row))
     this.convert = {}
     this.convert.getStyleByAlign = this.getStyleByAlign
@@ -660,6 +661,7 @@ class Spread extends aTemplate {
     this.update()
   }
   beforeUpdated () {
+    this.changeSelectOption()
     this.markup()
   }
   insertRowBelow (selectedno) {
@@ -873,6 +875,42 @@ class Spread extends aTemplate {
     }
     this.update();
   }
+
+  changeCellClass(){
+    var cellClass = this.data.cellClass;
+    this.data.row.forEach(function (item, i) {
+      item.col.forEach(function (obj, t) {
+        if (obj.selected) {
+          obj.cellClass = cellClass;
+        }
+      })
+    })
+    this.data.history.push(clone(this.data.row))
+    this.update();
+  }
+
+  changeSelectOption(){
+    var cellClass;
+    var flag = true;
+    this.data.row.forEach(function(item, i){
+      item.col.forEach(function (obj, t) {
+        if (obj.selected) {
+          if(!cellClass){
+            cellClass = obj.cellClass;
+          } else if(cellClass && cellClass != obj.cellClass){
+            flag = false;
+          }
+        }
+      })
+    });
+    if(flag){
+      this.data.cellClass = cellClass;
+    }else{
+      this.data.cellClass = "";
+    }
+  }
 }
+
+
 
 module.exports = Spread
