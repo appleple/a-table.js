@@ -45,12 +45,13 @@
 
 .spread-table td:first-child,
 .spread-table th:first-child {
-  width: 50px;
+  width: 30px;
 }
 
 .spread-table th {
-  background-color: #eee;
+  background-color: transparent;
   font-weight: normal;
+  border: none;
 }
 
 .spread-table .left {

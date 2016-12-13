@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="main">
+  <div class="main acms-admin-form">
     <table class="table">
       <tr>
         <td>test</td>
@@ -61,20 +61,27 @@
   </div>
   <script src="../build/spread.min.js"></script>
   <script>
-    var spread = new Spread(".table",{
-      lang:"ja",
+    var spread = new Spread('.table',{
+      lang:'ja',
       mark:{
         btn:{
-          group:"acms-admin-btn-group acms-admin-btn-group-inline",
-          item:"acms-admin-btn",
-          itemActive:"acms-admin-btn acms-admin-btn-active"
+          group:'acms-admin-btn-group acms-admin-btn-group-inline',
+          item:'acms-admin-btn',
+          itemActive:'acms-admin-btn acms-admin-btn-active'
         }
+      },
+      selector:{
+        option:[
+          {label:'上揃え',value:'top'},
+          {label:'中央寄せ',value:'center'},
+          {label:'下揃え',value:'bottom'}
+        ]
       }
     });
     spread.afterRendered =
     spread.afterEntered = function(){
-      document.querySelector(".test").innerText = this.getTable();
-      document.querySelector(".markdown").innerText = this.getMarkdown();
+      document.querySelector('.test').innerText = this.getTable();
+      document.querySelector('.markdown').innerText = this.getMarkdown();
     }
     spread.afterRendered();
   </script>

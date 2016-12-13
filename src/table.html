@@ -44,6 +44,14 @@
   	<button class="\{mark.btn.item\}" data-action-click="align(center)"><i class="fa fa-align-center"></i></button>
   	<button class="\{mark.btn.item\}" data-action-click="align(right)"><i class="fa fa-align-right"></i></button>
   </div>
+  <div class="\{mark.btn.group\}">
+    <select class="\{mark.selector.self\}">
+      <option value=""></option>
+      <!-- BEGIN selector.option:loop -->
+      <option value="{value}">{label}</option>
+      <!-- END selector.option:loop -->
+    </select>
+  </div>
 </div>
 <!-- END showBtnList:exist -->
 <div class="spread-table-wrapper">

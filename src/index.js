@@ -191,6 +191,10 @@ class Spread extends aTemplate {
   }
 
   markup () {
+    if(this.data.splited){
+      this.data.splited = false;
+      return;
+    }
     var points = this.getSelectedPoints()
     var point1 = this.getLargePoint.apply(null, points)
     var self = this;
@@ -825,6 +829,7 @@ class Spread extends aTemplate {
     this.removeCell(currentCell)
     this.data.showMenu = false
     this.data.history.push(clone(this.data.row))
+    this.data.splited = true;
     this.update()
   }
   changeCellTypeTo (type) {

@@ -48,6 +48,14 @@ var template = `<!-- BEGIN showMenu:exist -->
   	<button class="\{mark.btn.item\}" data-action-click="align(center)"><i class="fa fa-align-center"></i></button>
   	<button class="\{mark.btn.item\}" data-action-click="align(right)"><i class="fa fa-align-right"></i></button>
   </div>
+  <div class="\{mark.btn.group\}">
+    <select class="\{mark.selector.self\}">
+      <option value=""></option>
+      <!-- BEGIN selector.option:loop -->
+      <option value="{value}">{label}</option>
+      <!-- END selector.option:loop -->
+    </select>
+  </div>
 </div>
 <!-- END showBtnList:exist -->
 <div class="spread-table-wrapper">
@@ -136,12 +144,13 @@ var style = `.spread-table-wrapper {
 
 .spread-table td:first-child,
 .spread-table th:first-child {
-  width: 50px;
+  width: 30px;
 }
 
 .spread-table th {
-  background-color: #eee;
+  background-color: transparent;
   font-weight: normal;
+  border: none;
 }
 
 .spread-table .left {
@@ -527,6 +536,10 @@ class Spread extends aTemplate {
   }
 
   markup () {
+    if(this.data.splited){
+      this.data.splited = false;
+      return;
+    }
     var points = this.getSelectedPoints()
     var point1 = this.getLargePoint.apply(null, points)
     var self = this;
@@ -1161,6 +1174,7 @@ class Spread extends aTemplate {
     this.removeCell(currentCell)
     this.data.showMenu = false
     this.data.history.push(clone(this.data.row))
+    this.data.splited = true;
     this.update()
   }
   changeCellTypeTo (type) {
