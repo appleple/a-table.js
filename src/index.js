@@ -538,6 +538,13 @@ class Spread extends aTemplate {
     this.data.selectedRowNo = -1
     this.data.selectedColNo = -1
     this.data.showMenu = false
+
+    if (this.e.type == 'compositionstart'){
+      this.data.beingInput = true;
+    }
+    if (this.e.type == 'compositionend'){
+      this.data.beingInput = false;
+    }
     if (this.e.type == 'click') {
       if (this.e.shiftKey) {
         this.selectRange(a, b)
@@ -547,7 +554,9 @@ class Spread extends aTemplate {
         this.mousedown = true
         if (!this.data.row[a].col[b].selected) {
           this.select(a, b)
-          this.update()
+          if(!this.data.beingInput){
+            this.update()
+          }
         }else {
           this.select(a, b)
         }
