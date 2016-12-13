@@ -203,6 +203,17 @@
   border-top-color: #999;
 }
 
+.spread-table-side .spread-table-toggle-btn:after {
+  border: solid transparent;
+  border-left-color: #fff;
+  border-width: 5px;
+  top: 0;
+}
+
+.spread-table-side:hover .spread-table-toggle-btn:after {
+  border-left-color: #999;
+}
+
 .spread-table-first {
   width: 15px;
 }
