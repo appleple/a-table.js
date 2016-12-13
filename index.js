@@ -798,7 +798,7 @@ var Spread = function (_aTemplate) {
     key: 'mergeCells',
     value: function mergeCells() {
       if (!this.isSelectedCellsRectangle()) {
-        alert("結合/結合解除するには、結合範囲のすべてのセルを選択する必要があります。");
+        alert("結合するには、結合範囲のすべてのセルを選択する必要があります。");
         return;
       }
       var points = this.getSelectedPoints();
@@ -814,6 +814,11 @@ var Spread = function (_aTemplate) {
   }, {
     key: 'splitCell',
     value: function splitCell() {
+      var selectedPoints = this.getSelectedPoints();
+      if (selectedPoints.length > 1) {
+        alert("結合解除するには、セルが一つだけ選択されている必要があります。");
+        return;
+      }
       var selectedPoint = this.getSelectedPoint();
       var bound = { x: 0, y: selectedPoint.y, width: selectedPoint.x, height: selectedPoint.height };
       var points = this.getAllPoints();
