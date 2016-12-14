@@ -22,10 +22,14 @@ var defs = {
       itemActive:'a-table-btn-active'
     },
     icon:{
-      alignLeft:"fa fa-align-left",
-      alignCenter:"fa fa-align-center",
-      alignRight:"fa fa-align-right",
-      undo:"fa fa-undo"
+      alignLeft:"a-table-icon a-table-icon-left",
+      alignCenter:"a-table-icon a-table-icon-center",
+      alignRight:"a-table-icon a-table-icon-right",
+      undo:"a-table-icon a-table-icon-undo",
+      merge:"a-table-icon a-table-icon-merge02",
+      split:"a-table-icon a-table-icon-split02",
+      table:"a-table-icon a-table-icon-th02",
+      source:"a-table-icon a-table-icon-source01"
     }
   }
 }

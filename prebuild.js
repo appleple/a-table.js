@@ -28,15 +28,15 @@ var template = `<!-- BEGIN showMenu:exist -->
 <!-- BEGIN showBtnList:exist -->
   <div class="\{mark.btn.group\}">
     <!-- BEGIN inputMode:touch#table -->
-    <button class="\{mark.btn.item\}" data-action-click="changeInputMode(source)">ソース</button>
+    <button class="\{mark.btn.item\}" data-action-click="changeInputMode(source)"><i class="\{mark.icon.source\}"></i></button>
     <!-- END inputMode:touch#table -->
     <!-- BEGIN inputMode:touch#source -->
-    <button class="\{mark.btn.itemActive\}" data-action-click="changeInputMode(table)">ソース</button>
+    <button class="\{mark.btn.itemActive\}" data-action-click="changeInputMode(table)"><i class="\{mark.icon.table\}"></i></button>
     <!-- END inputMode:touch#source -->
   </div>
   <div class="\{mark.btn.group\}">
-  	<button class="\{mark.btn.item\}" data-action-click="mergeCells"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></button>
-  	<button class="\{mark.btn.item\}" data-action-click="splitCell()"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></button>
+  	<button class="\{mark.btn.item\}" data-action-click="mergeCells"><i class="\{mark.icon.merge\}"></i></button>
+  	<button class="\{mark.btn.item\}" data-action-click="splitCell()"><i class="\{mark.icon.split\}"></i></button>
   	<button class="\{mark.btn.item\}" data-action-click="undo()"><i class="\{mark.icon.undo\}"></i></button>
   </div>
   <div class="\{mark.btn.group\}">
@@ -391,10 +391,14 @@ var defs = {
       itemActive:'a-table-btn-active'
     },
     icon:{
-      alignLeft:"fa fa-align-left",
-      alignCenter:"fa fa-align-center",
-      alignRight:"fa fa-align-right",
-      undo:"fa fa-undo"
+      alignLeft:"a-table-icon a-table-icon-left",
+      alignCenter:"a-table-icon a-table-icon-center",
+      alignRight:"a-table-icon a-table-icon-right",
+      undo:"a-table-icon a-table-icon-undo",
+      merge:"a-table-icon a-table-icon-merge02",
+      split:"a-table-icon a-table-icon-split02",
+      table:"a-table-icon a-table-icon-th02",
+      source:"a-table-icon a-table-icon-source01"
     }
   }
 }

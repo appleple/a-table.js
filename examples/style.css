@@ -14,7 +14,7 @@
 
 .main {
   padding: 10px;
-  background: #D0D0D0;
+  background: #d0d0d0;
 }
 
 .column {
@@ -47,15 +47,15 @@
   border-right: 1px solid #a7a7aa;
 }
 
-.spread-table td.red {
+.a-table td.red {
   color: red;
 }
 
-.spread-table td.blue {
+.a-table td.blue {
   color: blue;
 }
 
-.spread-table td.yellow {
+.a-table td.yellow {
   color: yellow;
 }
 
