@@ -20,11 +20,16 @@ var defs = {
       group:'a-table-btn-list',
       item:'a-table-btn',
       itemActive:'a-table-btn-active'
+    },
+    icon:{
+      alignLeft:"fa fa-align-left",
+      alignCenter:"fa fa-align-center",
+      alignRight:"fa fa-align-right",
+      undo:"fa fa-undo"
     }
   }
 }
 $('body').append('<style>' + style + '</style>')
-$('body').append("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>")
 
 
 class aTable extends aTemplate {

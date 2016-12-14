@@ -37,16 +37,16 @@ var template = `<!-- BEGIN showMenu:exist -->
   <div class="\{mark.btn.group\}">
   	<button class="\{mark.btn.item\}" data-action-click="mergeCells"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></button>
   	<button class="\{mark.btn.item\}" data-action-click="splitCell()"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></button>
-  	<button class="\{mark.btn.item\}" data-action-click="undo()"><!-- BEGIN lang:touch#ja -->元に戻す<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->undo<!-- END lang:touch#en --></button>
+  	<button class="\{mark.btn.item\}" data-action-click="undo()"><i class="\{mark.icon.undo\}"></i></button>
   </div>
   <div class="\{mark.btn.group\}">
   	<button class="\{mark.btn.item\}" data-action-click="changeCellTypeTo(td)">td</button>
   	<button class="\{mark.btn.item\}" data-action-click="changeCellTypeTo(th)">th</button>
   </div>
   <div class="\{mark.btn.group\}">
-  	<button class="\{mark.btn.item\}" data-action-click="align(left)"><i class="fa fa-align-left"></i></button>
-  	<button class="\{mark.btn.item\}" data-action-click="align(center)"><i class="fa fa-align-center"></i></button>
-  	<button class="\{mark.btn.item\}" data-action-click="align(right)"><i class="fa fa-align-right"></i></button>
+  	<button class="\{mark.btn.item\}" data-action-click="align(left)"><i class="\{mark.icon.alignLeft\}"></i></button>
+  	<button class="\{mark.btn.item\}" data-action-click="align(center)"><i class="\{mark.icon.alignCenter\}"></i></button>
+  	<button class="\{mark.btn.item\}" data-action-click="align(right)"><i class="\{mark.icon.alignRight\}"></i></button>
   </div>
   <div class="\{mark.btn.group\}">
     <select class="\{mark.selector.self\}" data-bind="cellClass" data-action-change="changeCellClass()">
@@ -389,11 +389,16 @@ var defs = {
       group:'a-table-btn-list',
       item:'a-table-btn',
       itemActive:'a-table-btn-active'
+    },
+    icon:{
+      alignLeft:"fa fa-align-left",
+      alignCenter:"fa fa-align-center",
+      alignRight:"fa fa-align-right",
+      undo:"fa fa-undo"
     }
   }
 }
 $('body').append('<style>' + style + '</style>')
-$('body').append("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>")
 
 
 class aTable extends aTemplate {
