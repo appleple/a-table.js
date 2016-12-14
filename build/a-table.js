@@ -6057,19 +6057,40 @@ module.exports = ".a-table-wrapper {\n  position: relative;\n  z-index: 0;\n  wi
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _aTemplate2 = require('a-template');
+
+var _aTemplate3 = _interopRequireDefault(_aTemplate2);
+
+var _zeptoBrowserify = require('zepto-browserify');
+
+var _clone = require('clone');
+
+var _clone2 = _interopRequireDefault(_clone);
+
+var _table2md = require('./table2md.js');
+
+var _table2md2 = _interopRequireDefault(_table2md);
+
+var _table = require('./table.html');
+
+var _table2 = _interopRequireDefault(_table);
+
+var _returnTable = require('./return-table.html');
+
+var _returnTable2 = _interopRequireDefault(_returnTable);
+
+var _aTable = require('./a-table.css');
+
+var _aTable2 = _interopRequireDefault(_aTable);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var aTemplate = require('a-template');
-var $ = require('zepto-browserify').$;
-var clone = require('clone');
-var toMarkdown = require('./table2md.js');
-var template = require('./table.html');
-var returnTable = require('./return-table.html');
-var style = require('./a-table.css');
 var ids = [];
 var defs = {
   showBtnList: true,
@@ -6098,7 +6119,7 @@ var defs = {
     }
   }
 };
-$('body').append('<style>' + style + '</style>');
+(0, _zeptoBrowserify.$)('body').append('<style>' + _aTable2.default + '</style>');
 
 var aTable = function (_aTemplate) {
   _inherits(aTable, _aTemplate);
@@ -6109,23 +6130,23 @@ var aTable = function (_aTemplate) {
     var _this = _possibleConstructorReturn(this, (aTable.__proto__ || Object.getPrototypeOf(aTable)).call(this));
 
     _this.id = _this.getRandText(10);
-    _this.addTemplate(template, _this.id);
-    _this.data = $.extend(true, {}, defs, option);
+    _this.addTemplate(_table2.default, _this.id);
+    _this.data = _zeptoBrowserify.$.extend(true, {}, defs, option);
     _this.data.point = { x: -1, y: -1 };
     _this.data.selectedRowNo = -1;
     _this.data.selectedColNo = -1;
     _this.data.showBtnList = true;
-    _this.data.row = _this.parse($(ele).html());
+    _this.data.row = _this.parse((0, _zeptoBrowserify.$)(ele).html());
     _this.data.highestRow = _this.highestRow;
     _this.data.history = [];
     _this.data.inputMode = "table";
     _this.data.cellClass = "";
-    _this.data.history.push(clone(_this.data.row));
+    _this.data.history.push((0, _clone2.default)(_this.data.row));
     _this.convert = {};
     _this.convert.getStyleByAlign = _this.getStyleByAlign;
     _this.convert.setClass = _this.setClass;
-    $(ele).wrap("<div data-id='" + _this.id + "'></div>");
-    $(ele).remove();
+    (0, _zeptoBrowserify.$)(ele).wrap("<div data-id='" + _this.id + "'></div>");
+    (0, _zeptoBrowserify.$)(ele).remove();
     _this.update();
     return _this;
   }
@@ -6150,7 +6171,7 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'getCellByIndex',
     value: function getCellByIndex(x, y) {
-      return $("[data-id='" + this.id + "'] [data-cell-id='" + x + '-' + y + "']");
+      return (0, _zeptoBrowserify.$)("[data-id='" + this.id + "'] [data-cell-id='" + x + '-' + y + "']");
     }
   }, {
     key: 'getCellInfoByIndex',
@@ -6166,13 +6187,13 @@ var aTable = function (_aTemplate) {
       var returnTop = -1;
       var width = parseInt($cell.attr('colspan'));
       var height = parseInt($cell.attr('rowspan'));
-      $("[data-id='" + this.id + "'] .js-table-header th").each(function (i) {
-        if ($(this).offset().left === left) {
+      (0, _zeptoBrowserify.$)("[data-id='" + this.id + "'] .js-table-header th").each(function (i) {
+        if ((0, _zeptoBrowserify.$)(this).offset().left === left) {
           returnLeft = i;
         }
       });
-      $("[data-id='" + this.id + "'] .js-table-side").each(function (i) {
-        if ($(this).offset().top === top) {
+      (0, _zeptoBrowserify.$)("[data-id='" + this.id + "'] .js-table-side").each(function (i) {
+        if ((0, _zeptoBrowserify.$)(this).offset().top === top) {
           returnTop = i;
         }
       });
@@ -6405,8 +6426,8 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'contextmenu',
     value: function contextmenu() {
-      var $ele = $("[data-id='" + this.id + "']");
-      var $target = $(this.e.target);
+      var $ele = (0, _zeptoBrowserify.$)("[data-id='" + this.id + "']");
+      var $target = (0, _zeptoBrowserify.$)(this.e.target);
       this.e.preventDefault();
       this.data.showMenu = true;
       this.data.menuX = this.e.clientX;
@@ -6418,21 +6439,21 @@ var aTable = function (_aTemplate) {
     value: function parse(html) {
       var self = this;
       var arr1 = [];
-      $('tr', html).each(function () {
+      (0, _zeptoBrowserify.$)('tr', html).each(function () {
         var ret2 = {};
         var arr2 = [];
         ret2.col = arr2;
-        $('th,td', this).each(function () {
+        (0, _zeptoBrowserify.$)('th,td', this).each(function () {
           var obj = {};
-          if ($(this).is('th')) {
+          if ((0, _zeptoBrowserify.$)(this).is('th')) {
             obj.type = 'th';
           } else {
             obj.type = 'td';
           }
-          obj.colspan = $(this).attr('colspan') || 1;
-          obj.rowspan = $(this).attr('rowspan') || 1;
-          obj.value = $(this).html();
-          var classAttr = $(this).attr("class");
+          obj.colspan = (0, _zeptoBrowserify.$)(this).attr('colspan') || 1;
+          obj.rowspan = (0, _zeptoBrowserify.$)(this).attr('rowspan') || 1;
+          obj.value = (0, _zeptoBrowserify.$)(this).html();
+          var classAttr = (0, _zeptoBrowserify.$)(this).attr("class");
           var cellClass = "";
           if (classAttr) {
             var classList = classAttr.split(/\s+/);
@@ -6455,12 +6476,12 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'getTable',
     value: function getTable() {
-      return this.getHtml(returnTable, true).replace(/ class=""/g, "").replace(/class="(.*)? "/g, 'class="$1"');
+      return this.getHtml(_returnTable2.default, true).replace(/ class=""/g, "").replace(/class="(.*)? "/g, 'class="$1"');
     }
   }, {
     key: 'getMarkdown',
     value: function getMarkdown() {
-      return toMarkdown(this.getHtml(returnTable, true));
+      return (0, _table2md2.default)(this.getHtml(_returnTable2.default, true));
     }
   }, {
     key: 'onUpdated',
@@ -6468,8 +6489,8 @@ var aTable = function (_aTemplate) {
       var points = this.getAllPoints();
       var point = this.getLargePoint.apply(null, points);
       var width = point.width;
-      var $th = $('.js-table-header th', "[data-id='" + this.id + "']");
-      var elem = $(".a-table-selected .a-table-editable", "[data-id='" + this.id + "']")[0];
+      var $th = (0, _zeptoBrowserify.$)('.js-table-header th', "[data-id='" + this.id + "']");
+      var elem = (0, _zeptoBrowserify.$)(".a-table-selected .a-table-editable", "[data-id='" + this.id + "']")[0];
       if (elem && !this.data.showMenu) {
         setTimeout(function () {
           elem.focus();
@@ -6491,7 +6512,7 @@ var aTable = function (_aTemplate) {
       }
       $th.each(function (i) {
         if (i > width) {
-          $(this).remove();
+          (0, _zeptoBrowserify.$)(this).remove();
         }
       });
       if (this.afterRendered) {
@@ -6512,7 +6533,7 @@ var aTable = function (_aTemplate) {
 
       if (data) {
         if (this.data.history.length === 0) {
-          this.data.history.push(clone(data));
+          this.data.history.push((0, _clone2.default)(data));
         }
         this.data.row = data;
         this.update();
@@ -6611,7 +6632,7 @@ var aTable = function (_aTemplate) {
           cell.colspan = parseInt(cell.colspan) - 1;
         }
       });
-      this.data.history.push(clone(this.data.row));
+      this.data.history.push((0, _clone2.default)(this.data.row));
       this.update();
     }
   }, {
@@ -6667,7 +6688,7 @@ var aTable = function (_aTemplate) {
       if (insertCells.length > 0) {
         this.data.row[selectedno] = { col: insertCells };
       }
-      this.data.history.push(clone(this.data.row));
+      this.data.history.push((0, _clone2.default)(this.data.row));
       this.update();
     }
   }, {
@@ -6716,7 +6737,7 @@ var aTable = function (_aTemplate) {
         this.mousedown = false;
         this.contextmenu();
       } else {
-        this.data.row[a].col[b].value = $(this.e.target).html();
+        this.data.row[a].col[b].value = (0, _zeptoBrowserify.$)(this.e.target).html();
         if (this.afterEntered) {
           this.afterEntered();
         }
@@ -6750,7 +6771,7 @@ var aTable = function (_aTemplate) {
           }
         }
       });
-      this.data.history.push(clone(this.data.row));
+      this.data.history.push((0, _clone2.default)(this.data.row));
       this.update();
     }
   }, {
@@ -6790,7 +6811,7 @@ var aTable = function (_aTemplate) {
           }
         }
       });
-      this.data.history.push(clone(this.data.row));
+      this.data.history.push((0, _clone2.default)(this.data.row));
       this.update();
     }
   }, {
@@ -6848,7 +6869,7 @@ var aTable = function (_aTemplate) {
         }
       });
       this.insertRow(selectedno + 1, newRow);
-      this.data.history.push(clone(this.data.row));
+      this.data.history.push((0, _clone2.default)(this.data.row));
       this.update();
     }
   }, {
@@ -6900,7 +6921,7 @@ var aTable = function (_aTemplate) {
         }
       });
       this.insertRow(selectedno, newRow);
-      this.data.history.push(clone(this.data.row));
+      this.data.history.push((0, _clone2.default)(this.data.row));
       this.update();
     }
   }, {
@@ -6917,7 +6938,7 @@ var aTable = function (_aTemplate) {
       cell.colspan = point.width;
       cell.rowspan = point.height;
       this.data.showMenu = false;
-      this.data.history.push(clone(this.data.row));
+      this.data.history.push((0, _clone2.default)(this.data.row));
       this.update();
     }
   }, {
@@ -6982,7 +7003,7 @@ var aTable = function (_aTemplate) {
       });
       this.removeCell(currentCell);
       this.data.showMenu = false;
-      this.data.history.push(clone(this.data.row));
+      this.data.history.push((0, _clone2.default)(this.data.row));
       this.data.splited = true;
       this.update();
     }
@@ -6997,7 +7018,7 @@ var aTable = function (_aTemplate) {
         });
       });
       this.data.showMenu = false;
-      this.data.history.push(clone(this.data.row));
+      this.data.history.push((0, _clone2.default)(this.data.row));
       this.update();
     }
   }, {
@@ -7011,7 +7032,7 @@ var aTable = function (_aTemplate) {
         });
       });
       this.data.showMenu = false;
-      this.data.history.push(clone(this.data.row));
+      this.data.history.push((0, _clone2.default)(this.data.row));
       this.update();
     }
   }, {
@@ -7074,7 +7095,7 @@ var aTable = function (_aTemplate) {
           }
         });
       });
-      this.data.history.push(clone(this.data.row));
+      this.data.history.push((0, _clone2.default)(this.data.row));
       this.update();
     }
   }, {
@@ -7102,7 +7123,7 @@ var aTable = function (_aTemplate) {
   }]);
 
   return aTable;
-}(aTemplate);
+}(_aTemplate3.default);
 
 module.exports = aTable;
 

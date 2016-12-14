@@ -1,10 +1,10 @@
-var aTemplate = require('a-template')
-var $ = require('zepto-browserify').$
-var clone = require('clone')
-var toMarkdown = require('./table2md.js')
-var template = require('./table.html')
-var returnTable = require('./return-table.html')
-var style = require('./a-table.css')
+import aTemplate from 'a-template'
+import {$} from 'zepto-browserify'
+import clone from 'clone'
+import toMarkdown from './table2md.js'
+import template from './table.html'
+import returnTable from './return-table.html'
+import style from './a-table.css'
 var ids = []
 var defs = {
   showBtnList: true,
@@ -34,7 +34,6 @@ var defs = {
   }
 }
 $('body').append('<style>' + style + '</style>')
-
 
 class aTable extends aTemplate {
   constructor (ele, option) {
