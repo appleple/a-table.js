@@ -5,7 +5,7 @@
  * a-table:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
- *   version: 1.0.3
+ *   version: 1.0.4
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -6067,10 +6067,6 @@ var _clone = require('clone');
 
 var _clone2 = _interopRequireDefault(_clone);
 
-var _table2md = require('./table2md.js');
-
-var _table2md2 = _interopRequireDefault(_table2md);
-
 var _table = require('./table.html');
 
 var _table2 = _interopRequireDefault(_table);
@@ -6480,6 +6476,28 @@ var aTable = function (_aTemplate) {
       return arr1;
     }
   }, {
+    key: 'toMarkdown',
+    value: function toMarkdown(html) {
+      var $table = (0, _zeptoBrowserify.$)(html);
+      var ret = '';
+      $table.find('tr').each(function (i) {
+        ret += '| ';
+        var $children = (0, _zeptoBrowserify.$)(this).children();
+        $children.each(function () {
+          ret += (0, _zeptoBrowserify.$)(this).html();
+          ret += ' | ';
+        });
+        if (i == 0) {
+          ret += '\n| ';
+          $children.each(function () {
+            ret += '--- | ';
+          });
+        }
+        ret += '\n';
+      });
+      return ret;
+    }
+  }, {
     key: 'getTable',
     value: function getTable() {
       return this.getHtml(_returnTable2.default, true).replace(/ class=""/g, '').replace(/class="(.*)? "/g, 'class="$1"');
@@ -6487,7 +6505,7 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'getMarkdown',
     value: function getMarkdown() {
-      return (0, _table2md2.default)(this.getHtml(_returnTable2.default, true));
+      return this.toMarkdown(this.getHtml(_returnTable2.default, true));
     }
   }, {
     key: 'onUpdated',
@@ -7155,38 +7173,11 @@ var aTable = function (_aTemplate) {
 
 module.exports = aTable;
 
-},{"./a-table.css":9,"./return-table.html":11,"./table.html":12,"./table2md.js":13,"a-template":1,"clone":5,"zepto-browserify":8}],11:[function(require,module,exports){
+},{"./a-table.css":9,"./return-table.html":11,"./table.html":12,"a-template":1,"clone":5,"zepto-browserify":8}],11:[function(require,module,exports){
 module.exports = "<table>\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<!-- \\BEGIN type:touch#th -->\n\t\t<th<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 --> class=\"<!-- \\BEGIN align:exist -->\\{align\\}[getStyleByAlign]<!-- \\END align:exist --><!-- \\BEGIN cellClass:exist --> \\{cellClass\\}<!-- \\END cellClass:exist -->\">\\{value\\}</th>\n\t\t<!-- \\END type:touch#th -->\n\t\t<!-- \\BEGIN type:touch#td -->\n\t\t<td<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 --> class=\"<!-- \\BEGIN align:exist -->\\{align\\}[getStyleByAlign] <!-- \\END align:exist --><!-- \\BEGIN cellClass:exist -->\\{cellClass\\}<!-- \\END cellClass:exist -->\">\\{value\\}</td>\n\t\t<!-- \\END type:touch#td -->\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>\n";
 
 },{}],12:[function(require,module,exports){
 module.exports = "<!-- BEGIN showMenu:exist -->\n<ul class=\"a-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t<!-- BEGIN mode:touch#cell -->\n\t<li data-action-click=\"mergeCells\"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></li>\n  <li data-action-click=\"splitCell()\"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"changeCellTypeTo(th)\"><!-- BEGIN lang:touch#ja -->thに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to th<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"changeCellTypeTo(td)\"><!-- BEGIN lang:touch#ja -->tdに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to td<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"align(left)\"><!-- BEGIN lang:touch#ja -->左寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align left<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"align(center)\"><!-- BEGIN lang:touch#ja -->中央寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align center<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"align(right)\"><!-- BEGIN lang:touch#ja -->右寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align right<!-- END lang:touch#en --></li>\n\t<!-- END mode:touch#cell -->\n\t<!-- BEGIN mode:touch#col -->\n\t<li data-action-click=\"insertColLeft({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->左に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the left<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"insertColRight({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->右に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the right<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"removeCol({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->列を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove column<!-- END lang:touch#en --></li>\n\t<!-- END mode:touch#col -->\n\t<!-- BEGIN mode:touch#row -->\n\t<li data-action-click=\"insertRowAbove({selectedColNo})\"><!-- BEGIN lang:touch#ja -->上に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row above<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"insertRowBelow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->下に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row below<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"removeRow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->行を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove row<!-- END lang:touch#en --></li>\n\t<!-- END mode:touch#row -->\n</ul>\n<!-- END showMenu:exist -->\n<!-- BEGIN showBtnList:exist -->\n  <div class=\"\\{mark.btn.group\\}\">\n    <!-- BEGIN inputMode:touch#table -->\n    <button class=\"\\{mark.btn.item\\}\" data-action-click=\"changeInputMode(source)\"><i class=\"\\{mark.icon.source\\}\"></i></button>\n    <!-- END inputMode:touch#table -->\n    <!-- BEGIN inputMode:touch#source -->\n    <button class=\"\\{mark.btn.itemActive\\}\" data-action-click=\"changeInputMode(table)\"><i class=\"\\{mark.icon.table\\}\"></i></button>\n    <!-- END inputMode:touch#source -->\n  </div>\n  <div class=\"\\{mark.btn.group\\}\">\n  \t<button class=\"\\{mark.btn.item\\}\" data-action-click=\"mergeCells\"><i class=\"\\{mark.icon.merge\\}\"></i></button>\n  \t<button class=\"\\{mark.btn.item\\}\" data-action-click=\"splitCell()\"><i class=\"\\{mark.icon.split\\}\"></i></button>\n  \t<button class=\"\\{mark.btn.item\\}\" data-action-click=\"undo()\"><i class=\"\\{mark.icon.undo\\}\"></i></button>\n  </div>\n  <div class=\"\\{mark.btn.group\\}\">\n  \t<button class=\"\\{mark.btn.item\\}\" data-action-click=\"changeCellTypeTo(td)\">td</button>\n  \t<button class=\"\\{mark.btn.item\\}\" data-action-click=\"changeCellTypeTo(th)\">th</button>\n  </div>\n  <div class=\"\\{mark.btn.group\\}\">\n  \t<button class=\"\\{mark.btn.item\\}\" data-action-click=\"align(left)\"><i class=\"\\{mark.icon.alignLeft\\}\"></i></button>\n  \t<button class=\"\\{mark.btn.item\\}\" data-action-click=\"align(center)\"><i class=\"\\{mark.icon.alignCenter\\}\"></i></button>\n  \t<button class=\"\\{mark.btn.item\\}\" data-action-click=\"align(right)\"><i class=\"\\{mark.icon.alignRight\\}\"></i></button>\n  </div>\n  <div class=\"\\{mark.btn.group\\}\">\n    <select class=\"\\{mark.selector.self\\}\" data-bind=\"cellClass\" data-action-change=\"changeCellClass()\">\n      <option value=\"\"></option>\n      <!-- BEGIN selector.option:loop -->\n      <option value=\"{value}\">{label}</option>\n      <!-- END selector.option:loop -->\n    </select>\n  </div>\n</div>\n<!-- END showBtnList:exist -->\n<div class=\"a-table-wrapper\">\n  <!-- BEGIN inputMode:touch#table -->\n\t<table class=\"a-table\">\n\t\t<tr class=\"a-table-header js-table-header\">\n\t\t\t<th class=\"a-table-first\"></th>\n\t\t\t<!-- BEGIN highestRow:loop -->\n\t\t\t<th data-action-click=\"selectRow({i})\"<!-- \\BEGIN selectedRowNo:touch#{i} -->class=\"selected\"<!-- \\END selectedRowNo:touch#{i} -->><span class=\"a-table-toggle-btn\"></span></th>\n\t\t\t<!-- END highestRow:loop -->\n\t\t</tr>\n\t\t<!-- BEGIN row:loop -->\n\t\t<tr>\n\t\t\t<th class=\"a-table-side js-table-side<!-- \\BEGIN selectedColNo:touch#{i} --> selected<!-- \\END selectedColNo:touch#{i} -->\" data-action-click=\"selectCol({i})\"><span class=\"a-table-toggle-btn\"></span></th>\n\t\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->a-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> a-table-th<!-- END \\type:touch#th --><!-- \\BEGIN mark.top:exist --> a-table-border-top<!-- \\END mark.top:exist --><!-- \\BEGIN mark.right:exist --> a-table-border-right<!-- \\END mark.right:exist --><!-- \\BEGIN mark.bottom:exist --> a-table-border-bottom<!-- \\END mark.bottom:exist --><!-- \\BEGIN mark.left:exist --> a-table-border-left<!-- \\END mark.left:exist --><!-- \\BEGIN cellClass:exist --> \\{cellClass\\}<!-- \\END cellClass:exist -->\"><div class='a-table-editable \\{align\\}' contenteditable>\\{value\\}</div></td>\n\t\t\t<!-- \\END row.{i}.col:loop -->\n\t\t</tr>\n\t\t<!-- END row:loop -->\n\t</table>\n  <!-- END inputMode:touch#table -->\n  <!-- BEGIN inputMode:touch#source -->\n  <textarea data-bind=\"tableResult\" class=\"a-table-textarea\"></textarea>\n  <!-- END inputMode:touch#source -->\n</div>\n";
 
-},{}],13:[function(require,module,exports){
-'use strict';
-
-var _zeptoBrowserify = require('zepto-browserify');
-
-var table2md = function table2md(html) {
-  var $table = (0, _zeptoBrowserify.$)(html);
-  var ret = '';
-  $table.find('tr').each(function (i) {
-    ret += '| ';
-    var $children = (0, _zeptoBrowserify.$)(this).children();
-    $children.each(function () {
-      ret += (0, _zeptoBrowserify.$)(this).html();
-      ret += ' | ';
-    });
-    if (i == 0) {
-      ret += '\n| ';
-      $children.each(function () {
-        ret += '--- | ';
-      });
-    }
-    ret += '\n';
-  });
-  return ret;
-};
-module.exports = table2md;
-
-},{"zepto-browserify":8}]},{},[10])(10)
+},{}]},{},[10])(10)
 });

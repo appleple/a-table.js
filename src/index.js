@@ -1,7 +1,6 @@
 import aTemplate from 'a-template'
 import { $ } from 'zepto-browserify'
 import clone from 'clone'
-import toMarkdown from './table2md.js'
 import template from './table.html'
 import returnTable from './return-table.html'
 import style from './a-table.css'
@@ -371,6 +370,27 @@ class aTable extends aTemplate {
     return arr1
   }
 
+  toMarkdown (html) {
+    let $table = $(html)
+    let ret = ''
+    $table.find('tr').each(function (i) {
+      ret += '| '
+      let $children = $(this).children()
+      $children.each(function () {
+        ret += $(this).html()
+        ret += ' | '
+      })
+      if (i == 0) {
+        ret += '\n| '
+        $children.each(function () {
+          ret += '--- | '
+        })
+      }
+      ret += '\n'
+    })
+    return ret
+  }
+
   getTable () {
     return this
       .getHtml(returnTable, true)
@@ -379,7 +399,7 @@ class aTable extends aTemplate {
   }
 
   getMarkdown () {
-    return toMarkdown(this.getHtml(returnTable, true))
+    return this.toMarkdown(this.getHtml(returnTable, true))
   }
 
   onUpdated () {
