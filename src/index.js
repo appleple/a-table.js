@@ -62,11 +62,11 @@ class aTable extends aTemplate {
 
   highestRow () {
     var arr = []
-    this.data.row.forEach(function (item, i) {
+    this.data.row.forEach((item, i) => {
       if (!item || !item.col) {
         return
       }
-      item.col.forEach(function (obj, t) {
+      item.col.forEach((obj, t) => {
         var length = parseInt(obj.colspan)
         for (var i = 0; i < length; i++) {
           arr.push(i)
@@ -83,7 +83,7 @@ class aTable extends aTemplate {
   getCellInfoByIndex (x, y) {
     var id = this.id
     var $cell = this.getCellByIndex(x, y)
-    if ($cell.length == 0) {
+    if ($cell.length === 0) {
       return false
     }
     var left = $cell.offset().left
@@ -125,11 +125,11 @@ class aTable extends aTemplate {
   getSelectedPoints () {
     var arr = []
     var self = this
-    this.data.row.forEach(function (item, i) {
+    this.data.row.forEach((item, i) => {
       if (!item.col) {
         return false
       }
-      item.col.forEach(function (obj, t) {
+      item.col.forEach((obj, t) => {
         if (obj.selected) {
           var point = self.getCellInfoByIndex(t, i)
           if (point) {
@@ -151,11 +151,11 @@ class aTable extends aTemplate {
   getAllPoints () {
     var arr = []
     var self = this
-    this.data.row.forEach(function (item, i) {
+    this.data.row.forEach((item, i) => {
       if (!item || !item.col) {
         return
       }
-      item.col.forEach(function (obj, t) {
+      item.col.forEach((obj, t) => {
         var point = self.getCellInfoByIndex(t, i)
         if (point) {
           arr.push(point)
@@ -166,7 +166,7 @@ class aTable extends aTemplate {
   }
 
   getCellIndexByPos (x, y) {
-    var a,b
+    var a, b
     var self = this
     this.data.row.forEach(function (item, i) {
       if (!item || !item.col) {
@@ -174,13 +174,13 @@ class aTable extends aTemplate {
       }
       item.col.forEach(function (obj, t) {
         var point = self.getCellInfoByIndex(t, i)
-        if (point.x == x && point.y == y) {
+        if (point.x === x && point.y === y) {
           a = t
           b = i
         }
       })
     })
-    return {row: b,col: a}
+    return {row: b, col: a}
   }
 
   getCellByPos (x, y) {
@@ -211,24 +211,24 @@ class aTable extends aTemplate {
     var points = this.getSelectedPoints()
     var point1 = this.getLargePoint.apply(null, points)
     var self = this
-    data.row.forEach(function (item, i) {
+    data.row.forEach((item, i) => {
       if (!item || !item.col) {
         return false
       }
-      item.col.forEach(function (obj, t) {
+      item.col.forEach((obj, t) => {
         var point = self.getCellInfoByIndex(t, i)
         var mark = {}
         if (obj.selected) {
-          if (point.x == point1.x) {
+          if (point.x === point1.x) {
             mark.left = true
           }
-          if (point.x + point.width == point1.x + point1.width) {
+          if (point.x + point.width === point1.x + point1.width) {
             mark.right = true
           }
-          if (point.y == point1.y) {
+          if (point.y === point1.y) {
             mark.top = true
           }
-          if (point.y + point.height == point1.y + point1.height) {
+          if (point.y + point.height === point1.y + point1.height) {
             mark.bottom = true
           }
         }
@@ -246,11 +246,11 @@ class aTable extends aTemplate {
     data.row[a].col[b].selected = true
     var points = this.getSelectedPoints()
     var point3 = this.getLargePoint.apply(null, points)
-    data.row.forEach(function (item, i) {
+    data.row.forEach((item, i) => {
       if (!item || !item.col) {
         return false
       }
-      item.col.forEach(function (obj, t) {
+      item.col.forEach((obj, t) => {
         var point = self.getCellInfoByIndex(t, i)
         if (point && self.hitTest(point3, point)) {
           obj.selected = true
@@ -264,12 +264,12 @@ class aTable extends aTemplate {
 
   select (a, b) {
     var data = this.data
-    data.point = {x: b,y: a}
-    data.row.forEach(function (item, i) {
+    data.point = {x: b, y: a}
+    data.row.forEach((item, i) => {
       if (!item || !item.col) {
         return false
       }
-      item.col.forEach(function (obj, t) {
+      item.col.forEach((obj, t) => {
         if (i !== a || t !== b) {
           obj.selected = false
         }
@@ -281,11 +281,11 @@ class aTable extends aTemplate {
   }
 
   unselectCells () {
-    this.data.row.forEach(function (item, i) {
+    this.data.row.forEach((item, i) => {
       if (!item || !item.col) {
         return false
       }
-      item.col.forEach(function (obj, t) {
+      item.col.forEach((obj, t) => {
         obj.selected = false
       })
     })
@@ -353,7 +353,7 @@ class aTable extends aTemplate {
         var cellClass = ''
         if (classAttr) {
           var classList = classAttr.split(/\s+/)
-          classList.forEach(function (item) {
+          classList.forEach((item) => {
             var align = self.getAlignByStyle(item)
             if (align) {
               obj.align = align
@@ -387,7 +387,7 @@ class aTable extends aTemplate {
     var width = point.width
     var $th = $('.js-table-header th', `[data-id="${this.id}"]`)
     var elem = $('.a-table-selected .a-table-editable', `[data-id="${this.id}"]`)[0]
-    if (elem && !this.data.showMenu) {
+    if (elem && !this.data.showMenu && !this.mousedown) {
       setTimeout(function () {
         elem.focus()
         if (typeof window.getSelection != 'undefined'
@@ -397,7 +397,6 @@ class aTable extends aTemplate {
           range.collapse(false)
           var sel = window.getSelection()
           sel.removeAllRanges()
-          console.log(range)
           sel.addRange(range)
         } else if (typeof document.body.createTextRange != 'undefined') {
           var textRange = document.body.createTextRange()
@@ -418,37 +417,41 @@ class aTable extends aTemplate {
   }
 
   undo () {
-    var data = this.data.row
-    if (this.data.history.length === 0) {
+    var data = this.data
+    var row = data.row
+    var hist = data.history
+    if (data.history.length === 0) {
       return
     }
 
-    while(JSON.stringify(data) === JSON.stringify(this.data.row)){
-      data = this.data.history.pop()
+    while(JSON.stringify(row) === JSON.stringify(data.row)){
+      row = hist.pop()
     }
 
-    if (data) {
-      if (this.data.history.length === 0) {
-        this.data.history.push(clone(data))
+    if (row) {
+      if (hist.length === 0) {
+        hist.push(clone(row))
       }
-      this.data.row = data
+      data.row = row
       this.update()
     }
   }
   // 行の追加
-  insertRow (a, row) {
+  insertRow (a, newrow) {
     var data = this.data
-    if (data.row[a]) {
-      data.row.splice(a, 0, {col: row})
-    }else if (data.row.length == a) {
-      data.row.push({col: row})
+    var row = data.row
+    if (row[a]) {
+      row.splice(a, 0, {col: newrow})
+    }else if (row.length === a) {
+      row.push({col: newrow})
     }
   }
 
   insertCellAt (a, b, item) {
     var data = this.data
-    if (data.row[a] && data.row[a].col) {
-      data.row[a].col.splice(b, 0, item)
+    var row = data.row
+    if (row[a] && row[a].col) {
+      row[a].col.splice(b, 0, item)
     }
   }
 
@@ -461,7 +464,7 @@ class aTable extends aTemplate {
     var newpoint = {x: parseInt(i),y: 0,width: 1,height: point1.height}
     var targetPoints = []
     var self = this
-    points.forEach(function (point) {
+    points.forEach((point) => {
       if (self.hitTest(newpoint, point)) {
         targetPoints.push(point)
       }
@@ -511,7 +514,7 @@ class aTable extends aTemplate {
     var point1 = this.getLargePoint.apply(null, points)
     var newpoint = {x: parseInt(selectedno),y: 0,width: 1,height: point1.height}
     var targetPoints = []
-    points.forEach(function (point) {
+    points.forEach((point) => {
       if (self.hitTest(newpoint, point)) {
         targetPoints.push(point)
       }
@@ -519,7 +522,7 @@ class aTable extends aTemplate {
     targetPoints.forEach(function (point) {
       var index = self.getCellIndexByPos(point.x, point.y)
       var cell = self.getCellByPos(point.x, point.y)
-      if (cell.colspan == 1) {
+      if (cell.colspan === 1) {
         self.removeCell(cell)
       }else {
         cell.colspan = parseInt(cell.colspan) - 1
@@ -540,33 +543,33 @@ class aTable extends aTemplate {
     var targetPoints = []
     var removeCells = []
     var insertCells = []
-    points.forEach(function (point) {
+    points.forEach((point) => {
       if (self.hitTest(newpoint, point)) {
         targetPoints.push(point)
       }
     })
-    points.forEach(function (point) {
+    points.forEach((point) => {
       if (self.hitTest(nextpoint, point)) {
         var cell = self.getCellByPos(point.x, point.y)
         cell.x = point.x
-        if (point.y == nextpoint.y) {
+        if (point.y === nextpoint.y) {
           insertCells.push(cell)
         }
       }
     })
-    targetPoints.forEach(function (point) {
+    targetPoints.forEach((point) => {
       var cell = self.getCellByPos(point.x, point.y)
-      if (cell.rowspan == 1) {
+      if (cell.rowspan === 1) {
         removeCells.push(cell)
       }else {
         cell.rowspan = parseInt(cell.rowspan) - 1
-        if (selectedno == point.y) {
+        if (selectedno === point.y) {
           cell.x = point.x
           insertCells.push(cell)
         }
       }
     })
-    insertCells.sort(function (a, b) {
+    insertCells.sort((a, b) => {
       if (a.x > b.x) {
         return 1
       }else {
@@ -594,17 +597,17 @@ class aTable extends aTemplate {
     data.selectedColNo = -1
     data.showMenu = false
 
-    if (this.e.type == 'compositionstart') {
+    if (this.e.type === 'compositionstart') {
       data.beingInput = true
     }
-    if (this.e.type == 'compositionend') {
+    if (this.e.type === 'compositionend') {
       data.beingInput = false
     }
-    if (this.e.type == 'click') {
+    if (this.e.type === 'click') {
       if (this.e.shiftKey) {
         this.selectRange(a, b)
       }
-    }else if (this.e.type == 'mousedown') {
+    }else if (this.e.type === 'mousedown') {
       if (this.e.button !== 2 && !this.e.ctrlKey) {
         this.mousedown = true
         if (!data.row[a].col[b].selected) {
@@ -616,14 +619,14 @@ class aTable extends aTemplate {
           this.select(a, b)
         }
       }
-    }else if (this.e.type == 'mousemove') {
+    }else if (this.e.type === 'mousemove') {
       if (this.mousedown) {
         this.selectRange(a, b)
       }
-    }else if (this.e.type == 'mouseup') {
+    }else if (this.e.type === 'mouseup') {
       this.mousedown = false
       this.selectRange(a, b)
-    }else if (this.e.type == 'contextmenu') {
+    }else if (this.e.type === 'contextmenu') {
       this.mousedown = false
       this.contextmenu()
     }else {
@@ -642,12 +645,12 @@ class aTable extends aTemplate {
     var point1 = this.getLargePoint.apply(null, points)
     var newpoint = {x: parseInt(selectedno),y: 0,width: 1,height: point1.height}
     var targetPoints = []
-    points.forEach(function (point) {
+    points.forEach((point) => {
       if (self.hitTest(newpoint, point)) {
         targetPoints.push(point)
       }
     })
-    targetPoints.forEach(function (point) {
+    targetPoints.forEach((point) => {
       var index = self.getCellIndexByPos(point.x, point.y)
       var cell = self.getCellByPos(point.x, point.y)
       var newcell = {type: 'td',colspan: 1,rowspan: cell.rowspan,value: ''}
@@ -672,12 +675,12 @@ class aTable extends aTemplate {
     var point1 = this.getLargePoint.apply(null, points)
     var newpoint = {x: parseInt(selectedno) - 1,y: 0,width: 1,height: point1.height}
     var targetPoints = []
-    points.forEach(function (point) {
+    points.forEach((point) => {
       if (self.hitTest(newpoint, point)) {
         targetPoints.push(point)
       }
     })
-    if (selectedno == 0) {
+    if (selectedno === 0) {
       var length = point1.height
       for (var i = 0; i < length; i++) {
         var newcell = {type: 'td',colspan: 1,rowspan: 1,value: ''}
@@ -686,7 +689,7 @@ class aTable extends aTemplate {
       self.update()
       return
     }
-    targetPoints.forEach(function (point) {
+    targetPoints.forEach((point) => {
       var index = self.getCellIndexByPos(point.x, point.y)
       var cell = self.getCellByPos(point.x, point.y)
       var newcell = {type: 'td',colspan: 1,rowspan: cell.rowspan,value: ''}
@@ -717,12 +720,12 @@ class aTable extends aTemplate {
     var newpoint = {x: 0,y: selectedno + 1,width: point1.width,height: 1}
     var targetPoints = []
     var newRow = []
-    points.forEach(function (point) {
+    points.forEach((point) => {
       if (self.hitTest(newpoint, point)) {
         targetPoints.push(point)
       }
     })
-    if (targetPoints.length == 0) {
+    if (targetPoints.length === 0) {
       var length = point1.width
       for (var i = 0; i < length; i++) {
         var newcell = {type: 'td',colspan: 1,rowspan: 1,value: ''}
@@ -732,7 +735,7 @@ class aTable extends aTemplate {
       self.update()
       return
     }
-    targetPoints.forEach(function (point) {
+    targetPoints.forEach((point) => {
       var index = self.getCellIndexByPos(point.x, point.y)
       var cell = self.getCellByPos(point.x, point.y)
       if (!cell) {
@@ -743,7 +746,7 @@ class aTable extends aTemplate {
         if (point.height > 1 && point.y <= selectedno) {
           cell.rowspan = parseInt(cell.rowspan) + 1
           cell.rowspan += ''
-        } else if (index.row == selectedno + 1) {
+        } else if (index.row === selectedno + 1) {
           var length = parseInt(cell.colspan)
           for (var i = 0; i < length; i++) {
             newRow.push({type: 'td',colspan: 1,rowspan: 1,value: ''})
@@ -768,12 +771,12 @@ class aTable extends aTemplate {
     var newpoint = {x: 0,y: selectedno - 1,width: point1.width,height: 1}
     var targetPoints = []
     var newRow = []
-    points.forEach(function (point) {
+    points.forEach((point) => {
       if (self.hitTest(newpoint, point)) {
         targetPoints.push(point)
       }
     })
-    if (selectedno == 0) {
+    if (selectedno === 0) {
       var length = point1.width
       for (var i = 0; i < length; i++) {
         var newcell = {type: 'td',colspan: 1,rowspan: 1,value: ''}
@@ -783,7 +786,7 @@ class aTable extends aTemplate {
       self.update()
       return
     }
-    targetPoints.forEach(function (point) {
+    targetPoints.forEach((point) => {
       var index = self.getCellIndexByPos(point.x, point.y)
       var cell = self.getCellByPos(point.x, point.y)
       if (!cell) {
@@ -794,7 +797,7 @@ class aTable extends aTemplate {
         if (point.height > 1) {
           cell.rowspan = parseInt(cell.rowspan) + 1
           cell.rowspan += ''
-        } else if (index.row == selectedno - 1) {
+        } else if (index.row === selectedno - 1) {
           var length = parseInt(cell.colspan)
           for (var i = 0; i < length; i++) {
             newRow.push({type: 'td',colspan: 1,rowspan: 1,value: ''})
@@ -842,14 +845,14 @@ class aTable extends aTemplate {
     var targets = []
     var cells = []
     var rows = []
-    points.forEach(function (point) {
+    points.forEach((point) => {
       if (self.hitTest(bound, point)) {
         var index = self.getCellIndexByPos(point.x, point.y)
         var cell = self.getCellByPos(point.x, point.y)
         targets.push(index)
       }
     })
-    targets.forEach(function (item) {
+    targets.forEach((item) => {
       var row = item.row
       if (item.row < currentIndex.row) {
         return
@@ -863,7 +866,7 @@ class aTable extends aTemplate {
       if (!rows[i]) {
         continue
       }
-      rows[i].sort(function (a, b) {
+      rows[i].sort((a, b) => {
         if (a.col > b.col) {
           return 1
         }else {
@@ -891,8 +894,8 @@ class aTable extends aTemplate {
   }
   changeCellTypeTo (type) {
     var data = this.data
-    data.row.forEach(function (item, i) {
-      item.col.forEach(function (obj, t) {
+    data.row.forEach((item, i) => {
+      item.col.forEach((obj, t) => {
         if (obj.selected) {
           obj.type = type
         }
@@ -904,8 +907,8 @@ class aTable extends aTemplate {
   }
   align (align) {
     var data = this.data
-    data.row.forEach(function (item, i) {
-      item.col.forEach(function (obj, t) {
+    data.row.forEach((item, i) => {
+      item.col.forEach((obj, t) => {
         if (obj.selected) {
           obj.align = align
         }
@@ -941,7 +944,7 @@ class aTable extends aTemplate {
     var points = this.getAllPoints()
     var flag = true
     var self = this
-    points.forEach(function (point) {
+    points.forEach((point) => {
       if (self.hitTest(largePoint, point)) {
         var cell = self.getCellByPos(point.x, point.y)
         if (!cell.selected) {
@@ -966,8 +969,8 @@ class aTable extends aTemplate {
   changeCellClass () {
     var data = this.data
     var cellClass = data.cellClass
-    data.row.forEach(function (item, i) {
-      item.col.forEach(function (obj, t) {
+    data.row.forEach((item, i) => {
+      item.col.forEach((obj, t) => {
         if (obj.selected) {
           obj.cellClass = cellClass
         }
@@ -981,8 +984,8 @@ class aTable extends aTemplate {
     var cellClass
     var flag = true
     var data = this.data
-    data.row.forEach(function (item, i) {
-      item.col.forEach(function (obj, t) {
+    data.row.forEach((item, i) => {
+      item.col.forEach((obj, t) => {
         if (obj.selected) {
           if (!cellClass) {
             cellClass = obj.cellClass

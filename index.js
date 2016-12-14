@@ -124,7 +124,7 @@ var aTable = function (_aTemplate) {
     value: function getCellInfoByIndex(x, y) {
       var id = this.id;
       var $cell = this.getCellByIndex(x, y);
-      if ($cell.length == 0) {
+      if ($cell.length === 0) {
         return false;
       }
       var left = $cell.offset().left;
@@ -221,7 +221,7 @@ var aTable = function (_aTemplate) {
         }
         item.col.forEach(function (obj, t) {
           var point = self.getCellInfoByIndex(t, i);
-          if (point.x == x && point.y == y) {
+          if (point.x === x && point.y === y) {
             a = t;
             b = i;
           }
@@ -266,16 +266,16 @@ var aTable = function (_aTemplate) {
           var point = self.getCellInfoByIndex(t, i);
           var mark = {};
           if (obj.selected) {
-            if (point.x == point1.x) {
+            if (point.x === point1.x) {
               mark.left = true;
             }
-            if (point.x + point.width == point1.x + point1.width) {
+            if (point.x + point.width === point1.x + point1.width) {
               mark.right = true;
             }
-            if (point.y == point1.y) {
+            if (point.y === point1.y) {
               mark.top = true;
             }
-            if (point.y + point.height == point1.y + point1.height) {
+            if (point.y + point.height === point1.y + point1.height) {
               mark.bottom = true;
             }
           }
@@ -441,7 +441,7 @@ var aTable = function (_aTemplate) {
       var width = point.width;
       var $th = (0, _zeptoBrowserify.$)('.js-table-header th', '[data-id="' + this.id + '"]');
       var elem = (0, _zeptoBrowserify.$)('.a-table-selected .a-table-editable', '[data-id="' + this.id + '"]')[0];
-      if (elem && !this.data.showMenu) {
+      if (elem && !this.data.showMenu && !this.mousedown) {
         setTimeout(function () {
           elem.focus();
           if (typeof window.getSelection != 'undefined' && typeof document.createRange != 'undefined') {
@@ -450,7 +450,6 @@ var aTable = function (_aTemplate) {
             range.collapse(false);
             var sel = window.getSelection();
             sel.removeAllRanges();
-            console.log(range);
             sel.addRange(range);
           } else if (typeof document.body.createTextRange != 'undefined') {
             var textRange = document.body.createTextRange();
@@ -472,20 +471,22 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'undo',
     value: function undo() {
-      var data = this.data.row;
-      if (this.data.history.length === 0) {
+      var data = this.data;
+      var row = data.row;
+      var hist = data.history;
+      if (data.history.length === 0) {
         return;
       }
 
-      while (JSON.stringify(data) === JSON.stringify(this.data.row)) {
-        data = this.data.history.pop();
+      while (JSON.stringify(row) === JSON.stringify(data.row)) {
+        row = hist.pop();
       }
 
-      if (data) {
-        if (this.data.history.length === 0) {
-          this.data.history.push((0, _clone2.default)(data));
+      if (row) {
+        if (hist.length === 0) {
+          hist.push((0, _clone2.default)(row));
         }
-        this.data.row = data;
+        data.row = row;
         this.update();
       }
     }
@@ -493,20 +494,22 @@ var aTable = function (_aTemplate) {
 
   }, {
     key: 'insertRow',
-    value: function insertRow(a, row) {
+    value: function insertRow(a, newrow) {
       var data = this.data;
-      if (data.row[a]) {
-        data.row.splice(a, 0, { col: row });
-      } else if (data.row.length == a) {
-        data.row.push({ col: row });
+      var row = data.row;
+      if (row[a]) {
+        row.splice(a, 0, { col: newrow });
+      } else if (row.length === a) {
+        row.push({ col: newrow });
       }
     }
   }, {
     key: 'insertCellAt',
     value: function insertCellAt(a, b, item) {
       var data = this.data;
-      if (data.row[a] && data.row[a].col) {
-        data.row[a].col.splice(b, 0, item);
+      var row = data.row;
+      if (row[a] && row[a].col) {
+        row[a].col.splice(b, 0, item);
       }
     }
   }, {
@@ -581,7 +584,7 @@ var aTable = function (_aTemplate) {
       targetPoints.forEach(function (point) {
         var index = self.getCellIndexByPos(point.x, point.y);
         var cell = self.getCellByPos(point.x, point.y);
-        if (cell.colspan == 1) {
+        if (cell.colspan === 1) {
           self.removeCell(cell);
         } else {
           cell.colspan = parseInt(cell.colspan) - 1;
@@ -613,18 +616,18 @@ var aTable = function (_aTemplate) {
         if (self.hitTest(nextpoint, point)) {
           var cell = self.getCellByPos(point.x, point.y);
           cell.x = point.x;
-          if (point.y == nextpoint.y) {
+          if (point.y === nextpoint.y) {
             insertCells.push(cell);
           }
         }
       });
       targetPoints.forEach(function (point) {
         var cell = self.getCellByPos(point.x, point.y);
-        if (cell.rowspan == 1) {
+        if (cell.rowspan === 1) {
           removeCells.push(cell);
         } else {
           cell.rowspan = parseInt(cell.rowspan) - 1;
-          if (selectedno == point.y) {
+          if (selectedno === point.y) {
             cell.x = point.x;
             insertCells.push(cell);
           }
@@ -663,17 +666,17 @@ var aTable = function (_aTemplate) {
       data.selectedColNo = -1;
       data.showMenu = false;
 
-      if (this.e.type == 'compositionstart') {
+      if (this.e.type === 'compositionstart') {
         data.beingInput = true;
       }
-      if (this.e.type == 'compositionend') {
+      if (this.e.type === 'compositionend') {
         data.beingInput = false;
       }
-      if (this.e.type == 'click') {
+      if (this.e.type === 'click') {
         if (this.e.shiftKey) {
           this.selectRange(a, b);
         }
-      } else if (this.e.type == 'mousedown') {
+      } else if (this.e.type === 'mousedown') {
         if (this.e.button !== 2 && !this.e.ctrlKey) {
           this.mousedown = true;
           if (!data.row[a].col[b].selected) {
@@ -685,14 +688,14 @@ var aTable = function (_aTemplate) {
             this.select(a, b);
           }
         }
-      } else if (this.e.type == 'mousemove') {
+      } else if (this.e.type === 'mousemove') {
         if (this.mousedown) {
           this.selectRange(a, b);
         }
-      } else if (this.e.type == 'mouseup') {
+      } else if (this.e.type === 'mouseup') {
         this.mousedown = false;
         this.selectRange(a, b);
-      } else if (this.e.type == 'contextmenu') {
+      } else if (this.e.type === 'contextmenu') {
         this.mousedown = false;
         this.contextmenu();
       } else {
@@ -750,7 +753,7 @@ var aTable = function (_aTemplate) {
           targetPoints.push(point);
         }
       });
-      if (selectedno == 0) {
+      if (selectedno === 0) {
         var length = point1.height;
         for (var i = 0; i < length; i++) {
           var newcell = { type: 'td', colspan: 1, rowspan: 1, value: '' };
@@ -799,7 +802,7 @@ var aTable = function (_aTemplate) {
           targetPoints.push(point);
         }
       });
-      if (targetPoints.length == 0) {
+      if (targetPoints.length === 0) {
         var length = point1.width;
         for (var i = 0; i < length; i++) {
           var newcell = { type: 'td', colspan: 1, rowspan: 1, value: '' };
@@ -820,7 +823,7 @@ var aTable = function (_aTemplate) {
           if (point.height > 1 && point.y <= selectedno) {
             cell.rowspan = parseInt(cell.rowspan) + 1;
             cell.rowspan += '';
-          } else if (index.row == selectedno + 1) {
+          } else if (index.row === selectedno + 1) {
             var length = parseInt(cell.colspan);
             for (var i = 0; i < length; i++) {
               newRow.push({ type: 'td', colspan: 1, rowspan: 1, value: '' });
@@ -852,7 +855,7 @@ var aTable = function (_aTemplate) {
           targetPoints.push(point);
         }
       });
-      if (selectedno == 0) {
+      if (selectedno === 0) {
         var length = point1.width;
         for (var i = 0; i < length; i++) {
           var newcell = { type: 'td', colspan: 1, rowspan: 1, value: '' };
@@ -873,7 +876,7 @@ var aTable = function (_aTemplate) {
           if (point.height > 1) {
             cell.rowspan = parseInt(cell.rowspan) + 1;
             cell.rowspan += '';
-          } else if (index.row == selectedno - 1) {
+          } else if (index.row === selectedno - 1) {
             var length = parseInt(cell.colspan);
             for (var i = 0; i < length; i++) {
               newRow.push({ type: 'td', colspan: 1, rowspan: 1, value: '' });
