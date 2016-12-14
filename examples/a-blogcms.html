@@ -63,9 +63,9 @@
   src="https://code.jquery.com/jquery-2.2.4.min.js"
   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
   crossorigin="anonymous"></script>
-  <script src="../build/spread.js"></script>
+  <script src="../build/a-table.js"></script>
   <script>
-    var spread = new Spread('.table',{
+    var table = new aTable('.table',{
       lang:'ja',
       mark:{
         btn:{
@@ -82,12 +82,12 @@
         ]
       }
     });
-    spread.afterRendered =
-    spread.afterEntered = function(){
+    table.afterRendered =
+    table.afterEntered = function(){
       document.querySelector('.test').innerText = this.getTable();
       document.querySelector('.markdown').innerText = this.getMarkdown();
     }
-    spread.afterRendered();
+    table.afterRendered();
   </script>
 </body>
 </html>

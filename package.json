@@ -1,13 +1,13 @@
 {
-  "name": "spread-js",
-  "version": "0.0.2",
+  "name": "a-table",
+  "version": "1.0.0",
   "main": "./index.js",
-  "description": "SpreadSheet like Editable table library",
+  "description": "Editable table library",
   "author": "appleple",
   "license": "MIT",
   "scripts": {
-    "bundle": "browserify ./src/index.js -t [ babelify --presets [ es2015 ] ] -t [ stringify --extensions [.html .css] ] -p licensify --standalone Spread -o ./build/spread.js",
-    "minifyjs": "uglifyjs ./build/spread.js --comments 'license' -o ./build/spread.min.js",
+    "bundle": "browserify ./src/index.js -t [ babelify --presets [ es2015 ] ] -t [ stringify --extensions [.html .css] ] -p licensify --standalone aTable -o ./build/a-table.js",
+    "minifyjs": "uglifyjs ./build/a-table.js --comments 'license' -o ./build/a-table.min.js",
     "build": "npm run bundle && npm run minifyjs",
     "build:lib": "node ./bin/index.js && babel ./prebuild.js --presets es2015 --out-file ./index.js",
     "watch": "watch 'npm run build:lib && npm run build' ./src/",

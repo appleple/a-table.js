@@ -4,7 +4,7 @@ var clone = require('clone')
 var toMarkdown = require('./table2md.js')
 var template = require('./table.html')
 var returnTable = require('./return-table.html')
-var style = require('./spread.css')
+var style = require('./a-table.css')
 var ids = []
 var defs = {
   showBtnList: true,
@@ -17,9 +17,9 @@ var defs = {
       right:'right'
     },
     btn:{
-      group:'spread-table-btn-list',
-      item:'spread-table-btn',
-      itemActive:'spread-table-btn-active'
+      group:'a-table-btn-list',
+      item:'a-table-btn',
+      itemActive:'a-table-btn-active'
     }
   }
 }
@@ -27,7 +27,7 @@ $('body').append('<style>' + style + '</style>')
 $('body').append("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>")
 
 
-class Spread extends aTemplate {
+class aTable extends aTemplate {
   constructor (ele, option) {
     super()
     this.id = this.getRandText(10)
@@ -373,8 +373,8 @@ class Spread extends aTemplate {
     var point = this.getLargePoint.apply(null, points)
     var width = point.width
     var $th = $('.js-table-header th', "[data-id='" + this.id + "']")
-    var elem = $(".spread-table-selected .spread-table-editable","[data-id='" + this.id + "']")[0];
-    if(elem) {
+    var elem = $(".a-table-selected .a-table-editable","[data-id='" + this.id + "']")[0];
+    if(elem && !this.data.showMenu) {
       setTimeout(function(){
         elem.focus();
         if (typeof window.getSelection != "undefined"
@@ -384,6 +384,7 @@ class Spread extends aTemplate {
           range.collapse(false);
           var sel = window.getSelection();
           sel.removeAllRanges();
+          console.log(range);
           sel.addRange(range);
         } else if (typeof document.body.createTextRange != "undefined") {
             var textRange = document.body.createTextRange();
@@ -970,4 +971,4 @@ class Spread extends aTemplate {
 
 
 
-module.exports = Spread
+module.exports = aTable

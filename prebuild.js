@@ -3,7 +3,7 @@ var $ = require('zepto-browserify').$
 var clone = require('clone')
 var toMarkdown = require('./src/table2md.js')
 var template = `<!-- BEGIN showMenu:exist -->
-<ul class="spread-table-menu" style="top:{menuY}px;left:{menuX}px;">
+<ul class="a-table-menu" style="top:{menuY}px;left:{menuX}px;">
 	<!-- BEGIN mode:touch#cell -->
 	<li data-action-click="mergeCells"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></li>
   <li data-action-click="splitCell()"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></li>
@@ -58,27 +58,27 @@ var template = `<!-- BEGIN showMenu:exist -->
   </div>
 </div>
 <!-- END showBtnList:exist -->
-<div class="spread-table-wrapper">
+<div class="a-table-wrapper">
   <!-- BEGIN inputMode:touch#table -->
-	<table class="spread-table">
-		<tr class="spread-table-header js-table-header">
-			<th class="spread-table-first"></th>
+	<table class="a-table">
+		<tr class="a-table-header js-table-header">
+			<th class="a-table-first"></th>
 			<!-- BEGIN highestRow:loop -->
-			<th data-action-click="selectRow({i})"<!-- \BEGIN selectedRowNo:touch#{i} -->class="selected"<!-- \END selectedRowNo:touch#{i} -->><span class="spread-table-toggle-btn"></span></th>
+			<th data-action-click="selectRow({i})"<!-- \BEGIN selectedRowNo:touch#{i} -->class="selected"<!-- \END selectedRowNo:touch#{i} -->><span class="a-table-toggle-btn"></span></th>
 			<!-- END highestRow:loop -->
 		</tr>
 		<!-- BEGIN row:loop -->
 		<tr>
-			<th class="spread-table-side js-table-side<!-- \BEGIN selectedColNo:touch#{i} --> selected<!-- \END selectedColNo:touch#{i} -->" data-action-click="selectCol({i})"><span class="spread-table-toggle-btn"></span></th>
+			<th class="a-table-side js-table-side<!-- \BEGIN selectedColNo:touch#{i} --> selected<!-- \END selectedColNo:touch#{i} -->" data-action-click="selectCol({i})"><span class="a-table-toggle-btn"></span></th>
 			<!-- \BEGIN row.{i}.col:loop -->
-			<td colspan="\{colspan\}" rowspan="\{rowspan\}" data-action="updateTable(\{i\},{i})" data-cell-id="\{i\}-{i}" class="<!-- \BEGIN selected:exist -->spread-table-selected<!-- \END selected:exist --><!-- \BEGIN type:touch#th --> spread-table-th<!-- END \type:touch#th --><!-- \BEGIN mark.top:exist --> spread-table-border-top<!-- \END mark.top:exist --><!-- \BEGIN mark.right:exist --> spread-table-border-right<!-- \END mark.right:exist --><!-- \BEGIN mark.bottom:exist --> spread-table-border-bottom<!-- \END mark.bottom:exist --><!-- \BEGIN mark.left:exist --> spread-table-border-left<!-- \END mark.left:exist --><!-- \BEGIN cellClass:exist --> \{cellClass\}<!-- \END cellClass:exist -->"><div class='spread-table-editable \{align\}' contenteditable>\{value\}</div></td>
+			<td colspan="\{colspan\}" rowspan="\{rowspan\}" data-action="updateTable(\{i\},{i})" data-cell-id="\{i\}-{i}" class="<!-- \BEGIN selected:exist -->a-table-selected<!-- \END selected:exist --><!-- \BEGIN type:touch#th --> a-table-th<!-- END \type:touch#th --><!-- \BEGIN mark.top:exist --> a-table-border-top<!-- \END mark.top:exist --><!-- \BEGIN mark.right:exist --> a-table-border-right<!-- \END mark.right:exist --><!-- \BEGIN mark.bottom:exist --> a-table-border-bottom<!-- \END mark.bottom:exist --><!-- \BEGIN mark.left:exist --> a-table-border-left<!-- \END mark.left:exist --><!-- \BEGIN cellClass:exist --> \{cellClass\}<!-- \END cellClass:exist -->"><div class='a-table-editable \{align\}' contenteditable>\{value\}</div></td>
 			<!-- \END row.{i}.col:loop -->
 		</tr>
 		<!-- END row:loop -->
 	</table>
   <!-- END inputMode:touch#table -->
   <!-- BEGIN inputMode:touch#source -->
-  <textarea data-bind="tableResult" class="spread-table-textarea"></textarea>
+  <textarea data-bind="tableResult" class="a-table-textarea"></textarea>
   <!-- END inputMode:touch#source -->
 </div>
 `
@@ -97,13 +97,13 @@ var returnTable = `<table>
 	<!-- END row:loop -->
 </table>
 `
-var style = `.spread-table-wrapper {
+var style = `.a-table-wrapper {
   position: relative;
   z-index: 0;
   width: 100%;
 }
 
-.spread-table-pseudo {
+.a-table-pseudo {
   position: absolute;
   top: 0;
   left: 0;
@@ -112,26 +112,26 @@ var style = `.spread-table-wrapper {
   z-index: -1;
 }
 
-.spread-table-wrapper {
+.a-table-wrapper {
   width: 100%;
   -ms-overflow-x: scroll;
   overflow-x: scroll;
 }
 
-.spread-table {
+.a-table {
   border-collapse: collapse;
   table-layout: fixed;
   font-family: "Open Sans", Helvetica, Arial, sans-serif;
 }
 
-.spread-table input {
+.a-table input {
   width: 100%;
   height: 100%;
   display: block;
 }
 
-.spread-table td,
-.spread-table th {
+.a-table td,
+.a-table th {
   text-align: left;
   width: 100px;
   white-space: nowrap;
@@ -139,66 +139,66 @@ var style = `.spread-table-wrapper {
   z-index: 0;
 }
 
-.spread-table-cell-inner {
+.a-table-cell-inner {
   position: relative;
   width: 100%;
   height: 100%;
 }
 
-.spread-table th {
+.a-table th {
   border: 1px dashed #a7a7aa;
   background-color: transparent;
   font-weight: normal;
   cursor: pointer;
 }
 
-.spread-table th:hover {
+.a-table th:hover {
   background-image: -webkit-linear-gradient(#f8f8f8 0%, #e1e1e1 100%);
   background-image: -o-linear-gradient(#f8f8f8 0%, #e1e1e1 100%);
   background-image: linear-gradient(#f8f8f8 0%, #e1e1e1 100%);
   border: 1px solid #a7a7aa;
 }
 
-.spread-table td {
+.a-table td {
   border: 1px solid #cccccc;
 }
 
-.spread-table-editable:focus {
+.a-table-editable:focus {
   outline: none;
 }
 
-.spread-table td:first-child,
-.spread-table th:first-child {
+.a-table td:first-child,
+.a-table th:first-child {
   width: 30px;
 }
 
-.spread-table .left {
+.a-table .left {
   text-align: left;
 }
 
-.spread-table .right {
+.a-table .right {
   text-align: right;
 }
 
-.spread-table .center {
+.a-table .center {
   text-align: center;
 }
 
-.spread-table .spread-table-th {
+.a-table .a-table-th {
   background-color: #ddd;
   font-weight: bold;
 }
 
-.spread-table .spread-table-selected {
+.a-table .a-table-selected {
   background-color: #eaf2f9;
 }
 
-.spread-table-editable {
+.a-table-editable {
   min-width: 100%;
   min-height: 100%;
 }
 
-.spread-table-pseudo {
+.a-table-pseudo {
   background-color: #ffffff;
   position: absolute;
   top: 0;
@@ -208,7 +208,7 @@ var style = `.spread-table-wrapper {
   z-index: -1;
 }
 
-.spread-table-menu {
+.a-table-menu {
   display: block;
   list-style-type: none;
   padding: 0;
@@ -225,7 +225,7 @@ var style = `.spread-table-wrapper {
   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);
 }
 
-.spread-table-menu li {
+.a-table-menu li {
   display: block;
   font-size: 13px;
   padding: 9px 7px;
@@ -233,35 +233,35 @@ var style = `.spread-table-wrapper {
   cursor: pointer;
 }
 
-.spread-table-menu li:hover {
+.a-table-menu li:hover {
   background-color: #ebf0f6;
 }
 
-.spread-table-header th {
+.a-table-header th {
   text-align: center;
   height: 27px;
   vertical-align: middle;
 }
 
-.spread-table-header .selected {
+.a-table-header .selected {
   background-color: #eaf2f9;
 }
 
-.spread-table-side.selected {
+.a-table-side.selected {
   background-color: #eaf2f9;
 }
 
-.spread-table .spread-table-side {
+.a-table .a-table-side {
   text-align: center;
   position: relative;
 }
 
-.spread-table-btn-list {
+.a-table-btn-list {
   margin-bottom: 10px;
   display: table;
 }
 
-.spread-table-btn {
+.a-table-btn {
   display: table-cell;
   border-left: none;
   border: 1px solid #d9d9d9;
@@ -270,24 +270,24 @@ var style = `.spread-table-wrapper {
   padding: 3px 5px;
 }
 
-.spread-table-btn:first-child {
+.a-table-btn:first-child {
   border-top-left-radius: 3px;
   border-bottom-left-radius: 3px;
 }
 
-.spread-table-btn:last-child {
+.a-table-btn:last-child {
   border-top-right-radius: 3px;
   border-bottom-right-radius: 3px;
 }
 
-.spread-table-toggle-btn {
+.a-table-toggle-btn {
   display: inline-block;
   padding: 5px;
   cursor: pointer;
   position: relative;
 }
 
-.spread-table-toggle-btn:after {
+.a-table-toggle-btn:after {
   content: "";
   display: block;
   border: solid transparent;
@@ -303,42 +303,42 @@ var style = `.spread-table-wrapper {
   left: 5px;
 }
 
-.spread-table-header th:hover .spread-table-toggle-btn:after {
+.a-table-header th:hover .a-table-toggle-btn:after {
   border-top-color: #999;
 }
 
-.spread-table-side .spread-table-toggle-btn:after {
+.a-table-side .a-table-toggle-btn:after {
   border: solid transparent;
   border-left-color: #fff;
   border-width: 5px;
   top: 0;
 }
 
-.spread-table-side:hover .spread-table-toggle-btn:after {
+.a-table-side:hover .a-table-toggle-btn:after {
   border-left-color: #999;
 }
 
-.spread-table-first {
+.a-table-first {
   width: 15px;
 }
 
-.spread-table .spread-table-border-left {
+.a-table .a-table-border-left {
   border-left: 2px solid #006dec;
 }
 
-.spread-table .spread-table-border-top {
+.a-table .a-table-border-top {
   border-top: 2px solid #006dec;
 }
 
-.spread-table .spread-table-border-right {
+.a-table .a-table-border-right {
   border-right: 2px solid #006dec;
 }
 
-.spread-table .spread-table-border-bottom {
+.a-table .a-table-border-bottom {
   border-bottom: 2px solid #006dec;
 }
 
-.spread-table-border-top.spread-table-border-left .spread-table-pseudo:before {
+.a-table-border-top.a-table-border-left .a-table-pseudo:before {
   content: "";
   display: block;
   position: absolute;
@@ -351,7 +351,7 @@ var style = `.spread-table-wrapper {
   border-radius: 5px;
 }
 
-.spread-table-border-bottom.spread-table-border-right .spread-table-pseudo:before {
+.a-table-border-bottom.a-table-border-right .a-table-pseudo:before {
   content: "";
   display: block;
   position: absolute;
@@ -364,7 +364,7 @@ var style = `.spread-table-wrapper {
   border-radius: 5px;
 }
 
-.spread-table-textarea {
+.a-table-textarea {
   width: 100%;
   height: 200px;
   margin-bottom: 10px;
@@ -386,9 +386,9 @@ var defs = {
       right:'right'
     },
     btn:{
-      group:'spread-table-btn-list',
-      item:'spread-table-btn',
-      itemActive:'spread-table-btn-active'
+      group:'a-table-btn-list',
+      item:'a-table-btn',
+      itemActive:'a-table-btn-active'
     }
   }
 }
@@ -396,7 +396,7 @@ $('body').append('<style>' + style + '</style>')
 $('body').append("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>")
 
 
-class Spread extends aTemplate {
+class aTable extends aTemplate {
   constructor (ele, option) {
     super()
     this.id = this.getRandText(10)
@@ -742,8 +742,8 @@ class Spread extends aTemplate {
     var point = this.getLargePoint.apply(null, points)
     var width = point.width
     var $th = $('.js-table-header th', "[data-id='" + this.id + "']")
-    var elem = $(".spread-table-selected .spread-table-editable","[data-id='" + this.id + "']")[0];
-    if(elem) {
+    var elem = $(".a-table-selected .a-table-editable","[data-id='" + this.id + "']")[0];
+    if(elem && !this.data.showMenu) {
       setTimeout(function(){
         elem.focus();
         if (typeof window.getSelection != "undefined"
@@ -753,6 +753,7 @@ class Spread extends aTemplate {
           range.collapse(false);
           var sel = window.getSelection();
           sel.removeAllRanges();
+          console.log(range);
           sel.addRange(range);
         } else if (typeof document.body.createTextRange != "undefined") {
             var textRange = document.body.createTextRange();
@@ -1339,4 +1340,4 @@ class Spread extends aTemplate {
 
 
 
-module.exports = Spread
+module.exports = aTable
