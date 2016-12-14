@@ -6108,14 +6108,14 @@ var defs = {
       itemActive: 'a-table-btn-active'
     },
     icon: {
-      alignLeft: "a-table-icon a-table-icon-left",
-      alignCenter: "a-table-icon a-table-icon-center",
-      alignRight: "a-table-icon a-table-icon-right",
-      undo: "a-table-icon a-table-icon-undo",
-      merge: "a-table-icon a-table-icon-merge02",
-      split: "a-table-icon a-table-icon-split02",
-      table: "a-table-icon a-table-icon-th02",
-      source: "a-table-icon a-table-icon-source01"
+      alignLeft: 'a-table-icon a-table-icon-left',
+      alignCenter: 'a-table-icon a-table-icon-center',
+      alignRight: 'a-table-icon a-table-icon-right',
+      undo: 'a-table-icon a-table-icon-undo',
+      merge: 'a-table-icon a-table-icon-merge02',
+      split: 'a-table-icon a-table-icon-split02',
+      table: 'a-table-icon a-table-icon-th02',
+      source: 'a-table-icon a-table-icon-source01'
     }
   }
 };
@@ -6132,16 +6132,17 @@ var aTable = function (_aTemplate) {
     _this.id = _this.getRandText(10);
     _this.addTemplate(_table2.default, _this.id);
     _this.data = _zeptoBrowserify.$.extend(true, {}, defs, option);
-    _this.data.point = { x: -1, y: -1 };
-    _this.data.selectedRowNo = -1;
-    _this.data.selectedColNo = -1;
-    _this.data.showBtnList = true;
-    _this.data.row = _this.parse((0, _zeptoBrowserify.$)(ele).html());
-    _this.data.highestRow = _this.highestRow;
-    _this.data.history = [];
-    _this.data.inputMode = "table";
-    _this.data.cellClass = "";
-    _this.data.history.push((0, _clone2.default)(_this.data.row));
+    var data = _this.data;
+    data.point = { x: -1, y: -1 };
+    data.selectedRowNo = -1;
+    data.selectedColNo = -1;
+    data.showBtnList = true;
+    data.row = _this.parse((0, _zeptoBrowserify.$)(ele).html());
+    data.highestRow = _this.highestRow;
+    data.history = [];
+    data.inputMode = 'table';
+    data.cellClass = '';
+    data.history.push((0, _clone2.default)(data.row));
     _this.convert = {};
     _this.convert.getStyleByAlign = _this.getStyleByAlign;
     _this.convert.setClass = _this.setClass;
@@ -6304,14 +6305,15 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'markup',
     value: function markup() {
-      if (this.data.splited) {
-        this.data.splited = false;
+      var data = this.data;
+      if (data.splited) {
+        data.splited = false;
         return;
       }
       var points = this.getSelectedPoints();
       var point1 = this.getLargePoint.apply(null, points);
       var self = this;
-      this.data.row.forEach(function (item, i) {
+      data.row.forEach(function (item, i) {
         if (!item || !item.col) {
           return false;
         }
@@ -6339,14 +6341,15 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'selectRange',
     value: function selectRange(a, b) {
-      if (!this.data.point) {
+      var data = this.data;
+      if (!data.point) {
         return;
       }
       var self = this;
-      this.data.row[a].col[b].selected = true;
+      data.row[a].col[b].selected = true;
       var points = this.getSelectedPoints();
       var point3 = this.getLargePoint.apply(null, points);
-      this.data.row.forEach(function (item, i) {
+      data.row.forEach(function (item, i) {
         if (!item || !item.col) {
           return false;
         }
@@ -6364,8 +6367,9 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'select',
     value: function select(a, b) {
-      this.data.point = { x: b, y: a };
-      this.data.row.forEach(function (item, i) {
+      var data = this.data;
+      data.point = { x: b, y: a };
+      data.row.forEach(function (item, i) {
         if (!item || !item.col) {
           return false;
         }
@@ -6375,8 +6379,8 @@ var aTable = function (_aTemplate) {
           }
         });
       });
-      if (!this.data.row[a].col[b].selected) {
-        this.data.row[a].col[b].selected = true;
+      if (!data.row[a].col[b].selected) {
+        data.row[a].col[b].selected = true;
       }
     }
   }, {
@@ -6428,10 +6432,11 @@ var aTable = function (_aTemplate) {
     value: function contextmenu() {
       var $ele = (0, _zeptoBrowserify.$)('[data-id="' + this.id + '"]');
       var $target = (0, _zeptoBrowserify.$)(this.e.target);
+      var data = this.data;
       this.e.preventDefault();
-      this.data.showMenu = true;
-      this.data.menuX = this.e.clientX;
-      this.data.menuY = this.e.clientY;
+      data.showMenu = true;
+      data.menuX = this.e.clientX;
+      data.menuY = this.e.clientY;
       this.update();
     }
   }, {
@@ -6453,8 +6458,8 @@ var aTable = function (_aTemplate) {
           obj.colspan = (0, _zeptoBrowserify.$)(this).attr('colspan') || 1;
           obj.rowspan = (0, _zeptoBrowserify.$)(this).attr('rowspan') || 1;
           obj.value = (0, _zeptoBrowserify.$)(this).html();
-          var classAttr = (0, _zeptoBrowserify.$)(this).attr("class");
-          var cellClass = "";
+          var classAttr = (0, _zeptoBrowserify.$)(this).attr('class');
+          var cellClass = '';
           if (classAttr) {
             var classList = classAttr.split(/\s+/);
             classList.forEach(function (item) {
@@ -6462,7 +6467,7 @@ var aTable = function (_aTemplate) {
               if (align) {
                 obj.align = align;
               } else {
-                cellClass += " " + item;
+                cellClass += ' ' + item;
               }
             });
           }
@@ -6476,7 +6481,7 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'getTable',
     value: function getTable() {
-      return this.getHtml(_returnTable2.default, true).replace(/ class=""/g, "").replace(/class="(.*)? "/g, 'class="$1"');
+      return this.getHtml(_returnTable2.default, true).replace(/ class=""/g, '').replace(/class="(.*)? "/g, 'class="$1"');
     }
   }, {
     key: 'getMarkdown',
@@ -6490,11 +6495,11 @@ var aTable = function (_aTemplate) {
       var point = this.getLargePoint.apply(null, points);
       var width = point.width;
       var $th = (0, _zeptoBrowserify.$)('.js-table-header th', '[data-id="' + this.id + '"]');
-      var elem = (0, _zeptoBrowserify.$)(".a-table-selected .a-table-editable", '[data-id="' + this.id + '"]')[0];
+      var elem = (0, _zeptoBrowserify.$)('.a-table-selected .a-table-editable', '[data-id="' + this.id + '"]')[0];
       if (elem && !this.data.showMenu) {
         setTimeout(function () {
           elem.focus();
-          if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
+          if (typeof window.getSelection != 'undefined' && typeof document.createRange != 'undefined') {
             var range = document.createRange();
             range.selectNodeContents(elem);
             range.collapse(false);
@@ -6502,7 +6507,7 @@ var aTable = function (_aTemplate) {
             sel.removeAllRanges();
             console.log(range);
             sel.addRange(range);
-          } else if (typeof document.body.createTextRange != "undefined") {
+          } else if (typeof document.body.createTextRange != 'undefined') {
             var textRange = document.body.createTextRange();
             textRange.moveToElementText(elem);
             textRange.collapse(false);
@@ -6544,24 +6549,27 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'insertRow',
     value: function insertRow(a, row) {
-      if (this.data.row[a]) {
-        this.data.row.splice(a, 0, { col: row });
-      } else if (this.data.row.length == a) {
-        this.data.row.push({ col: row });
+      var data = this.data;
+      if (data.row[a]) {
+        data.row.splice(a, 0, { col: row });
+      } else if (data.row.length == a) {
+        data.row.push({ col: row });
       }
     }
   }, {
     key: 'insertCellAt',
     value: function insertCellAt(a, b, item) {
-      if (this.data.row[a] && this.data.row[a].col) {
-        this.data.row[a].col.splice(b, 0, item);
+      var data = this.data;
+      if (data.row[a] && data.row[a].col) {
+        data.row[a].col.splice(b, 0, item);
       }
     }
   }, {
     key: 'selectRow',
     value: function selectRow(i) {
+      var data = this.data;
       this.unselectCells();
-      this.data.showMenu = false;
+      data.showMenu = false;
       var points = this.getAllPoints();
       var point1 = this.getLargePoint.apply(null, points);
       var newpoint = { x: parseInt(i), y: 0, width: 1, height: point1.height };
@@ -6577,9 +6585,9 @@ var aTable = function (_aTemplate) {
         var cell = self.getCellByPos(point.x, point.y);
         cell.selected = true;
       });
-      this.data.mode = 'col';
-      this.data.selectedColNo = -1;
-      this.data.selectedRowNo = i;
+      data.mode = 'col';
+      data.selectedColNo = -1;
+      data.selectedRowNo = i;
       this.contextmenu();
       this.update();
     }
@@ -6591,8 +6599,9 @@ var aTable = function (_aTemplate) {
       var newpoint = { x: 0, y: parseInt(i), width: point1.width, height: 1 };
       var targetPoints = [];
       var self = this;
+      var data = this.data;
       this.unselectCells();
-      this.data.showMenu = false;
+      data.showMenu = false;
       points.forEach(function (point) {
         if (self.hitTest(newpoint, point)) {
           targetPoints.push(point);
@@ -6603,16 +6612,17 @@ var aTable = function (_aTemplate) {
         var cell = self.getCellByPos(point.x, point.y);
         cell.selected = true;
       });
-      this.data.mode = 'row';
-      this.data.selectedRowNo = -1;
-      this.data.selectedColNo = i;
+      data.mode = 'row';
+      data.selectedRowNo = -1;
+      data.selectedColNo = i;
       this.contextmenu();
       this.update();
     }
   }, {
     key: 'removeCol',
     value: function removeCol(selectedno) {
-      this.data.showMenu = false;
+      var data = this.data;
+      data.showMenu = false;
       var self = this;
       var points = this.getAllPoints();
       var point1 = this.getLargePoint.apply(null, points);
@@ -6632,13 +6642,14 @@ var aTable = function (_aTemplate) {
           cell.colspan = parseInt(cell.colspan) - 1;
         }
       });
-      this.data.history.push((0, _clone2.default)(this.data.row));
+      data.history.push((0, _clone2.default)(data.row));
       this.update();
     }
   }, {
     key: 'removeRow',
     value: function removeRow(selectedno) {
-      this.data.showMenu = false;
+      var data = this.data;
+      data.showMenu = false;
       var self = this;
       var points = this.getAllPoints();
       var point1 = this.getLargePoint.apply(null, points);
@@ -6684,31 +6695,34 @@ var aTable = function (_aTemplate) {
       removeCells.forEach(function (cell) {
         self.removeCell(cell);
       });
-      this.data.row.splice(selectedno, 1);
+      data.row.splice(selectedno, 1);
       if (insertCells.length > 0) {
-        this.data.row[selectedno] = { col: insertCells };
+        data.row[selectedno] = { col: insertCells };
       }
-      this.data.history.push((0, _clone2.default)(this.data.row));
+      data.history.push((0, _clone2.default)(data.row));
       this.update();
     }
   }, {
     key: 'updateTable',
     value: function updateTable(b, a) {
+      var data = this.data;
       if (this.e.type === 'mouseup' && this.data.showMenu) {
         return;
       }
-      a = parseInt(a);
-      b = parseInt(b);
-      this.data.mode = 'cell';
-      this.data.selectedRowNo = -1;
-      this.data.selectedColNo = -1;
-      this.data.showMenu = false;
+      ;var _ref = [parseInt(a), parseInt(b)];
+      a = _ref[0];
+      b = _ref[1];
+
+      data.mode = 'cell';
+      data.selectedRowNo = -1;
+      data.selectedColNo = -1;
+      data.showMenu = false;
 
       if (this.e.type == 'compositionstart') {
-        this.data.beingInput = true;
+        data.beingInput = true;
       }
       if (this.e.type == 'compositionend') {
-        this.data.beingInput = false;
+        data.beingInput = false;
       }
       if (this.e.type == 'click') {
         if (this.e.shiftKey) {
@@ -6717,9 +6731,9 @@ var aTable = function (_aTemplate) {
       } else if (this.e.type == 'mousedown') {
         if (this.e.button !== 2 && !this.e.ctrlKey) {
           this.mousedown = true;
-          if (!this.data.row[a].col[b].selected) {
+          if (!data.row[a].col[b].selected) {
             this.select(a, b);
-            if (!this.data.beingInput) {
+            if (!data.beingInput) {
               this.update();
             }
           } else {
@@ -6737,7 +6751,7 @@ var aTable = function (_aTemplate) {
         this.mousedown = false;
         this.contextmenu();
       } else {
-        this.data.row[a].col[b].value = (0, _zeptoBrowserify.$)(this.e.target).html();
+        data.row[a].col[b].value = (0, _zeptoBrowserify.$)(this.e.target).html();
         if (this.afterEntered) {
           this.afterEntered();
         }
@@ -6746,8 +6760,9 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'insertColRight',
     value: function insertColRight(selectedno) {
-      this.data.selectedRowNo = parseInt(selectedno);
-      this.data.showMenu = false;
+      var data = this.data;
+      data.selectedRowNo = parseInt(selectedno);
+      data.showMenu = false;
       var self = this;
       var points = this.getAllPoints();
       var point1 = this.getLargePoint.apply(null, points);
@@ -6771,14 +6786,15 @@ var aTable = function (_aTemplate) {
           }
         }
       });
-      this.data.history.push((0, _clone2.default)(this.data.row));
+      data.history.push((0, _clone2.default)(data.row));
       this.update();
     }
   }, {
     key: 'insertColLeft',
     value: function insertColLeft(selectedno) {
-      this.data.selectedRowNo = parseInt(selectedno) + 1;
-      this.data.showMenu = false;
+      var data = this.data;
+      data.selectedRowNo = parseInt(selectedno) + 1;
+      data.showMenu = false;
       var self = this;
       var points = this.getAllPoints();
       var point1 = this.getLargePoint.apply(null, points);
@@ -6811,7 +6827,7 @@ var aTable = function (_aTemplate) {
           }
         }
       });
-      this.data.history.push((0, _clone2.default)(this.data.row));
+      data.history.push((0, _clone2.default)(data.row));
       this.update();
     }
   }, {
@@ -6823,8 +6839,9 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'insertRowBelow',
     value: function insertRowBelow(selectedno) {
-      this.data.showMenu = false;
-      this.data.selectedColNo = parseInt(selectedno);
+      var data = this.data;
+      data.showMenu = false;
+      data.selectedColNo = parseInt(selectedno);
       var self = this;
       var points = this.getAllPoints();
       var point1 = this.getLargePoint.apply(null, points);
@@ -6869,14 +6886,15 @@ var aTable = function (_aTemplate) {
         }
       });
       this.insertRow(selectedno + 1, newRow);
-      this.data.history.push((0, _clone2.default)(this.data.row));
+      data.history.push((0, _clone2.default)(data.row));
       this.update();
     }
   }, {
     key: 'insertRowAbove',
     value: function insertRowAbove(selectedno) {
-      this.data.showMenu = false;
-      this.data.selectedColNo = parseInt(selectedno) + 1;
+      var data = this.data;
+      data.showMenu = false;
+      data.selectedColNo = parseInt(selectedno) + 1;
       var self = this;
       var points = this.getAllPoints();
       var point1 = this.getLargePoint.apply(null, points);
@@ -6921,14 +6939,15 @@ var aTable = function (_aTemplate) {
         }
       });
       this.insertRow(selectedno, newRow);
-      this.data.history.push((0, _clone2.default)(this.data.row));
+      data.history.push((0, _clone2.default)(this.data.row));
       this.update();
     }
   }, {
     key: 'mergeCells',
     value: function mergeCells() {
+      var data = this.data;
       if (!this.isSelectedCellsRectangle()) {
-        alert("結合するには、結合範囲のすべてのセルを選択する必要があります。");
+        alert('結合するには、結合範囲のすべてのセルを選択する必要があります。');
         return;
       }
       var points = this.getSelectedPoints();
@@ -6937,16 +6956,17 @@ var aTable = function (_aTemplate) {
       this.removeSelectedCellExcept(cell);
       cell.colspan = point.width;
       cell.rowspan = point.height;
-      this.data.showMenu = false;
-      this.data.history.push((0, _clone2.default)(this.data.row));
+      data.showMenu = false;
+      data.history.push((0, _clone2.default)(data.row));
       this.update();
     }
   }, {
     key: 'splitCell',
     value: function splitCell() {
+      var data = this.data;
       var selectedPoints = this.getSelectedPoints();
       if (selectedPoints.length > 1) {
-        alert("結合解除するには、セルが一つだけ選択されている必要があります");
+        alert('結合解除するには、セルが一つだけ選択されている必要があります');
         return;
       }
       var selectedPoint = this.getSelectedPoint();
@@ -7002,57 +7022,60 @@ var aTable = function (_aTemplate) {
         }
       });
       this.removeCell(currentCell);
-      this.data.showMenu = false;
-      this.data.history.push((0, _clone2.default)(this.data.row));
-      this.data.splited = true;
+      data.showMenu = false;
+      data.history.push((0, _clone2.default)(data.row));
+      data.splited = true;
       this.update();
     }
   }, {
     key: 'changeCellTypeTo',
     value: function changeCellTypeTo(type) {
-      this.data.row.forEach(function (item, i) {
+      var data = this.data;
+      data.row.forEach(function (item, i) {
         item.col.forEach(function (obj, t) {
           if (obj.selected) {
             obj.type = type;
           }
         });
       });
-      this.data.showMenu = false;
-      this.data.history.push((0, _clone2.default)(this.data.row));
+      data.showMenu = false;
+      data.history.push((0, _clone2.default)(data.row));
       this.update();
     }
   }, {
     key: 'align',
     value: function align(_align) {
-      this.data.row.forEach(function (item, i) {
+      var data = this.data;
+      data.row.forEach(function (item, i) {
         item.col.forEach(function (obj, t) {
           if (obj.selected) {
             obj.align = _align;
           }
         });
       });
-      this.data.showMenu = false;
-      this.data.history.push((0, _clone2.default)(this.data.row));
+      data.showMenu = false;
+      data.history.push((0, _clone2.default)(data.row));
       this.update();
     }
   }, {
     key: 'getStyleByAlign',
-    value: function getStyleByAlign(align) {
-      if (this.data.mark.align.default === align) {
+    value: function getStyleByAlign(val) {
+      var align = this.data.mark.align;
+      if (align.default === val) {
         return '';
       }
-      return this.data.mark.align[align];
+      return align[val];
     }
   }, {
     key: 'getAlignByStyle',
     value: function getAlignByStyle(style) {
       var align = this.data.mark.align;
       if (align.right === style) {
-        return "right";
+        return 'right';
       } else if (align.center === style) {
-        return "center";
+        return 'center';
       } else if (align.left === style) {
-        return "left";
+        return 'left';
       }
     }
   }, {
@@ -7076,26 +7099,28 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'changeInputMode',
     value: function changeInputMode(source) {
-      this.data.inputMode = source;
-      if (source === "source") {
-        this.data.tableResult = this.getTable();
+      var data = this.data;
+      data.inputMode = source;
+      if (source === 'source') {
+        data.tableResult = this.getTable();
       } else {
-        this.data.row = this.parse(this.data.tableResult);
+        data.row = this.parse(data.tableResult);
       }
       this.update();
     }
   }, {
     key: 'changeCellClass',
     value: function changeCellClass() {
-      var cellClass = this.data.cellClass;
-      this.data.row.forEach(function (item, i) {
+      var data = this.data;
+      var cellClass = data.cellClass;
+      data.row.forEach(function (item, i) {
         item.col.forEach(function (obj, t) {
           if (obj.selected) {
             obj.cellClass = cellClass;
           }
         });
       });
-      this.data.history.push((0, _clone2.default)(this.data.row));
+      data.history.push((0, _clone2.default)(data.row));
       this.update();
     }
   }, {
@@ -7103,7 +7128,8 @@ var aTable = function (_aTemplate) {
     value: function changeSelectOption() {
       var cellClass;
       var flag = true;
-      this.data.row.forEach(function (item, i) {
+      var data = this.data;
+      data.row.forEach(function (item, i) {
         item.col.forEach(function (obj, t) {
           if (obj.selected) {
             if (!cellClass) {
@@ -7115,9 +7141,9 @@ var aTable = function (_aTemplate) {
         });
       });
       if (flag) {
-        this.data.cellClass = cellClass;
+        data.cellClass = cellClass;
       } else {
-        this.data.cellClass = "";
+        data.cellClass = '';
       }
     }
   }]);

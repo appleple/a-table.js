@@ -1,4 +1,4 @@
-import {$} from 'zepto-browserify'
+import { $ } from 'zepto-browserify'
 var table2md = function (html) {
   var $table = $(html)
   var ret = ''
