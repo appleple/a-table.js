@@ -1,7 +1,7 @@
 {
   "name": "a-table",
   "version": "1.0.5",
-  "main": "./index.js",
+  "main": "lib/index.js",
   "description": "Editable table library",
   "author": "appleple",
   "license": "MIT",
@@ -9,7 +9,7 @@
     "bundle": "browserify ./src/index.js -t [ babelify --presets [ es2015 ] ] -t [ stringify --extensions [.html .css] ] -p licensify --standalone aTable -o ./build/a-table.js",
     "minifyjs": "uglifyjs ./build/a-table.js --comments 'license' -o ./build/a-table.min.js",
     "build": "npm run bundle && npm run minifyjs",
-    "build:lib": "node ./bin/index.js && babel ./prebuild.js --presets es2015 --out-file ./index.js",
+    "build:lib": "node ./bin/index.js && babel ./lib/prebuild.js --presets es2015 --out-file ./lib/index.js",
     "watch": "watch 'npm run build:lib && npm run build' ./src/",
     "format": "standard-format -w ./src/**.js"
   },
