@@ -33,7 +33,7 @@ var defs = {
     }
   }
 }
-$('body').append('<style>' + style + '</style>')
+$('body').append(`<style>${style}</style>`)
 
 class aTable extends aTemplate {
   constructor (ele, option) {
@@ -54,7 +54,7 @@ class aTable extends aTemplate {
     this.convert = {}
     this.convert.getStyleByAlign = this.getStyleByAlign
     this.convert.setClass = this.setClass
-    $(ele).wrap("<div data-id='" + this.id + "'></div>")
+    $(ele).wrap(`<div data-id="${this.id}"></div>`)
     $(ele).remove()
     this.update()
   }
@@ -76,7 +76,7 @@ class aTable extends aTemplate {
   }
 
   getCellByIndex (x, y) {
-    return $("[data-id='" + this.id + "'] [data-cell-id='" + x + '-' + y + "']")
+    return $(`[data-id="${this.id}"] [data-cell-id="${x}-${y}"]`)
   }
 
   getCellInfoByIndex (x, y) {
@@ -91,12 +91,12 @@ class aTable extends aTemplate {
     var returnTop = -1
     var width = parseInt($cell.attr('colspan'))
     var height = parseInt($cell.attr('rowspan'))
-    $("[data-id='" + this.id + "'] .js-table-header th").each(function (i) {
+    $(`[data-id="${this.id}"] .js-table-header th`).each(function (i) {
       if ($(this).offset().left === left) {
         returnLeft = i
       }
     })
-    $("[data-id='" + this.id + "'] .js-table-side").each(function (i) {
+    $(`[data-id="${this.id}"] .js-table-side`).each(function (i) {
       if ($(this).offset().top === top) {
         returnTop = i
       }
@@ -318,7 +318,7 @@ class aTable extends aTemplate {
   }
 
   contextmenu () {
-    var $ele = $("[data-id='" + this.id + "']")
+    var $ele = $(`[data-id="${this.id}"]`)
     var $target = $(this.e.target)
     this.e.preventDefault()
     this.data.showMenu = true
@@ -380,8 +380,8 @@ class aTable extends aTemplate {
     var points = this.getAllPoints()
     var point = this.getLargePoint.apply(null, points)
     var width = point.width
-    var $th = $('.js-table-header th', "[data-id='" + this.id + "']")
-    var elem = $(".a-table-selected .a-table-editable","[data-id='" + this.id + "']")[0];
+    var $th = $('.js-table-header th', `[data-id="${this.id}"]`)
+    var elem = $(".a-table-selected .a-table-editable",`[data-id="${this.id}"]`)[0];
     if(elem && !this.data.showMenu) {
       setTimeout(function(){
         elem.focus();

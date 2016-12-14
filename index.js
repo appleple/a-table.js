@@ -90,7 +90,7 @@ var aTable = function (_aTemplate) {
     _this.convert = {};
     _this.convert.getStyleByAlign = _this.getStyleByAlign;
     _this.convert.setClass = _this.setClass;
-    (0, _zeptoBrowserify.$)(ele).wrap("<div data-id='" + _this.id + "'></div>");
+    (0, _zeptoBrowserify.$)(ele).wrap('<div data-id="' + _this.id + '"></div>');
     (0, _zeptoBrowserify.$)(ele).remove();
     _this.update();
     return _this;
@@ -116,7 +116,7 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'getCellByIndex',
     value: function getCellByIndex(x, y) {
-      return (0, _zeptoBrowserify.$)("[data-id='" + this.id + "'] [data-cell-id='" + x + '-' + y + "']");
+      return (0, _zeptoBrowserify.$)('[data-id="' + this.id + '"] [data-cell-id="' + x + '-' + y + '"]');
     }
   }, {
     key: 'getCellInfoByIndex',
@@ -132,12 +132,12 @@ var aTable = function (_aTemplate) {
       var returnTop = -1;
       var width = parseInt($cell.attr('colspan'));
       var height = parseInt($cell.attr('rowspan'));
-      (0, _zeptoBrowserify.$)("[data-id='" + this.id + "'] .js-table-header th").each(function (i) {
+      (0, _zeptoBrowserify.$)('[data-id="' + this.id + '"] .js-table-header th').each(function (i) {
         if ((0, _zeptoBrowserify.$)(this).offset().left === left) {
           returnLeft = i;
         }
       });
-      (0, _zeptoBrowserify.$)("[data-id='" + this.id + "'] .js-table-side").each(function (i) {
+      (0, _zeptoBrowserify.$)('[data-id="' + this.id + '"] .js-table-side').each(function (i) {
         if ((0, _zeptoBrowserify.$)(this).offset().top === top) {
           returnTop = i;
         }
@@ -371,7 +371,7 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'contextmenu',
     value: function contextmenu() {
-      var $ele = (0, _zeptoBrowserify.$)("[data-id='" + this.id + "']");
+      var $ele = (0, _zeptoBrowserify.$)('[data-id="' + this.id + '"]');
       var $target = (0, _zeptoBrowserify.$)(this.e.target);
       this.e.preventDefault();
       this.data.showMenu = true;
@@ -434,8 +434,8 @@ var aTable = function (_aTemplate) {
       var points = this.getAllPoints();
       var point = this.getLargePoint.apply(null, points);
       var width = point.width;
-      var $th = (0, _zeptoBrowserify.$)('.js-table-header th', "[data-id='" + this.id + "']");
-      var elem = (0, _zeptoBrowserify.$)(".a-table-selected .a-table-editable", "[data-id='" + this.id + "']")[0];
+      var $th = (0, _zeptoBrowserify.$)('.js-table-header th', '[data-id="' + this.id + '"]');
+      var elem = (0, _zeptoBrowserify.$)(".a-table-selected .a-table-editable", '[data-id="' + this.id + '"]')[0];
       if (elem && !this.data.showMenu) {
         setTimeout(function () {
           elem.focus();

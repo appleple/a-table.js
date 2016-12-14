@@ -6145,7 +6145,7 @@ var aTable = function (_aTemplate) {
     _this.convert = {};
     _this.convert.getStyleByAlign = _this.getStyleByAlign;
     _this.convert.setClass = _this.setClass;
-    (0, _zeptoBrowserify.$)(ele).wrap("<div data-id='" + _this.id + "'></div>");
+    (0, _zeptoBrowserify.$)(ele).wrap('<div data-id="' + _this.id + '"></div>');
     (0, _zeptoBrowserify.$)(ele).remove();
     _this.update();
     return _this;
@@ -6171,7 +6171,7 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'getCellByIndex',
     value: function getCellByIndex(x, y) {
-      return (0, _zeptoBrowserify.$)("[data-id='" + this.id + "'] [data-cell-id='" + x + '-' + y + "']");
+      return (0, _zeptoBrowserify.$)('[data-id="' + this.id + '"] [data-cell-id="' + x + '-' + y + '"]');
     }
   }, {
     key: 'getCellInfoByIndex',
@@ -6187,12 +6187,12 @@ var aTable = function (_aTemplate) {
       var returnTop = -1;
       var width = parseInt($cell.attr('colspan'));
       var height = parseInt($cell.attr('rowspan'));
-      (0, _zeptoBrowserify.$)("[data-id='" + this.id + "'] .js-table-header th").each(function (i) {
+      (0, _zeptoBrowserify.$)('[data-id="' + this.id + '"] .js-table-header th').each(function (i) {
         if ((0, _zeptoBrowserify.$)(this).offset().left === left) {
           returnLeft = i;
         }
       });
-      (0, _zeptoBrowserify.$)("[data-id='" + this.id + "'] .js-table-side").each(function (i) {
+      (0, _zeptoBrowserify.$)('[data-id="' + this.id + '"] .js-table-side').each(function (i) {
         if ((0, _zeptoBrowserify.$)(this).offset().top === top) {
           returnTop = i;
         }
@@ -6426,7 +6426,7 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'contextmenu',
     value: function contextmenu() {
-      var $ele = (0, _zeptoBrowserify.$)("[data-id='" + this.id + "']");
+      var $ele = (0, _zeptoBrowserify.$)('[data-id="' + this.id + '"]');
       var $target = (0, _zeptoBrowserify.$)(this.e.target);
       this.e.preventDefault();
       this.data.showMenu = true;
@@ -6489,8 +6489,8 @@ var aTable = function (_aTemplate) {
       var points = this.getAllPoints();
       var point = this.getLargePoint.apply(null, points);
       var width = point.width;
-      var $th = (0, _zeptoBrowserify.$)('.js-table-header th', "[data-id='" + this.id + "']");
-      var elem = (0, _zeptoBrowserify.$)(".a-table-selected .a-table-editable", "[data-id='" + this.id + "']")[0];
+      var $th = (0, _zeptoBrowserify.$)('.js-table-header th', '[data-id="' + this.id + '"]');
+      var elem = (0, _zeptoBrowserify.$)(".a-table-selected .a-table-editable", '[data-id="' + this.id + '"]')[0];
       if (elem && !this.data.showMenu) {
         setTimeout(function () {
           elem.focus();
@@ -7136,15 +7136,16 @@ module.exports = "<!-- BEGIN showMenu:exist -->\n<ul class=\"a-table-menu\" styl
 },{}],13:[function(require,module,exports){
 'use strict';
 
-var $ = require('zepto-browserify').$;
+var _zeptoBrowserify = require('zepto-browserify');
+
 var table2md = function table2md(html) {
-  var $table = $(html);
+  var $table = (0, _zeptoBrowserify.$)(html);
   var ret = '';
   $table.find('tr').each(function (i) {
     ret += '| ';
-    var $children = $(this).children();
+    var $children = (0, _zeptoBrowserify.$)(this).children();
     $children.each(function () {
-      ret += $(this).html();
+      ret += (0, _zeptoBrowserify.$)(this).html();
       ret += ' | ';
     });
     if (i == 0) {
