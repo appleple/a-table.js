@@ -336,9 +336,10 @@ class Spread extends aTemplate {
         obj.colspan = $(this).attr('colspan') || 1
         obj.rowspan = $(this).attr('rowspan') || 1
         obj.value = $(this).html()
-        var classList = $(this).prop("classList");
+        var classAttr = $(this).attr("class");
         var cellClass = "";
-        if(typeof ClassList === "array"){
+        if(classAttr){
+          var classList = classAttr.split(/\s+/);
           classList.forEach(function(item){
             var align = self.getAlignByStyle(item)
             if(align){
