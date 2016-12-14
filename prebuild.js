@@ -71,7 +71,7 @@ var template = `<!-- BEGIN showMenu:exist -->
 		<tr>
 			<th class="spread-table-side js-table-side<!-- \BEGIN selectedColNo:touch#{i} --> selected<!-- \END selectedColNo:touch#{i} -->" data-action-click="selectCol({i})"><span class="spread-table-toggle-btn"></span></th>
 			<!-- \BEGIN row.{i}.col:loop -->
-			<td colspan="\{colspan\}" rowspan="\{rowspan\}" data-action="updateTable(\{i\},{i})" data-cell-id="\{i\}-{i}" class="<!-- \BEGIN selected:exist -->spread-table-selected<!-- \END selected:exist --><!-- \BEGIN type:touch#th --> spread-table-th<!-- END \type:touch#th --><!-- \BEGIN mark.top:exist --> spread-table-border-top<!-- \END mark.top:exist --><!-- \BEGIN mark.right:exist --> spread-table-border-right<!-- \END mark.right:exist --><!-- \BEGIN mark.bottom:exist --> spread-table-border-bottom<!-- \END mark.bottom:exist --><!-- \BEGIN mark.left:exist --> spread-table-border-left<!-- \END mark.left:exist --><!-- \BEGIN cellClass:exist --> \{cellClass\}<!-- \END cellClass:exist -->"><div class='spread-table-editable \{align\}' contenteditable>\{value\}</div><div class='spread-table-pseudo'></div></td>
+			<td colspan="\{colspan\}" rowspan="\{rowspan\}" data-action="updateTable(\{i\},{i})" data-cell-id="\{i\}-{i}" class="<!-- \BEGIN selected:exist -->spread-table-selected<!-- \END selected:exist --><!-- \BEGIN type:touch#th --> spread-table-th<!-- END \type:touch#th --><!-- \BEGIN mark.top:exist --> spread-table-border-top<!-- \END mark.top:exist --><!-- \BEGIN mark.right:exist --> spread-table-border-right<!-- \END mark.right:exist --><!-- \BEGIN mark.bottom:exist --> spread-table-border-bottom<!-- \END mark.bottom:exist --><!-- \BEGIN mark.left:exist --> spread-table-border-left<!-- \END mark.left:exist --><!-- \BEGIN cellClass:exist --> \{cellClass\}<!-- \END cellClass:exist -->"><div class='spread-table-editable \{align\}' contenteditable>\{value\}</div></td>
 			<!-- \END row.{i}.col:loop -->
 		</tr>
 		<!-- END row:loop -->
@@ -134,11 +134,15 @@ var style = `.spread-table-wrapper {
 .spread-table th {
   text-align: left;
   width: 100px;
-  height: 27px;
   white-space: nowrap;
-  /*  overflow: hidden;*/
-  position: relative;
+  background-color: #FFF;
   z-index: 0;
+}
+
+.spread-table-cell-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .spread-table th {
@@ -231,7 +235,8 @@ var style = `.spread-table-wrapper {
 
 .spread-table-header th {
   text-align: center;
-  position: relative;
+  height: 27px;
+  vertical-align: middle;
 }
 
 .spread-table-header .selected {
@@ -274,12 +279,8 @@ var style = `.spread-table-wrapper {
 .spread-table-toggle-btn {
   display: inline-block;
   padding: 5px;
-  position: absolute;
   cursor: pointer;
-  top: 50%;
-  left: 50%;
-  margin-top: -2.5px;
-  margin-left: -2.5px;
+  position: relative;
 }
 
 .spread-table-toggle-btn:after {
@@ -317,19 +318,19 @@ var style = `.spread-table-wrapper {
   width: 15px;
 }
 
-.spread-table .spread-table-border-left .spread-table-pseudo {
+.spread-table .spread-table-border-left {
   border-left: 2px solid #006dec;
 }
 
-.spread-table .spread-table-border-top .spread-table-pseudo {
+.spread-table .spread-table-border-top {
   border-top: 2px solid #006dec;
 }
 
-.spread-table .spread-table-border-right .spread-table-pseudo {
+.spread-table .spread-table-border-right {
   border-right: 2px solid #006dec;
 }
 
-.spread-table .spread-table-border-bottom .spread-table-pseudo {
+.spread-table .spread-table-border-bottom {
   border-bottom: 2px solid #006dec;
 }
 
@@ -702,14 +703,16 @@ class Spread extends aTemplate {
         obj.value = $(this).html()
         var classList = $(this).prop("classList");
         var cellClass = "";
-        classList.forEach(function(item){
-          var align = self.getAlignByStyle(item)
-          if(align){
-            obj.align = align;
-          }else{
-            cellClass += " "+item;
-          }
-        })
+        if(typeof ClassList === "array"){
+          classList.forEach(function(item){
+            var align = self.getAlignByStyle(item)
+            if(align){
+              obj.align = align;
+            }else{
+              cellClass += " "+item;
+            }
+          })
+        }
         obj.cellClass = cellClass.substr(1);
         arr2.push(obj)
       })

@@ -338,14 +338,16 @@ class Spread extends aTemplate {
         obj.value = $(this).html()
         var classList = $(this).prop("classList");
         var cellClass = "";
-        classList.forEach(function(item){
-          var align = self.getAlignByStyle(item)
-          if(align){
-            obj.align = align;
-          }else{
-            cellClass += " "+item;
-          }
-        })
+        if(typeof ClassList === "array"){
+          classList.forEach(function(item){
+            var align = self.getAlignByStyle(item)
+            if(align){
+              obj.align = align;
+            }else{
+              cellClass += " "+item;
+            }
+          })
+        }
         obj.cellClass = cellClass.substr(1);
         arr2.push(obj)
       })

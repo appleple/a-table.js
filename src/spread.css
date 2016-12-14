@@ -35,11 +35,15 @@
 .spread-table th {
   text-align: left;
   width: 100px;
-  height: 27px;
   white-space: nowrap;
-  /*  overflow: hidden;*/
-  position: relative;
+  background-color: #FFF;
   z-index: 0;
+}
+
+.spread-table-cell-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .spread-table th {
@@ -132,7 +136,8 @@
 
 .spread-table-header th {
   text-align: center;
-  position: relative;
+  height: 27px;
+  vertical-align: middle;
 }
 
 .spread-table-header .selected {
@@ -175,12 +180,8 @@
 .spread-table-toggle-btn {
   display: inline-block;
   padding: 5px;
-  position: absolute;
   cursor: pointer;
-  top: 50%;
-  left: 50%;
-  margin-top: -2.5px;
-  margin-left: -2.5px;
+  position: relative;
 }
 
 .spread-table-toggle-btn:after {
@@ -218,19 +219,19 @@
   width: 15px;
 }
 
-.spread-table .spread-table-border-left .spread-table-pseudo {
+.spread-table .spread-table-border-left {
   border-left: 2px solid #006dec;
 }
 
-.spread-table .spread-table-border-top .spread-table-pseudo {
+.spread-table .spread-table-border-top {
   border-top: 2px solid #006dec;
 }
 
-.spread-table .spread-table-border-right .spread-table-pseudo {
+.spread-table .spread-table-border-right {
   border-right: 2px solid #006dec;
 }
 
-.spread-table .spread-table-border-bottom .spread-table-pseudo {
+.spread-table .spread-table-border-bottom {
   border-bottom: 2px solid #006dec;
 }
 
