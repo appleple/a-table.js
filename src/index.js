@@ -5,8 +5,8 @@ import toMarkdown from './table2md.js'
 import template from './table.html'
 import returnTable from './return-table.html'
 import style from './a-table.css'
-var ids = []
-var defs = {
+let ids = []
+const defs = {
   showBtnList: true,
   lang: 'en',
   mark: {
@@ -41,7 +41,7 @@ class aTable extends aTemplate {
     this.id = this.getRandText(10)
     this.addTemplate(template, this.id)
     this.data = $.extend(true, {}, defs, option)
-    var data = this.data
+    let data = this.data
     data.point = {x: -1, y: -1}
     data.selectedRowNo = -1
     data.selectedColNo = -1
@@ -61,14 +61,14 @@ class aTable extends aTemplate {
   }
 
   highestRow () {
-    var arr = []
+    let arr = []
     this.data.row.forEach((item, i) => {
       if (!item || !item.col) {
         return
       }
       item.col.forEach((obj, t) => {
-        var length = parseInt(obj.colspan)
-        for (var i = 0; i < length; i++) {
+        let length = parseInt(obj.colspan)
+        for (let i = 0; i < length; i++) {
           arr.push(i)
         }
       })
@@ -81,17 +81,17 @@ class aTable extends aTemplate {
   }
 
   getCellInfoByIndex (x, y) {
-    var id = this.id
-    var $cell = this.getCellByIndex(x, y)
+    let id = this.id
+    let $cell = this.getCellByIndex(x, y)
     if ($cell.length === 0) {
       return false
     }
-    var left = $cell.offset().left
-    var top = $cell.offset().top
-    var returnLeft = -1
-    var returnTop = -1
-    var width = parseInt($cell.attr('colspan'))
-    var height = parseInt($cell.attr('rowspan'))
+    let left = $cell.offset().left
+    let top = $cell.offset().top
+    let returnLeft = -1
+    let returnTop = -1
+    let width = parseInt($cell.attr('colspan'))
+    let height = parseInt($cell.attr('rowspan'))
     $(`[data-id="${this.id}"] .js-table-header th`).each(function (i) {
       if ($(this).offset().left === left) {
         returnLeft = i
@@ -105,33 +105,33 @@ class aTable extends aTemplate {
     return {x: returnLeft - 1, y: returnTop, width: width, height: height}
   }
   getLargePoint () {
-    var minXArr = []
-    var minYArr = []
-    var maxXArr = []
-    var maxYArr = []
-    for (var i = 0, n = arguments.length; i < n; i++) {
+    let minXArr = []
+    let minYArr = []
+    let maxXArr = []
+    let maxYArr = []
+    for (let i = 0, n = arguments.length; i < n; i++) {
       minXArr.push(arguments[i].x)
       minYArr.push(arguments[i].y)
       maxXArr.push(arguments[i].x + arguments[i].width)
       maxYArr.push(arguments[i].y + arguments[i].height)
     }
-    var minX = Math.min.apply(Math, minXArr)
-    var minY = Math.min.apply(Math, minYArr)
-    var maxX = Math.max.apply(Math, maxXArr)
-    var maxY = Math.max.apply(Math, maxYArr)
+    let minX = Math.min.apply(Math, minXArr)
+    let minY = Math.min.apply(Math, minYArr)
+    let maxX = Math.max.apply(Math, maxXArr)
+    let maxY = Math.max.apply(Math, maxYArr)
     return {x: minX, y: minY, width: maxX - minX, height: maxY - minY}
   }
 
   getSelectedPoints () {
-    var arr = []
-    var self = this
+    let arr = []
+    let self = this
     this.data.row.forEach((item, i) => {
       if (!item.col) {
         return false
       }
       item.col.forEach((obj, t) => {
         if (obj.selected) {
-          var point = self.getCellInfoByIndex(t, i)
+          let point = self.getCellInfoByIndex(t, i)
           if (point) {
             arr.push(point)
           }
@@ -142,21 +142,21 @@ class aTable extends aTemplate {
   }
 
   getSelectedPoint () {
-    var arr = this.getSelectedPoints()
+    let arr = this.getSelectedPoints()
     if (arr && arr[0]) {
       return arr[0]
     }
   }
 
   getAllPoints () {
-    var arr = []
-    var self = this
+    let arr = []
+    let self = this
     this.data.row.forEach((item, i) => {
       if (!item || !item.col) {
         return
       }
       item.col.forEach((obj, t) => {
-        var point = self.getCellInfoByIndex(t, i)
+        let point = self.getCellInfoByIndex(t, i)
         if (point) {
           arr.push(point)
         }
@@ -166,14 +166,14 @@ class aTable extends aTemplate {
   }
 
   getCellIndexByPos (x, y) {
-    var a, b
-    var self = this
+    let a, b
+    let self = this
     this.data.row.forEach((item, i) => {
       if (!item || !item.col) {
         return
       }
       item.col.forEach((obj, t) => {
-        var point = self.getCellInfoByIndex(t, i)
+        let point = self.getCellInfoByIndex(t, i)
         if (point.x === x && point.y === y) {
           a = t
           b = i
@@ -184,7 +184,7 @@ class aTable extends aTemplate {
   }
 
   getCellByPos (x, y) {
-    var index = this.getCellIndexByPos(x, y)
+    let index = this.getCellIndexByPos(x, y)
     if (!this.data.row[index.row]) {
       return
     }
@@ -203,21 +203,21 @@ class aTable extends aTemplate {
   }
 
   markup () {
-    var data = this.data
+    let data = this.data
     if (data.splited) {
       data.splited = false
       return
     }
-    var points = this.getSelectedPoints()
-    var point1 = this.getLargePoint.apply(null, points)
-    var self = this
+    let points = this.getSelectedPoints()
+    let point1 = this.getLargePoint.apply(null, points)
+    let self = this
     data.row.forEach((item, i) => {
       if (!item || !item.col) {
         return false
       }
       item.col.forEach((obj, t) => {
-        var point = self.getCellInfoByIndex(t, i)
-        var mark = {}
+        let point = self.getCellInfoByIndex(t, i)
+        let mark = {}
         if (obj.selected) {
           if (point.x === point1.x) {
             mark.left = true
@@ -238,20 +238,20 @@ class aTable extends aTemplate {
   }
 
   selectRange (a, b) {
-    var data = this.data
+    let data = this.data
     if (!data.point) {
       return
     }
-    var self = this
+    let self = this
     data.row[a].col[b].selected = true
-    var points = this.getSelectedPoints()
-    var point3 = this.getLargePoint.apply(null, points)
+    let points = this.getSelectedPoints()
+    let point3 = this.getLargePoint.apply(null, points)
     data.row.forEach((item, i) => {
       if (!item || !item.col) {
         return false
       }
       item.col.forEach((obj, t) => {
-        var point = self.getCellInfoByIndex(t, i)
+        let point = self.getCellInfoByIndex(t, i)
         if (point && self.hitTest(point3, point)) {
           obj.selected = true
         }
@@ -263,7 +263,7 @@ class aTable extends aTemplate {
   }
 
   select (a, b) {
-    var data = this.data
+    let data = this.data
     data.point = {x: b, y: a}
     data.row.forEach((item, i) => {
       if (!item || !item.col) {
@@ -292,11 +292,11 @@ class aTable extends aTemplate {
   }
 
   removeCell (cell) {
-    var row = this.data.row
-    for (var i = 0, n = row.length; i < n; i++) {
-      var col = row[i].col
-      for (var t = 0, m = col.length; t < m; t++) {
-        var obj = col[t]
+    let row = this.data.row
+    for (let i = 0, n = row.length; i < n; i++) {
+      let col = row[i].col
+      for (let t = 0, m = col.length; t < m; t++) {
+        let obj = col[t]
         if (obj === cell) {
           col.splice(t, 1)
           t--
@@ -307,11 +307,11 @@ class aTable extends aTemplate {
   }
 
   removeSelectedCellExcept (cell) {
-    var row = this.data.row
-    for (var i = 0, n = row.length; i < n; i++) {
-      var col = row[i].col
-      for (var t = 0, m = col.length; t < m; t++) {
-        var obj = col[t]
+    let row = this.data.row
+    for (let i = 0, n = row.length; i < n; i++) {
+      let col = row[i].col
+      for (let t = 0, m = col.length; t < m; t++) {
+        let obj = col[t]
         if (obj !== cell && obj.selected) {
           col.splice(t, 1)
           t--
@@ -322,9 +322,9 @@ class aTable extends aTemplate {
   }
 
   contextmenu () {
-    var $ele = $(`[data-id="${this.id}"]`)
-    var $target = $(this.e.target)
-    var data = this.data
+    let $ele = $(`[data-id="${this.id}"]`)
+    let $target = $(this.e.target)
+    let data = this.data
     this.e.preventDefault()
     data.showMenu = true
     data.menuX = this.e.clientX
@@ -333,14 +333,14 @@ class aTable extends aTemplate {
   }
 
   parse (html) {
-    var self = this
-    var arr1 = []
+    let self = this
+    let arr1 = []
     $('tr', html).each(function () {
-      var ret2 = {}
-      var arr2 = []
+      let ret2 = {}
+      let arr2 = []
       ret2.col = arr2
       $('th,td', this).each(function () {
-        var obj = {}
+        let obj = {}
         if ($(this).is('th')) {
           obj.type = 'th'
         }else {
@@ -349,12 +349,12 @@ class aTable extends aTemplate {
         obj.colspan = $(this).attr('colspan') || 1
         obj.rowspan = $(this).attr('rowspan') || 1
         obj.value = $(this).html()
-        var classAttr = $(this).attr('class')
-        var cellClass = ''
+        let classAttr = $(this).attr('class')
+        let cellClass = ''
         if (classAttr) {
-          var classList = classAttr.split(/\s+/)
+          let classList = classAttr.split(/\s+/)
           classList.forEach((item) => {
-            var align = self.getAlignByStyle(item)
+            let align = self.getAlignByStyle(item)
             if (align) {
               obj.align = align
             }else {
@@ -382,12 +382,12 @@ class aTable extends aTemplate {
   }
 
   onUpdated () {
-    var points = this.getAllPoints()
-    var point = this.getLargePoint.apply(null, points)
-    var width = point.width
-    var selectedPoints = this.getSelectedPoints()
-    var $th = $('.js-table-header th', `[data-id="${this.id}"]`)
-    var elem = $('.a-table-selected .a-table-editable', `[data-id="${this.id}"]`)[0]
+    let points = this.getAllPoints()
+    let point = this.getLargePoint.apply(null, points)
+    let width = point.width
+    let selectedPoints = this.getSelectedPoints()
+    let $th = $('.js-table-header th', `[data-id="${this.id}"]`)
+    let elem = $('.a-table-selected .a-table-editable', `[data-id="${this.id}"]`)[0]
     if (elem && !this.data.showMenu && selectedPoints.length === 1) {
       setTimeout(() => {
         elem.focus()
@@ -418,9 +418,9 @@ class aTable extends aTemplate {
   }
 
   undo () {
-    var data = this.data
-    var row = data.row
-    var hist = data.history
+    let data = this.data
+    let row = data.row
+    let hist = data.history
     if (data.history.length === 0) {
       return
     }
@@ -439,8 +439,8 @@ class aTable extends aTemplate {
   }
   // 行の追加
   insertRow (a, newrow) {
-    var data = this.data
-    var row = data.row
+    let data = this.data
+    let row = data.row
     if (row[a]) {
       row.splice(a, 0, {col: newrow})
     }else if (row.length === a) {
@@ -449,29 +449,29 @@ class aTable extends aTemplate {
   }
 
   insertCellAt (a, b, item) {
-    var data = this.data
-    var row = data.row
+    let data = this.data
+    let row = data.row
     if (row[a] && row[a].col) {
       row[a].col.splice(b, 0, item)
     }
   }
 
   selectRow (i) {
-    var data = this.data
+    let data = this.data
     this.unselectCells()
     data.showMenu = false
-    var points = this.getAllPoints()
-    var point1 = this.getLargePoint.apply(null, points)
-    var newpoint = {x: parseInt(i),y: 0,width: 1,height: point1.height}
-    var targetPoints = []
-    var self = this
+    let points = this.getAllPoints()
+    let point1 = this.getLargePoint.apply(null, points)
+    let newpoint = {x: parseInt(i),y: 0,width: 1,height: point1.height}
+    let targetPoints = []
+    let self = this
     points.forEach((point) => {
       if (self.hitTest(newpoint, point)) {
         targetPoints.push(point)
       }
     })
     targetPoints.forEach(function (point) {
-      var cell = self.getCellByPos(point.x, point.y)
+      let cell = self.getCellByPos(point.x, point.y)
       cell.selected = true
     })
     data.mode = 'col'
@@ -481,12 +481,12 @@ class aTable extends aTemplate {
     this.update()
   }
   selectCol (i) {
-    var points = this.getAllPoints()
-    var point1 = this.getLargePoint.apply(null, points)
-    var newpoint = {x: 0,y: parseInt(i),width: point1.width,height: 1}
-    var targetPoints = []
-    var self = this
-    var data = this.data
+    let points = this.getAllPoints()
+    let point1 = this.getLargePoint.apply(null, points)
+    let newpoint = {x: 0,y: parseInt(i),width: point1.width,height: 1}
+    let targetPoints = []
+    let self = this
+    let data = this.data
     this.unselectCells()
     data.showMenu = false
     points.forEach(function (point) {
@@ -495,7 +495,7 @@ class aTable extends aTemplate {
       }
     })
     targetPoints.forEach(function (point) {
-      var cell = self.getCellByPos(point.x, point.y)
+      let cell = self.getCellByPos(point.x, point.y)
       cell.selected = true
     })
     data.mode = 'row'
@@ -506,20 +506,20 @@ class aTable extends aTemplate {
   }
 
   removeCol (selectedno) {
-    var data = this.data
+    let data = this.data
     data.showMenu = false
-    var self = this
-    var points = this.getAllPoints()
-    var point1 = this.getLargePoint.apply(null, points)
-    var newpoint = {x: parseInt(selectedno),y: 0,width: 1,height: point1.height}
-    var targetPoints = []
+    let self = this
+    let points = this.getAllPoints()
+    let point1 = this.getLargePoint.apply(null, points)
+    let newpoint = {x: parseInt(selectedno),y: 0,width: 1,height: point1.height}
+    let targetPoints = []
     points.forEach((point) => {
       if (self.hitTest(newpoint, point)) {
         targetPoints.push(point)
       }
     })
     targetPoints.forEach(function (point) {
-      var cell = self.getCellByPos(point.x, point.y)
+      let cell = self.getCellByPos(point.x, point.y)
       if (cell.colspan === 1) {
         self.removeCell(cell)
       }else {
@@ -530,17 +530,17 @@ class aTable extends aTemplate {
     this.update()
   }
   removeRow (selectedno) {
-    var data = this.data
+    let data = this.data
     data.showMenu = false
-    var self = this
-    var points = this.getAllPoints()
-    var point1 = this.getLargePoint.apply(null, points)
+    let self = this
+    let points = this.getAllPoints()
+    let point1 = this.getLargePoint.apply(null, points)
     selectedno = parseInt(selectedno)
-    var newpoint = {x: 0,y: selectedno,width: point1.width,height: 1}
-    var nextpoint = {x: 0,y: selectedno + 1,width: point1.width,height: 1}
-    var targetPoints = []
-    var removeCells = []
-    var insertCells = []
+    let newpoint = {x: 0,y: selectedno,width: point1.width,height: 1}
+    let nextpoint = {x: 0,y: selectedno + 1,width: point1.width,height: 1}
+    let targetPoints = []
+    let removeCells = []
+    let insertCells = []
     points.forEach((point) => {
       if (self.hitTest(newpoint, point)) {
         targetPoints.push(point)
@@ -548,7 +548,7 @@ class aTable extends aTemplate {
     })
     points.forEach((point) => {
       if (self.hitTest(nextpoint, point)) {
-        var cell = self.getCellByPos(point.x, point.y)
+        let cell = self.getCellByPos(point.x, point.y)
         cell.x = point.x
         if (point.y === nextpoint.y) {
           insertCells.push(cell)
@@ -556,7 +556,7 @@ class aTable extends aTemplate {
       }
     })
     targetPoints.forEach((point) => {
-      var cell = self.getCellByPos(point.x, point.y)
+      let cell = self.getCellByPos(point.x, point.y)
       if (cell.rowspan === 1) {
         removeCells.push(cell)
       }else {
@@ -585,7 +585,7 @@ class aTable extends aTemplate {
     this.update()
   }
   updateTable (b, a) {
-    var data = this.data
+    let data = this.data
     if (this.e.type === 'mouseup' && this.data.showMenu) {
       return
     }
@@ -635,23 +635,23 @@ class aTable extends aTemplate {
     }
   }
   insertColRight (selectedno) {
-    var data = this.data
+    let data = this.data
     data.selectedRowNo = parseInt(selectedno)
     data.showMenu = false
-    var self = this
-    var points = this.getAllPoints()
-    var point1 = this.getLargePoint.apply(null, points)
-    var newpoint = {x: parseInt(selectedno),y: 0,width: 1,height: point1.height}
-    var targetPoints = []
+    let self = this
+    let points = this.getAllPoints()
+    let point1 = this.getLargePoint.apply(null, points)
+    let newpoint = {x: parseInt(selectedno),y: 0,width: 1,height: point1.height}
+    let targetPoints = []
     points.forEach((point) => {
       if (self.hitTest(newpoint, point)) {
         targetPoints.push(point)
       }
     })
     targetPoints.forEach((point) => {
-      var index = self.getCellIndexByPos(point.x, point.y)
-      var cell = self.getCellByPos(point.x, point.y)
-      var newcell = {type: 'td',colspan: 1,rowspan: cell.rowspan,value: ''}
+      let index = self.getCellIndexByPos(point.x, point.y)
+      let cell = self.getCellByPos(point.x, point.y)
+      let newcell = {type: 'td',colspan: 1,rowspan: cell.rowspan,value: ''}
       if (typeof index.row !== 'undefined' && typeof index.col !== 'undefined') {
         if (point.width + point.x - newpoint.x > 1) {
           cell.colspan = parseInt(cell.colspan) + 1
@@ -665,32 +665,32 @@ class aTable extends aTemplate {
     this.update()
   }
   insertColLeft (selectedno) {
-    var data = this.data
+    let data = this.data
     data.selectedRowNo = parseInt(selectedno) + 1
     data.showMenu = false
-    var self = this
-    var points = this.getAllPoints()
-    var point1 = this.getLargePoint.apply(null, points)
-    var newpoint = {x: parseInt(selectedno) - 1,y: 0,width: 1,height: point1.height}
-    var targetPoints = []
+    let self = this
+    let points = this.getAllPoints()
+    let point1 = this.getLargePoint.apply(null, points)
+    let newpoint = {x: parseInt(selectedno) - 1,y: 0,width: 1,height: point1.height}
+    let targetPoints = []
     points.forEach((point) => {
       if (self.hitTest(newpoint, point)) {
         targetPoints.push(point)
       }
     })
     if (selectedno === 0) {
-      var length = point1.height
-      for (var i = 0; i < length; i++) {
-        var newcell = {type: 'td',colspan: 1,rowspan: 1,value: ''}
+      let length = point1.height
+      for (let i = 0; i < length; i++) {
+        let newcell = {type: 'td',colspan: 1,rowspan: 1,value: ''}
         self.insertCellAt(i, 0, newcell)
       }
       self.update()
       return
     }
     targetPoints.forEach((point) => {
-      var index = self.getCellIndexByPos(point.x, point.y)
-      var cell = self.getCellByPos(point.x, point.y)
-      var newcell = {type: 'td',colspan: 1,rowspan: cell.rowspan,value: ''}
+      let index = self.getCellIndexByPos(point.x, point.y)
+      let cell = self.getCellByPos(point.x, point.y)
+      let newcell = {type: 'td',colspan: 1,rowspan: cell.rowspan,value: ''}
       if (typeof index.row !== 'undefined' && typeof index.col !== 'undefined') {
         if (point.width + point.x - newpoint.x > 1) {
           cell.colspan = parseInt(cell.colspan) + 1
@@ -708,25 +708,25 @@ class aTable extends aTemplate {
     this.markup()
   }
   insertRowBelow (selectedno) {
-    var data = this.data
+    let data = this.data
     data.showMenu = false
     data.selectedColNo = parseInt(selectedno)
-    var self = this
-    var points = this.getAllPoints()
-    var point1 = this.getLargePoint.apply(null, points)
+    let self = this
+    let points = this.getAllPoints()
+    let point1 = this.getLargePoint.apply(null, points)
     selectedno = parseInt(selectedno)
-    var newpoint = {x: 0,y: selectedno + 1,width: point1.width,height: 1}
-    var targetPoints = []
-    var newRow = []
+    let newpoint = {x: 0,y: selectedno + 1,width: point1.width,height: 1}
+    let targetPoints = []
+    let newRow = []
     points.forEach((point) => {
       if (self.hitTest(newpoint, point)) {
         targetPoints.push(point)
       }
     })
     if (targetPoints.length === 0) {
-      var length = point1.width
-      for (var i = 0; i < length; i++) {
-        var newcell = {type: 'td',colspan: 1,rowspan: 1,value: ''}
+      let length = point1.width
+      for (let i = 0; i < length; i++) {
+        let newcell = {type: 'td',colspan: 1,rowspan: 1,value: ''}
         newRow.push(newcell)
       }
       self.insertRow(selectedno + 1, newRow)
@@ -734,19 +734,19 @@ class aTable extends aTemplate {
       return
     }
     targetPoints.forEach((point) => {
-      var index = self.getCellIndexByPos(point.x, point.y)
-      var cell = self.getCellByPos(point.x, point.y)
+      let index = self.getCellIndexByPos(point.x, point.y)
+      let cell = self.getCellByPos(point.x, point.y)
       if (!cell) {
         return
       }
-      var newcell = {type: 'td',colspan: 1,rowspan: 1,value: ''}
+      let newcell = {type: 'td',colspan: 1,rowspan: 1,value: ''}
       if (typeof index.row !== 'undefined' && typeof index.col !== 'undefined') {
         if (point.height > 1 && point.y <= selectedno) {
           cell.rowspan = parseInt(cell.rowspan) + 1
           cell.rowspan += ''
         } else if (index.row === selectedno + 1) {
-          var length = parseInt(cell.colspan)
-          for (var i = 0; i < length; i++) {
+          let length = parseInt(cell.colspan)
+          for (let i = 0; i < length; i++) {
             newRow.push({type: 'td',colspan: 1,rowspan: 1,value: ''})
           }
         } else {
@@ -759,25 +759,25 @@ class aTable extends aTemplate {
     this.update()
   }
   insertRowAbove (selectedno) {
-    var data = this.data
+    let data = this.data
     data.showMenu = false
     data.selectedColNo = parseInt(selectedno) + 1
-    var self = this
-    var points = this.getAllPoints()
-    var point1 = this.getLargePoint.apply(null, points)
+    let self = this
+    let points = this.getAllPoints()
+    let point1 = this.getLargePoint.apply(null, points)
     selectedno = parseInt(selectedno)
-    var newpoint = {x: 0,y: selectedno - 1,width: point1.width,height: 1}
-    var targetPoints = []
-    var newRow = []
+    let newpoint = {x: 0,y: selectedno - 1,width: point1.width,height: 1}
+    let targetPoints = []
+    let newRow = []
     points.forEach((point) => {
       if (self.hitTest(newpoint, point)) {
         targetPoints.push(point)
       }
     })
     if (selectedno === 0) {
-      var length = point1.width
-      for (var i = 0; i < length; i++) {
-        var newcell = {type: 'td',colspan: 1,rowspan: 1,value: ''}
+      let length = point1.width
+      for (let i = 0; i < length; i++) {
+        let newcell = {type: 'td',colspan: 1,rowspan: 1,value: ''}
         newRow.push(newcell)
       }
       self.insertRow(0, newRow)
@@ -785,19 +785,19 @@ class aTable extends aTemplate {
       return
     }
     targetPoints.forEach((point) => {
-      var index = self.getCellIndexByPos(point.x, point.y)
-      var cell = self.getCellByPos(point.x, point.y)
+      let index = self.getCellIndexByPos(point.x, point.y)
+      let cell = self.getCellByPos(point.x, point.y)
       if (!cell) {
         return
       }
-      var newcell = {type: 'td',colspan: 1,rowspan: 1,value: ''}
+      let newcell = {type: 'td',colspan: 1,rowspan: 1,value: ''}
       if (typeof index.row !== 'undefined' && typeof index.col !== 'undefined') {
         if (point.height > 1) {
           cell.rowspan = parseInt(cell.rowspan) + 1
           cell.rowspan += ''
         } else if (index.row === selectedno - 1) {
-          var length = parseInt(cell.colspan)
-          for (var i = 0; i < length; i++) {
+          let length = parseInt(cell.colspan)
+          for (let i = 0; i < length; i++) {
             newRow.push({type: 'td',colspan: 1,rowspan: 1,value: ''})
           }
         } else {
@@ -810,14 +810,14 @@ class aTable extends aTemplate {
     this.update()
   }
   mergeCells () {
-    var data = this.data
+    let data = this.data
     if (!this.isSelectedCellsRectangle()) {
       alert('結合するには、結合範囲のすべてのセルを選択する必要があります。')
       return
     }
-    var points = this.getSelectedPoints()
-    var point = this.getLargePoint.apply(null, points)
-    var cell = this.getCellByPos(point.x, point.y)
+    let points = this.getSelectedPoints()
+    let point = this.getLargePoint.apply(null, points)
+    let cell = this.getCellByPos(point.x, point.y)
     this.removeSelectedCellExcept(cell)
     cell.colspan = point.width
     cell.rowspan = point.height
@@ -826,32 +826,32 @@ class aTable extends aTemplate {
     this.update()
   }
   splitCell () {
-    var data = this.data
-    var selectedPoints = this.getSelectedPoints()
+    let data = this.data
+    let selectedPoints = this.getSelectedPoints()
     if (selectedPoints.length > 1) {
       alert('結合解除するには、セルが一つだけ選択されている必要があります')
       return
     }
-    var selectedPoint = this.getSelectedPoint()
-    var bound = {x: 0, y: selectedPoint.y, width: selectedPoint.x, height: selectedPoint.height}
-    var points = this.getAllPoints()
-    var currentIndex = this.getCellIndexByPos(selectedPoint.x, selectedPoint.y)
-    var currentCell = this.getCellByPos(selectedPoint.x, selectedPoint.y)
-    var width = parseInt(currentCell.colspan)
-    var height = parseInt(currentCell.rowspan)
-    var self = this
-    var targets = []
-    var cells = []
-    var rows = []
+    let selectedPoint = this.getSelectedPoint()
+    let bound = {x: 0, y: selectedPoint.y, width: selectedPoint.x, height: selectedPoint.height}
+    let points = this.getAllPoints()
+    let currentIndex = this.getCellIndexByPos(selectedPoint.x, selectedPoint.y)
+    let currentCell = this.getCellByPos(selectedPoint.x, selectedPoint.y)
+    let width = parseInt(currentCell.colspan)
+    let height = parseInt(currentCell.rowspan)
+    let self = this
+    let targets = []
+    let cells = []
+    let rows = []
     points.forEach((point) => {
       if (self.hitTest(bound, point)) {
-        var index = self.getCellIndexByPos(point.x, point.y)
-        var cell = self.getCellByPos(point.x, point.y)
+        let index = self.getCellIndexByPos(point.x, point.y)
+        let cell = self.getCellByPos(point.x, point.y)
         targets.push(index)
       }
     })
     targets.forEach((item) => {
-      var row = item.row
+      let row = item.row
       if (item.row < currentIndex.row) {
         return
       }
@@ -860,7 +860,7 @@ class aTable extends aTemplate {
       }
       rows[row].push(item)
     })
-    for (var i = 1, n = rows.length; i < n; i++) {
+    for (let i = 1, n = rows.length; i < n; i++) {
       if (!rows[i]) {
         continue
       }
@@ -872,15 +872,15 @@ class aTable extends aTemplate {
         }
       })
     }
-    for (var i = selectedPoint.y, n = i + height; i < n; i++) {
+    for (let i = selectedPoint.y, n = i + height; i < n; i++) {
       if (!rows[i]) {
         rows[i] = []
         rows[i].push({row: i,col: -1})
       }
     }
     rows.forEach(function (row) {
-      var index = row[row.length - 1]
-      for (var i = 0; i < width; i++) {
+      let index = row[row.length - 1]
+      for (let i = 0; i < width; i++) {
         self.insertCellAt(index.row, index.col + 1, {type: 'td',colspan: 1,rowspan: 1,value: '', selected: true})
       }
     })
@@ -891,7 +891,7 @@ class aTable extends aTemplate {
     this.update()
   }
   changeCellTypeTo (type) {
-    var data = this.data
+    let data = this.data
     data.row.forEach((item, i) => {
       item.col.forEach((obj, t) => {
         if (obj.selected) {
@@ -904,7 +904,7 @@ class aTable extends aTemplate {
     this.update()
   }
   align (align) {
-    var data = this.data
+    let data = this.data
     data.row.forEach((item, i) => {
       item.col.forEach((obj, t) => {
         if (obj.selected) {
@@ -918,7 +918,7 @@ class aTable extends aTemplate {
   }
 
   getStyleByAlign (val) {
-    var align = this.data.mark.align
+    let align = this.data.mark.align
     if (align.default === val) {
       return ''
     }
@@ -926,7 +926,7 @@ class aTable extends aTemplate {
   }
 
   getAlignByStyle (style) {
-    var align = this.data.mark.align
+    let align = this.data.mark.align
     if (align.right === style) {
       return 'right'
     }else if (align.center === style) {
@@ -937,14 +937,14 @@ class aTable extends aTemplate {
   }
 
   isSelectedCellsRectangle () {
-    var selectedPoints = this.getSelectedPoints()
-    var largePoint = this.getLargePoint.apply(null, selectedPoints)
-    var points = this.getAllPoints()
-    var flag = true
-    var self = this
+    let selectedPoints = this.getSelectedPoints()
+    let largePoint = this.getLargePoint.apply(null, selectedPoints)
+    let points = this.getAllPoints()
+    let flag = true
+    let self = this
     points.forEach((point) => {
       if (self.hitTest(largePoint, point)) {
-        var cell = self.getCellByPos(point.x, point.y)
+        let cell = self.getCellByPos(point.x, point.y)
         if (!cell.selected) {
           flag = false
         }
@@ -954,7 +954,7 @@ class aTable extends aTemplate {
   }
 
   changeInputMode (source) {
-    var data = this.data
+    let data = this.data
     data.inputMode = source
     if (source === 'source') {
       data.tableResult = this.getTable()
@@ -965,8 +965,8 @@ class aTable extends aTemplate {
   }
 
   changeCellClass () {
-    var data = this.data
-    var cellClass = data.cellClass
+    let data = this.data
+    let cellClass = data.cellClass
     data.row.forEach((item, i) => {
       item.col.forEach((obj, t) => {
         if (obj.selected) {
@@ -979,9 +979,9 @@ class aTable extends aTemplate {
   }
 
   changeSelectOption () {
-    var cellClass
-    var flag = true
-    var data = this.data
+    let cellClass
+    let flag = true
+    let data = this.data
     data.row.forEach((item, i) => {
       item.col.forEach((obj, t) => {
         if (obj.selected) {

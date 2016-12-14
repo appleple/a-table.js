@@ -107,8 +107,8 @@ var aTable = function (_aTemplate) {
         }
         item.col.forEach(function (obj, t) {
           var length = parseInt(obj.colspan);
-          for (var i = 0; i < length; i++) {
-            arr.push(i);
+          for (var _i = 0; _i < length; _i++) {
+            arr.push(_i);
           }
         });
       });
@@ -213,7 +213,8 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'getCellIndexByPos',
     value: function getCellIndexByPos(x, y) {
-      var a, b;
+      var a = void 0,
+          b = void 0;
       var self = this;
       this.data.row.forEach(function (item, i) {
         if (!item || !item.col) {
@@ -822,8 +823,8 @@ var aTable = function (_aTemplate) {
             cell.rowspan = parseInt(cell.rowspan) + 1;
             cell.rowspan += '';
           } else if (index.row === selectedno + 1) {
-            var length = parseInt(cell.colspan);
-            for (var i = 0; i < length; i++) {
+            var _length = parseInt(cell.colspan);
+            for (var _i2 = 0; _i2 < _length; _i2++) {
               newRow.push({ type: 'td', colspan: 1, rowspan: 1, value: '' });
             }
           } else {
@@ -875,8 +876,8 @@ var aTable = function (_aTemplate) {
             cell.rowspan = parseInt(cell.rowspan) + 1;
             cell.rowspan += '';
           } else if (index.row === selectedno - 1) {
-            var length = parseInt(cell.colspan);
-            for (var i = 0; i < length; i++) {
+            var _length2 = parseInt(cell.colspan);
+            for (var _i3 = 0; _i3 < _length2; _i3++) {
               newRow.push({ type: 'td', colspan: 1, rowspan: 1, value: '' });
             }
           } else {
@@ -955,15 +956,15 @@ var aTable = function (_aTemplate) {
           }
         });
       }
-      for (var i = selectedPoint.y, n = i + height; i < n; i++) {
-        if (!rows[i]) {
-          rows[i] = [];
-          rows[i].push({ row: i, col: -1 });
+      for (var _i4 = selectedPoint.y, _n = _i4 + height; _i4 < _n; _i4++) {
+        if (!rows[_i4]) {
+          rows[_i4] = [];
+          rows[_i4].push({ row: _i4, col: -1 });
         }
       }
       rows.forEach(function (row) {
         var index = row[row.length - 1];
-        for (var i = 0; i < width; i++) {
+        for (var _i5 = 0; _i5 < width; _i5++) {
           self.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: 1, rowspan: 1, value: '', selected: true });
         }
       });
@@ -1072,7 +1073,7 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'changeSelectOption',
     value: function changeSelectOption() {
-      var cellClass;
+      var cellClass = void 0;
       var flag = true;
       var data = this.data;
       data.row.forEach(function (item, i) {
