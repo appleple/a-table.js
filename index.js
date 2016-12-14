@@ -502,8 +502,6 @@ var aTable = function (_aTemplate) {
         this.update();
       }
     }
-    // 行の追加
-
   }, {
     key: 'insertRow',
     value: function insertRow(a, newrow) {

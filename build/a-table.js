@@ -5,7 +5,7 @@
  * a-table:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
- *   version: 1.0.4
+ *   version: 1.0.5
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -6565,8 +6565,6 @@ var aTable = function (_aTemplate) {
         this.update();
       }
     }
-    // 行の追加
-
   }, {
     key: 'insertRow',
     value: function insertRow(a, newrow) {

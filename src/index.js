@@ -458,7 +458,7 @@ class aTable extends aTemplate {
       this.update()
     }
   }
-  // 行の追加
+
   insertRow (a, newrow) {
     let data = this.data
     let row = data.row
@@ -501,6 +501,7 @@ class aTable extends aTemplate {
     this.contextmenu()
     this.update()
   }
+
   selectCol (i) {
     let points = this.getAllPoints()
     let point1 = this.getLargePoint.apply(null, points)
@@ -550,6 +551,7 @@ class aTable extends aTemplate {
     data.history.push(clone(data.row))
     this.update()
   }
+
   removeRow (selectedno) {
     let data = this.data
     data.showMenu = false
@@ -605,6 +607,7 @@ class aTable extends aTemplate {
     data.history.push(clone(data.row))
     this.update()
   }
+
   updateTable (b, a) {
     let data = this.data
     if (this.e.type === 'mouseup' && this.data.showMenu) {
@@ -655,6 +658,7 @@ class aTable extends aTemplate {
       }
     }
   }
+
   insertColRight (selectedno) {
     let data = this.data
     data.selectedRowNo = parseInt(selectedno)
@@ -685,6 +689,7 @@ class aTable extends aTemplate {
     data.history.push(clone(data.row))
     this.update()
   }
+
   insertColLeft (selectedno) {
     let data = this.data
     data.selectedRowNo = parseInt(selectedno) + 1
@@ -724,10 +729,12 @@ class aTable extends aTemplate {
     data.history.push(clone(data.row))
     this.update()
   }
+
   beforeUpdated () {
     this.changeSelectOption()
     this.markup()
   }
+
   insertRowBelow (selectedno) {
     let data = this.data
     data.showMenu = false
@@ -779,6 +786,7 @@ class aTable extends aTemplate {
     data.history.push(clone(data.row))
     this.update()
   }
+
   insertRowAbove (selectedno) {
     let data = this.data
     data.showMenu = false
@@ -830,6 +838,7 @@ class aTable extends aTemplate {
     data.history.push(clone(this.data.row))
     this.update()
   }
+
   mergeCells () {
     let data = this.data
     if (!this.isSelectedCellsRectangle()) {
@@ -846,6 +855,7 @@ class aTable extends aTemplate {
     data.history.push(clone(data.row))
     this.update()
   }
+
   splitCell () {
     let data = this.data
     let selectedPoints = this.getSelectedPoints()
@@ -911,6 +921,7 @@ class aTable extends aTemplate {
     data.splited = true
     this.update()
   }
+
   changeCellTypeTo (type) {
     let data = this.data
     data.row.forEach((item, i) => {
