@@ -135,7 +135,7 @@ var style = `.spread-table-wrapper {
   text-align: left;
   width: 100px;
   white-space: nowrap;
-  background-color: #FFF;
+  background-color: #fff;
   z-index: 0;
 }
 
@@ -161,6 +161,10 @@ var style = `.spread-table-wrapper {
 
 .spread-table td {
   border: 1px solid #cccccc;
+}
+
+.spread-table-editable:focus {
+  outline: none;
 }
 
 .spread-table td:first-child,
