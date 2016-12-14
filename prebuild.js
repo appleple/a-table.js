@@ -5,7 +5,7 @@ import toMarkdown from './table2md.js'
 import template from './table.html'
 import returnTable from './return-table.html'
 import style from './a-table.css'
-let ids = []
+
 const defs = {
   showBtnList: true,
   lang: 'en',
@@ -33,6 +33,7 @@ const defs = {
     }
   }
 }
+
 $('body').append(`<style>${style}</style>`)
 
 class aTable extends aTemplate {
