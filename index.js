@@ -439,9 +439,10 @@ var aTable = function (_aTemplate) {
       var points = this.getAllPoints();
       var point = this.getLargePoint.apply(null, points);
       var width = point.width;
+      var selectedPoints = this.getSelectedPoints();
       var $th = (0, _zeptoBrowserify.$)('.js-table-header th', '[data-id="' + this.id + '"]');
       var elem = (0, _zeptoBrowserify.$)('.a-table-selected .a-table-editable', '[data-id="' + this.id + '"]')[0];
-      if (elem && !this.data.showMenu && !this.mousedown) {
+      if (elem && !this.data.showMenu && selectedPoints.length === 1) {
         setTimeout(function () {
           elem.focus();
           if (typeof window.getSelection != 'undefined' && typeof document.createRange != 'undefined') {
@@ -529,7 +530,6 @@ var aTable = function (_aTemplate) {
         }
       });
       targetPoints.forEach(function (point) {
-        var index = self.getCellIndexByPos(point.x, point.y);
         var cell = self.getCellByPos(point.x, point.y);
         cell.selected = true;
       });
@@ -556,7 +556,6 @@ var aTable = function (_aTemplate) {
         }
       });
       targetPoints.forEach(function (point) {
-        var index = self.getCellIndexByPos(point.x, point.y);
         var cell = self.getCellByPos(point.x, point.y);
         cell.selected = true;
       });
@@ -582,7 +581,6 @@ var aTable = function (_aTemplate) {
         }
       });
       targetPoints.forEach(function (point) {
-        var index = self.getCellIndexByPos(point.x, point.y);
         var cell = self.getCellByPos(point.x, point.y);
         if (cell.colspan === 1) {
           self.removeCell(cell);

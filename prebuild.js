@@ -168,11 +168,11 @@ class aTable extends aTemplate {
   getCellIndexByPos (x, y) {
     var a, b
     var self = this
-    this.data.row.forEach(function (item, i) {
+    this.data.row.forEach((item, i) => {
       if (!item || !item.col) {
         return
       }
-      item.col.forEach(function (obj, t) {
+      item.col.forEach((obj, t) => {
         var point = self.getCellInfoByIndex(t, i)
         if (point.x === x && point.y === y) {
           a = t
@@ -385,21 +385,22 @@ class aTable extends aTemplate {
     var points = this.getAllPoints()
     var point = this.getLargePoint.apply(null, points)
     var width = point.width
+    var selectedPoints = this.getSelectedPoints()
     var $th = $('.js-table-header th', `[data-id="${this.id}"]`)
     var elem = $('.a-table-selected .a-table-editable', `[data-id="${this.id}"]`)[0]
-    if (elem && !this.data.showMenu && !this.mousedown) {
-      setTimeout(function () {
+    if (elem && !this.data.showMenu && selectedPoints.length === 1) {
+      setTimeout(() => {
         elem.focus()
         if (typeof window.getSelection != 'undefined'
           && typeof document.createRange != 'undefined') {
-          var range = document.createRange()
+          let range = document.createRange()
           range.selectNodeContents(elem)
           range.collapse(false)
-          var sel = window.getSelection()
+          let sel = window.getSelection()
           sel.removeAllRanges()
           sel.addRange(range)
         } else if (typeof document.body.createTextRange != 'undefined') {
-          var textRange = document.body.createTextRange()
+          let textRange = document.body.createTextRange()
           textRange.moveToElementText(elem)
           textRange.collapse(false)
           textRange.select()
@@ -470,7 +471,6 @@ class aTable extends aTemplate {
       }
     })
     targetPoints.forEach(function (point) {
-      var index = self.getCellIndexByPos(point.x, point.y)
       var cell = self.getCellByPos(point.x, point.y)
       cell.selected = true
     })
@@ -495,7 +495,6 @@ class aTable extends aTemplate {
       }
     })
     targetPoints.forEach(function (point) {
-      var index = self.getCellIndexByPos(point.x, point.y)
       var cell = self.getCellByPos(point.x, point.y)
       cell.selected = true
     })
@@ -520,7 +519,6 @@ class aTable extends aTemplate {
       }
     })
     targetPoints.forEach(function (point) {
-      var index = self.getCellIndexByPos(point.x, point.y)
       var cell = self.getCellByPos(point.x, point.y)
       if (cell.colspan === 1) {
         self.removeCell(cell)
