@@ -36,6 +36,7 @@ const defs = {
 $('body').append(`<style>${style}</style>`)
 
 class aTable extends aTemplate {
+
   constructor (ele, option) {
     super()
     this.id = this.getRandText(10)
@@ -104,6 +105,7 @@ class aTable extends aTemplate {
     })
     return {x: returnLeft - 1, y: returnTop, width: width, height: height}
   }
+
   getLargePoint () {
     let minXArr = []
     let minYArr = []
@@ -935,6 +937,7 @@ class aTable extends aTemplate {
     data.history.push(clone(data.row))
     this.update()
   }
+
   align (align) {
     let data = this.data
     data.row.forEach((item, i) => {
