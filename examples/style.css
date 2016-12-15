@@ -73,6 +73,15 @@
   .acms-admin-table-inner{
     width:2000px;
   }
+  .acms-admin-table-container{
+    position: relative;
+    padding-top: 60px;
+  }
+  .a-table-btn-group-list{
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
   .a-table td, 
   .a-table th{
     padding: 10px !important;
