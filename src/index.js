@@ -612,28 +612,39 @@ class aTable extends aTemplate {
     this.update()
   }
 
+  static isSmartPhone(){
+      var agent = navigator.userAgent
+      if (agent.indexOf('iPhone') > 0 || agent.indexOf('iPad') > 0
+        || agent.indexOf('ipod') > 0 || agent.indexOf('Android') > 0) {
+        return true
+      }else {
+        return false
+      }
+  }
+
   updateTable (b, a) {
     let data = this.data
-    if (this.e.type === 'mouseup' && this.data.showMenu) {
+    let type = this.e.type
+    let isSmartPhone = aTable.isSmartPhone()
+    if (type === 'mouseup' && this.data.showMenu) {
       return
     }
-    ; [a, b] = [parseInt(a), parseInt(b)]
+    [a, b] = [parseInt(a), parseInt(b)]
     data.mode = 'cell'
     data.selectedRowNo = -1
     data.selectedColNo = -1
     data.showMenu = false
-
-    if (this.e.type === 'compositionstart') {
+    if (type === 'compositionstart') {
       data.beingInput = true
     }
-    if (this.e.type === 'compositionend') {
+    if (type === 'compositionend') {
       data.beingInput = false
     }
-    if (this.e.type === 'click') {
+    if (type === 'click') {
       if (this.e.shiftKey) {
         this.selectRange(a, b)
       }
-    }else if (this.e.type === 'mousedown') {
+    }else if ((type === 'mousedown' && !isSmartPhone) || type === 'touchstart') {
       if (this.e.button !== 2 && !this.e.ctrlKey) {
         this.mousedown = true
         if (!data.beingInput) {
@@ -641,14 +652,14 @@ class aTable extends aTemplate {
           this.update()
         }
       }
-    }else if (this.e.type === 'mousemove') {
+    }else if (type === 'mousemove' && !isSmartPhone) {
       if (this.mousedown) {
         this.selectRange(a, b)
       }
-    }else if (this.e.type === 'mouseup') {
+    }else if (type === 'mouseup' && !isSmartPhone) {
       this.mousedown = false
       this.selectRange(a, b)
-    }else if (this.e.type === 'contextmenu') {
+    }else if (type === 'contextmenu') {
       this.mousedown = false
       this.contextmenu()
     }else {
