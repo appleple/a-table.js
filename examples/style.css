@@ -25,9 +25,9 @@
 
 .acms-admin-btn-group {
   display: table;
-  padding-left: 0;
   float: left;
   padding: 7px 10px;
+  padding-left: 0;
 }
 
 .acms-admin-btn-group .acms-admin-btn {
@@ -63,11 +63,15 @@
 .acms-admin-table-wrap{
   -ms-overflow-x: scroll;
       overflow-x: scroll;
+  padding-bottom: 30px;
 }
 
 @media screen and (max-width:767px){
   .acms-admin-btn-group .acms-admin-btn{
     height: 44px;
+  }
+  .acms-admin-table-inner{
+    width:2000px;
   }
   .a-table td, 
   .a-table th{
