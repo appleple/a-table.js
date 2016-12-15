@@ -6727,6 +6727,7 @@ var aTable = function (_aTemplate) {
     value: function updateTable(b, a) {
       var data = this.data;
       var type = this.e.type;
+      var points = this.getSelectedPoints();
       var isSmartPhone = aTable.isSmartPhone();
       if (type === 'mouseup' && this.data.showMenu) {
         return;
@@ -6745,7 +6746,6 @@ var aTable = function (_aTemplate) {
       if (type === 'compositionend') {
         data.beingInput = false;
       }
-      (0, _zeptoBrowserify.$)('.debug').text(type);
       if (type === 'click' && !isSmartPhone) {
         if (this.e.shiftKey) {
           this.selectRange(a, b);
@@ -6753,9 +6753,9 @@ var aTable = function (_aTemplate) {
       } else if (type === 'mousedown' && !isSmartPhone) {
         if (this.e.button !== 2 && !this.e.ctrlKey) {
           this.mousedown = true;
-          if (!this.data.row[a].col[b].selected) {
-            this.select(a, b);
-            if (!this.data.beingInput) {
+          if (!this.data.beingInput) {
+            if (points.length !== 1 || !this.data.row[a].col[b].selected) {
+              this.select(a, b);
               this.update();
             }
           }
@@ -6770,9 +6770,9 @@ var aTable = function (_aTemplate) {
         this.mousedown = false;
         this.contextmenu();
       } else if (type === 'touchstart') {
-        if (!this.data.row[a].col[b].selected) {
-          this.select(a, b);
+        if (points.length !== 1 || !this.data.row[a].col[b].selected) {
           if (!this.data.beingInput) {
+            this.select(a, b);
             this.update();
           }
         }
