@@ -1,100 +1,104 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>Document</title>
-  <meta name=viewport content="width=device-width, initial-scale=1">
-  <link rel='stylesheet' href="../icon/a-table-icon.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-  <link rel="stylesheet" href="https://developer.a-blogcms.jp/themes/system/css/acms-admin.css">
-  <link rel="stylesheet" href="style.css">
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<meta name=viewport content="width=device-width, initial-scale=1">
+	<link rel='stylesheet' href="../icon/a-table-icon.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+	<link rel="stylesheet" href="https://developer.a-blogcms.jp/themes/system/css/acms-admin.css">
+	<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class='debug'></div>
-  <div class="main acms-admin-form">
-    <table class="table">
-      <tr>
-        <td class="center">test</td>
-        <td class="red">hoge</td>
-        <td>test</td>
-        <td>hoge</td>
-        <td>test</td>
-      </tr>
-      <tr>
-        <td>test</td>
-        <td>hoge</td>
-        <td>test</td>
-        <td>hoge</td>
-        <td>test</td>
-      </tr>
-      <tr>
-        <td>test</td>
-        <td>hoge</td>
-        <td>test</td>
-        <td>hoge</td>
-        <td>test</td>
-      </tr>
-      <tr>
-        <td>test</td>
-        <td>hoge</td>
-        <td>test</td>
-        <td>hoge</td>
-        <td>test</td>
-      </tr>
-      <tr>
-        <td>test</td>
-        <td>hoge</td>
-        <td>test</td>
-        <td>hoge</td>
-        <td>test</td>
-      </tr>
-    </table>
-    <div class="column">
-      <p>html</p>
-      <div class="source-area">
-        <pre class="test"></pre>
-      </div>
-    </div>
-    <div class="column">
-      <p>markdown</p>
-      <div class="source-area">
-        <pre class="markdown"></pre>
-      </div>
-    </div>
-  </div>
-  <script
-  src="https://code.jquery.com/jquery-2.2.4.min.js"
-  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
-  crossorigin="anonymous"></script>
-  <script src="../build/a-table.js"></script>
-  <script>
-    var table = new aTable('.table',{
-      lang:'ja',
-      mark:{
-        btn:{
-          group:'acms-admin-btn-group acms-admin-btn-group-inline',
-          item:'acms-admin-btn',
-          itemActive:'acms-admin-btn acms-admin-btn-active'
-        },
-       //  icon: {
-	      //   td:'',
-	      //   th:''
-	      // }
-      },
-      selector:{
-        option:[
-          {label:'赤',value:'red'},
-          {label:'青',value:'blue'},
-          {label:'黄色',value:'yellow'}
-        ]
-      }
-    });
-    table.afterRendered =
-    table.afterEntered = function(){
-      document.querySelector('.test').innerText = this.getTable();
-      document.querySelector('.markdown').innerText = this.getMarkdown();
-    }
-    table.afterRendered();
-  </script>
+	<div class="main acms-admin-form">
+		<div class="acms-admin-table-wrap">
+		<div class="acms-admin-table-inner" style="width:2000px;">
+		<table class="table">
+			<tr>
+				<td class="center">test</td>
+				<td class="red">hoge</td>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+			</tr>
+			<tr>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+			</tr>
+			<tr>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+			</tr>
+			<tr>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+			</tr>
+			<tr>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+				<td>hoge</td>
+				<td>test</td>
+			</tr>
+		</table>
+		</div>
+		</div>
+		<div class="column">
+			<p>html</p>
+			<div class="source-area">
+				<pre class="test"></pre>
+			</div>
+		</div>
+		<div class="column">
+			<p>markdown</p>
+			<div class="source-area">
+				<pre class="markdown"></pre>
+			</div>
+		</div>
+	</div>
+	<script
+	src="https://code.jquery.com/jquery-2.2.4.min.js"
+	integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+	crossorigin="anonymous"></script>
+	<script src="../build/a-table.js"></script>
+	<script>
+		var table = new aTable('.table',{
+			lang:'ja',
+			mark:{
+				btn:{
+					group:'acms-admin-btn-group acms-admin-btn-group-inline',
+					item:'acms-admin-btn',
+					itemActive:'acms-admin-btn acms-admin-btn-active'
+				},
+			 //  icon: {
+				//   td:'',
+				//   th:''
+				// }
+			},
+			selector:{
+				option:[
+					{label:'赤',value:'red'},
+					{label:'青',value:'blue'},
+					{label:'黄色',value:'yellow'}
+				]
+			}
+		});
+		table.afterRendered =
+		table.afterEntered = function(){
+			document.querySelector('.test').innerText = this.getTable();
+			document.querySelector('.markdown').innerText = this.getMarkdown();
+		}
+		table.afterRendered();
+	</script>
 </body>
 </html>
