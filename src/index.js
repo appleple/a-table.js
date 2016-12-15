@@ -640,7 +640,6 @@ class aTable extends aTemplate {
     if (type === 'compositionend') {
       data.beingInput = false
     }
-    $(".debug").text("else")
     if (type === 'click' && !isSmartPhone) {
       if (this.e.shiftKey) {
         this.selectRange(a, b)
@@ -653,8 +652,6 @@ class aTable extends aTemplate {
           if(!this.data.beingInput){
             this.update()
           }
-        }else {
-          this.select(a, b)
         }
       }
     }else if (type === 'mousemove' && !isSmartPhone) {
@@ -667,14 +664,12 @@ class aTable extends aTemplate {
     }else if (type === 'contextmenu') {
       this.mousedown = false
       this.contextmenu()
-    }else if (type === 'touchend'){
+    }else if (type === 'touchstart'){
       if (!this.data.row[a].col[b].selected) {
           this.select(a, b)
           if(!this.data.beingInput){
             this.update()
           }
-      }else {
-        this.select(a, b)
       }
     }else if (type === 'input') {
       if($(this.e.target).parents('td').attr('data-cell-id') === `${b}-${a}`){
