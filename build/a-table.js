@@ -6745,11 +6745,12 @@ var aTable = function (_aTemplate) {
       if (type === 'compositionend') {
         data.beingInput = false;
       }
-      if (type === 'click') {
+      (0, _zeptoBrowserify.$)(".debug").text("else");
+      if (type === 'click' && !isSmartPhone) {
         if (this.e.shiftKey) {
           this.selectRange(a, b);
         }
-      } else if (type === 'mousedown' && !isSmartPhone || type === 'touchstart') {
+      } else if (type === 'mousedown' && !isSmartPhone) {
         if (this.e.button !== 2 && !this.e.ctrlKey) {
           this.mousedown = true;
           if (!this.data.row[a].col[b].selected) {
@@ -6771,8 +6772,19 @@ var aTable = function (_aTemplate) {
       } else if (type === 'contextmenu') {
         this.mousedown = false;
         this.contextmenu();
-      } else {
-        data.row[a].col[b].value = (0, _zeptoBrowserify.$)(this.e.target).html();
+      } else if (type === 'touchend') {
+        if (!this.data.row[a].col[b].selected) {
+          this.select(a, b);
+          if (!this.data.beingInput) {
+            this.update();
+          }
+        } else {
+          this.select(a, b);
+        }
+      } else if (type === 'input') {
+        if ((0, _zeptoBrowserify.$)(this.e.target).parents('td').attr('data-cell-id') === b + '-' + a) {
+          data.row[a].col[b].value = (0, _zeptoBrowserify.$)(this.e.target).html();
+        }
         if (this.afterEntered) {
           this.afterEntered();
         }
