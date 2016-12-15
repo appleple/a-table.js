@@ -6745,6 +6745,7 @@ var aTable = function (_aTemplate) {
       if (type === 'compositionend') {
         data.beingInput = false;
       }
+      (0, _zeptoBrowserify.$)('.debug').text(type);
       if (type === 'click' && !isSmartPhone) {
         if (this.e.shiftKey) {
           this.selectRange(a, b);
@@ -6765,7 +6766,6 @@ var aTable = function (_aTemplate) {
         }
       } else if (type === 'mouseup' && !isSmartPhone) {
         this.mousedown = false;
-        this.selectRange(a, b);
       } else if (type === 'contextmenu') {
         this.mousedown = false;
         this.contextmenu();
@@ -6777,7 +6777,7 @@ var aTable = function (_aTemplate) {
           }
         }
       } else if (type === 'input') {
-        if ((0, _zeptoBrowserify.$)(this.e.target).parents('td').attr('data-cell-id') === b + '-' + a) {
+        if ((0, _zeptoBrowserify.$)(this.e.target).hasClass('a-table-editable') && (0, _zeptoBrowserify.$)(this.e.target).parents('td').attr('data-cell-id') === b + '-' + a) {
           data.row[a].col[b].value = (0, _zeptoBrowserify.$)(this.e.target).html();
         }
         if (this.afterEntered) {

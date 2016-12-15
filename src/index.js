@@ -640,6 +640,7 @@ class aTable extends aTemplate {
     if (type === 'compositionend') {
       data.beingInput = false
     }
+    $('.debug').text(type)
     if (type === 'click' && !isSmartPhone) {
       if (this.e.shiftKey) {
         this.selectRange(a, b)
@@ -660,7 +661,6 @@ class aTable extends aTemplate {
       }
     }else if (type === 'mouseup' && !isSmartPhone) {
       this.mousedown = false
-      this.selectRange(a, b)
     }else if (type === 'contextmenu') {
       this.mousedown = false
       this.contextmenu()
@@ -672,7 +672,7 @@ class aTable extends aTemplate {
           }
       }
     }else if (type === 'input') {
-      if($(this.e.target).parents('td').attr('data-cell-id') === `${b}-${a}`){
+      if($(this.e.target).hasClass('a-table-editable') && $(this.e.target).parents('td').attr('data-cell-id') === `${b}-${a}`){
         data.row[a].col[b].value = $(this.e.target).html()
       }
       if (this.afterEntered) {
