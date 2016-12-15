@@ -28,7 +28,9 @@ const defs = {
       merge: 'a-table-icon a-table-icon-merge02',
       split: 'a-table-icon a-table-icon-split02',
       table: 'a-table-icon a-table-icon-th02',
-      source: 'a-table-icon a-table-icon-source01'
+      source: 'a-table-icon a-table-icon-source01',
+      td:'a-table-icon a-table-icon-td03',
+      th:'a-table-icon a-table-icon-th02'
     }
   }
 }
@@ -493,7 +495,7 @@ class aTable extends aTemplate {
         targetPoints.push(point)
       }
     })
-    targetPoints.forEach(function (point) {
+    targetPoints.forEach((point) => {
       let cell = self.getCellByPos(point.x, point.y)
       cell.selected = true
     })
@@ -513,12 +515,12 @@ class aTable extends aTemplate {
     let data = this.data
     this.unselectCells()
     data.showMenu = false
-    points.forEach(function (point) {
+    points.forEach((point) => {
       if (self.hitTest(newpoint, point)) {
         targetPoints.push(point)
       }
     })
-    targetPoints.forEach(function (point) {
+    targetPoints.forEach((point) => {
       let cell = self.getCellByPos(point.x, point.y)
       cell.selected = true
     })
@@ -542,7 +544,7 @@ class aTable extends aTemplate {
         targetPoints.push(point)
       }
     })
-    targetPoints.forEach(function (point) {
+    targetPoints.forEach((point) => {
       let cell = self.getCellByPos(point.x, point.y)
       if (cell.colspan === 1) {
         self.removeCell(cell)
@@ -599,7 +601,7 @@ class aTable extends aTemplate {
         return -1
       }
     })
-    removeCells.forEach(function (cell) {
+    removeCells.forEach((cell) => {
       self.removeCell(cell)
     })
     data.row.splice(selectedno, 1)
@@ -634,13 +636,9 @@ class aTable extends aTemplate {
     }else if (this.e.type === 'mousedown') {
       if (this.e.button !== 2 && !this.e.ctrlKey) {
         this.mousedown = true
-        if (!data.row[a].col[b].selected) {
+        if (!data.beingInput) {
           this.select(a, b)
-          if (!data.beingInput) {
-            this.update()
-          }
-        }else {
-          this.select(a, b)
+          this.update()
         }
       }
     }else if (this.e.type === 'mousemove') {
@@ -911,7 +909,7 @@ class aTable extends aTemplate {
         rows[i].push({row: i,col: -1})
       }
     }
-    rows.forEach(function (row) {
+    rows.forEach((row) => {
       let index = row[row.length - 1]
       for (let i = 0; i < width; i++) {
         self.insertCellAt(index.row, index.col + 1, {type: 'td',colspan: 1,rowspan: 1,value: '', selected: true})

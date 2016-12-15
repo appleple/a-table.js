@@ -2,7 +2,7 @@
 <ul class="a-table-menu" style="top:{menuY}px;left:{menuX}px;">
 	<!-- BEGIN mode:touch#cell -->
 	<li data-action-click="mergeCells"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></li>
-  <li data-action-click="splitCell()"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></li>
+	<li data-action-click="splitCell()"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></li>
 	<li data-action-click="changeCellTypeTo(th)"><!-- BEGIN lang:touch#ja -->thに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to th<!-- END lang:touch#en --></li>
 	<li data-action-click="changeCellTypeTo(td)"><!-- BEGIN lang:touch#ja -->tdに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to td<!-- END lang:touch#en --></li>
 	<li data-action-click="align(left)"><!-- BEGIN lang:touch#ja -->左寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align left<!-- END lang:touch#en --></li>
@@ -22,40 +22,40 @@
 </ul>
 <!-- END showMenu:exist -->
 <!-- BEGIN showBtnList:exist -->
-  <div class="\{mark.btn.group\}">
-    <!-- BEGIN inputMode:touch#table -->
-    <button class="\{mark.btn.item\}" data-action-click="changeInputMode(source)"><i class="\{mark.icon.source\}"></i></button>
-    <!-- END inputMode:touch#table -->
-    <!-- BEGIN inputMode:touch#source -->
-    <button class="\{mark.btn.itemActive\}" data-action-click="changeInputMode(table)"><i class="\{mark.icon.table\}"></i></button>
-    <!-- END inputMode:touch#source -->
-  </div>
-  <div class="\{mark.btn.group\}">
-  	<button class="\{mark.btn.item\}" data-action-click="mergeCells"><i class="\{mark.icon.merge\}"></i></button>
-  	<button class="\{mark.btn.item\}" data-action-click="splitCell()"><i class="\{mark.icon.split\}"></i></button>
-  	<button class="\{mark.btn.item\}" data-action-click="undo()"><i class="\{mark.icon.undo\}"></i></button>
-  </div>
-  <div class="\{mark.btn.group\}">
-  	<button class="\{mark.btn.item\}" data-action-click="changeCellTypeTo(td)">td</button>
-  	<button class="\{mark.btn.item\}" data-action-click="changeCellTypeTo(th)">th</button>
-  </div>
-  <div class="\{mark.btn.group\}">
-  	<button class="\{mark.btn.item\}" data-action-click="align(left)"><i class="\{mark.icon.alignLeft\}"></i></button>
-  	<button class="\{mark.btn.item\}" data-action-click="align(center)"><i class="\{mark.icon.alignCenter\}"></i></button>
-  	<button class="\{mark.btn.item\}" data-action-click="align(right)"><i class="\{mark.icon.alignRight\}"></i></button>
-  </div>
-  <div class="\{mark.btn.group\}">
-    <select class="\{mark.selector.self\}" data-bind="cellClass" data-action-change="changeCellClass()">
-      <option value=""></option>
-      <!-- BEGIN selector.option:loop -->
-      <option value="{value}">{label}</option>
-      <!-- END selector.option:loop -->
-    </select>
-  </div>
+	<div class="\{mark.btn.group\}">
+		<!-- BEGIN inputMode:touch#table -->
+		<button class="\{mark.btn.item\}" data-action-click="changeInputMode(source)"><i class="\{mark.icon.source\}"></i><!-- BEGIN lang:touch#ja -->ソース<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->Source<!-- END lang:touch#en --></button>
+		<!-- END inputMode:touch#table -->
+		<!-- BEGIN inputMode:touch#source -->
+		<button class="\{mark.btn.itemActive\}" data-action-click="changeInputMode(table)"><i class="\{mark.icon.source\}"><!-- BEGIN lang:touch#ja -->ソース<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->Source<!-- END lang:touch#en --></i></button>
+		<!-- END inputMode:touch#source -->
+	</div>
+	<div class="\{mark.btn.group\}">
+		<button class="\{mark.btn.item\}" data-action-click="mergeCells"><i class="\{mark.icon.merge\}"></i></button>
+		<button class="\{mark.btn.item\}" data-action-click="splitCell()"><i class="\{mark.icon.split\}"></i></button>
+		<button class="\{mark.btn.item\}" data-action-click="undo()"><i class="\{mark.icon.undo\}"></i></button>
+	</div>
+	<div class="\{mark.btn.group\}">
+		<button class="\{mark.btn.item\}" data-action-click="changeCellTypeTo(td)"><i class="\{mark.icon.td\}"></i><!-- \BEGIN mark.icon.td:empty -->td<!-- \END mark.icon.td:empty --></button>
+		<button class="\{mark.btn.item\}" data-action-click="changeCellTypeTo(th)"><i class="\{mark.icon.th\}"></i><!-- \BEGIN mark.icon.th:empty -->th<!-- \END mark.icon.th:empty --></button>
+	</div>
+	<div class="\{mark.btn.group\}">
+		<button class="\{mark.btn.item\}" data-action-click="align(left)"><i class="\{mark.icon.alignLeft\}"></i></button>
+		<button class="\{mark.btn.item\}" data-action-click="align(center)"><i class="\{mark.icon.alignCenter\}"></i></button>
+		<button class="\{mark.btn.item\}" data-action-click="align(right)"><i class="\{mark.icon.alignRight\}"></i></button>
+	</div>
+	<div class="\{mark.btn.group\}">
+		<select class="\{mark.selector.self\}" data-bind="cellClass" data-action-change="changeCellClass()">
+			<option value=""></option>
+			<!-- BEGIN selector.option:loop -->
+			<option value="{value}">{label}</option>
+			<!-- END selector.option:loop -->
+		</select>
+	</div>
 </div>
 <!-- END showBtnList:exist -->
 <div class="a-table-wrapper">
-  <!-- BEGIN inputMode:touch#table -->
+	<!-- BEGIN inputMode:touch#table -->
 	<table class="a-table">
 		<tr class="a-table-header js-table-header">
 			<th class="a-table-first"></th>
@@ -72,8 +72,8 @@
 		</tr>
 		<!-- END row:loop -->
 	</table>
-  <!-- END inputMode:touch#table -->
-  <!-- BEGIN inputMode:touch#source -->
-  <textarea data-bind="tableResult" class="a-table-textarea"></textarea>
-  <!-- END inputMode:touch#source -->
+	<!-- END inputMode:touch#table -->
+	<!-- BEGIN inputMode:touch#source -->
+	<textarea data-bind="tableResult" class="a-table-textarea"></textarea>
+	<!-- END inputMode:touch#source -->
 </div>
