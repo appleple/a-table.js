@@ -87,3 +87,9 @@
     padding: 10px !important;
   }
 }
+
+@media screen and (max-width:480px){
+  .acms-admin-table-container{
+    padding-top: 120px;
+  }
+}
