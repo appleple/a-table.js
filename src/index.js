@@ -863,11 +863,14 @@ class aTable extends aTemplate {
 
   mergeCells () {
     let data = this.data
+    let points = this.getSelectedPoints()
     if (!this.isSelectedCellsRectangle()) {
       alert('結合するには、結合範囲のすべてのセルを選択する必要があります。')
       return
     }
-    let points = this.getSelectedPoints()
+    if (points.length === 0){
+      return
+    }
     let point = this.getLargePoint.apply(null, points)
     let cell = this.getCellByPos(point.x, point.y)
     this.removeSelectedCellExcept(cell)
@@ -881,7 +884,10 @@ class aTable extends aTemplate {
   splitCell () {
     let data = this.data
     let selectedPoints = this.getSelectedPoints()
-    if (selectedPoints.length > 1) {
+    let length = selectedPoints.length
+    if (length === 0) {
+      return
+    }else if (length > 1) {
       alert('結合解除するには、セルが一つだけ選択されている必要があります')
       return
     }
