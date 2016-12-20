@@ -11,7 +11,8 @@
     "build": "npm run bundle && npm run minifyjs",
     "build:lib": "node ./bin/index.js && babel ./lib/prebuild.js --presets es2015 --out-file ./lib/index.js",
     "watch": "watch 'npm run build:lib && npm run build' ./src/",
-    "format": "standard-format -w ./src/**.js"
+    "format": "standard-format -w ./src/**.js",
+    "test": "mocha ./test/test.js --timeout 1000000"
   },
   "dependencies": {
     "a-template": "0.0.16",
@@ -27,6 +28,9 @@
     "stringify": "^5.1.0",
     "uglifyjs": "^2.4.10",
     "watch": "^1.0.1",
-    "watchify": "^3.7.0"
+    "watchify": "^3.7.0",
+    "mocha": "^3.2.0",
+    "nightmare": "^2.8.1",
+    "power-assert": "^1.4.2"
   }
 }
