@@ -1,7 +1,7 @@
 # a-table.js
 simple table generator
 
-[![CircleCI](https://circleci.com/gh/appleple/a-table.js.svg?style=svg)](https://circleci.com/gh/appleple/a-table.js)
+[![CircleCI](https://circleci.com/gh/appleple/a-table.js.svg?style=shield)](https://circleci.com/gh/appleple/a-table.js)
 
 ## Install
 
