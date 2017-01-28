@@ -13,33 +13,35 @@ simple table generator
 <script src="./build/a-table.min.js"></script>
 ```
 
+### Demo
+https://rawgit.com/appleple/table/master/examples/a-blogcms.html
+
 ## Usage
 ```html
-<script>
-  var table = new aTable('.table', {
-    lang:'ja',
-    mark:{
-      btn:{
-        group:'acms-admin-btn-group acms-admin-btn-group-inline',
-        item:'acms-admin-btn',
-        itemActive:'acms-admin-btn acms-admin-btn-active'
-      }
-    },
-    selector:{
-      option:[
-        {label:'赤',value:'red'},
-        {label:'青',value:'blue'},
-        {label:'黄色',value:'yellow'}
-      ]
+import aTable from 'a-table';
+const table = new aTable('.table', {
+  lang:'ja',
+  mark:{
+    btn:{
+      group:'acms-admin-btn-group acms-admin-btn-group-inline',
+      item:'acms-admin-btn',
+      itemActive:'acms-admin-btn acms-admin-btn-active'
     }
-  });
-  table.afterRendered =
-  table.afterEntered = function(){
-    document.querySelector('.test').innerText = this.getTable();
-    document.querySelector('.markdown').innerText = this.getMarkdown();
+  },
+  selector:{
+    option:[
+      {label:'赤',value:'red'},
+      {label:'青',value:'blue'},
+      {label:'黄色',value:'yellow'}
+    ]
   }
-  table.afterRendered();
-</script>
+});
+table.afterRendered =
+table.afterEntered = function(){
+  document.querySelector('.test').innerText = this.getTable();
+  document.querySelector('.markdown').innerText = this.getMarkdown();
+}
+table.afterRendered();
 ```
 
 ## Licence
