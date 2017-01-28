@@ -17,7 +17,7 @@ simple table generator
 https://rawgit.com/appleple/table/master/examples/a-blogcms.html
 
 ## Usage
-```html
+```js
 import aTable from 'a-table';
 const table = new aTable('.table', {
   lang:'ja',
