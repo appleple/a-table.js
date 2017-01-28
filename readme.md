@@ -13,7 +13,7 @@ simple table generator
 <script src="./build/a-table.min.js"></script>
 ```
 
-### Demo
+## Demo
 https://rawgit.com/appleple/table/master/examples/a-blogcms.html
 
 ## Usage
