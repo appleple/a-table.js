@@ -320,6 +320,25 @@ a:hover { text-decoration: underline; }
   box-sizing: border-box;
 }
 
+.basic-table{
+  display: block;
+  width: 100%;
+  overflow: auto;
+  word-break: normal;
+  word-break: keep-all;
+}
+
+
+.basic-table th {
+  font-weight: bold;
+}
+
+.basic-table th,
+.basic-table td {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e9ebec;
+}
+
 .source-area {
   margin-top: 10px;
   padding: 5px;
