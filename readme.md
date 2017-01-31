@@ -14,7 +14,7 @@ simple table generator
 ```
 
 ## Demo
-https://rawgit.com/appleple/table/master/examples/a-blogcms.html
+https://appleple.github.io/a-table.js/
 
 ## Usage
 ```js
