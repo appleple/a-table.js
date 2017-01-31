@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <link rel="stylesheet" href="https://rawgit.com/appleple/table/master/fonts/a-table-icon.css">
+    <link rel="stylesheet" href="stylesheets/acms-admin.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="./stylesheets/stylesheet.css">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">a-table.js</h1>
+      <h2 class="project-tagline">Simple Table Generator JavaScript Library</h2>
+      
+        <a href="https://github.com/appleple/a-table.js" class="btn">View on GitHub</a>
+      
+      
+    </section>
+
+    <section class="main-content">
+      <h1 id="a-tablejs">a-table.js</h1>
+<p>simple table generator</p>
+
+<p><a href="https://circleci.com/gh/appleple/a-table.js"><img src="https://circleci.com/gh/appleple/a-table.js.svg?style=shield" alt="CircleCI" /></a></p>
+
+<h2 id="install">Install</h2>
+
+<h3 id="npm">npm</h3>
+<p><code class="highlighter-rouge">npm install a-table</code></p>
+
+<h3 id="standalone">standalone</h3>
+<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"./build/a-table.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre>
+</div>
+
+<h2 id="demo">Demo</h2>
+<div class="acms-admin-form">
+  <div class="acms-admin-table-container">
+    <div class="acms-admin-table-wrap">
+    <div class="acms-admin-table-inner">
+      <table class="table">
+        <tr>
+          <td class="center">test</td>
+          <td class="red">hoge</td>
+          <td>test</td>
+          <td>hoge</td>
+          <td>test</td>
+        </tr>
+        <tr>
+          <td>test</td>
+          <td>hoge</td>
+          <td>test</td>
+          <td>hoge</td>
+          <td>test</td>
+        </tr>
+        <tr>
+          <td>test</td>
+          <td>hoge</td>
+          <td>test</td>
+          <td>hoge</td>
+          <td>test</td>
+        </tr>
+        <tr>
+          <td>test</td>
+          <td>hoge</td>
+          <td>test</td>
+          <td>hoge</td>
+          <td>test</td>
+        </tr>
+        <tr>
+          <td>test</td>
+          <td>hoge</td>
+          <td>test</td>
+          <td>hoge</td>
+          <td>test</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  </div>
+</div>
+<h2 id="usage">Usage</h2>
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="nx">aTable</span> <span class="nx">from</span> <span class="s1">'a-table'</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">table</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">aTable</span><span class="p">(</span><span class="s1">'.table'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">lang</span><span class="p">:</span><span class="s1">'ja'</span><span class="p">,</span>
+  <span class="na">mark</span><span class="p">:{</span>
+    <span class="na">btn</span><span class="p">:{</span>
+      <span class="na">group</span><span class="p">:</span><span class="s1">'acms-admin-btn-group acms-admin-btn-group-inline'</span><span class="p">,</span>
+      <span class="na">item</span><span class="p">:</span><span class="s1">'acms-admin-btn'</span><span class="p">,</span>
+      <span class="na">itemActive</span><span class="p">:</span><span class="s1">'acms-admin-btn acms-admin-btn-active'</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">selector</span><span class="p">:{</span>
+    <span class="na">option</span><span class="p">:[</span>
+      <span class="p">{</span><span class="na">label</span><span class="p">:</span><span class="s1">'赤'</span><span class="p">,</span><span class="na">value</span><span class="p">:</span><span class="s1">'red'</span><span class="p">},</span>
+      <span class="p">{</span><span class="na">label</span><span class="p">:</span><span class="s1">'青'</span><span class="p">,</span><span class="na">value</span><span class="p">:</span><span class="s1">'blue'</span><span class="p">},</span>
+      <span class="p">{</span><span class="na">label</span><span class="p">:</span><span class="s1">'黄色'</span><span class="p">,</span><span class="na">value</span><span class="p">:</span><span class="s1">'yellow'</span><span class="p">}</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+<span class="nx">table</span><span class="p">.</span><span class="nx">afterRendered</span> <span class="o">=</span>
+<span class="nx">table</span><span class="p">.</span><span class="nx">afterEntered</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+  <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">'.test'</span><span class="p">).</span><span class="nx">innerText</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getTable</span><span class="p">();</span>
+  <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">'.markdown'</span><span class="p">).</span><span class="nx">innerText</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getMarkdown</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="nx">table</span><span class="p">.</span><span class="nx">afterRendered</span><span class="p">();</span>
+</code></pre>
+</div>
+
+<h2 id="licence">Licence</h2>
+<p><a href="https://github.com/appleple/a-table.js/blob/master/LICENSE">MIT</a></p>
+
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/appleple/a-table.js">a-table.js</a> is maintained by <a href="https://github.com/appleple">appleple</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </section>
+
+    <script src="https://rawgit.com/appleple/table/master/build/a-table.js"></script>
+      <script>
+    var table = new aTable('.table',{
+      lang:'ja',
+      mark:{
+        btn:{
+          group:'acms-admin-btn-group acms-admin-btn-group-inline',
+          item:'acms-admin-btn',
+          itemActive:'acms-admin-btn acms-admin-btn-active',
+        },
+        icon: {
+          td:false,
+          th:false
+        }
+      },
+      selector:{
+        option:[
+          {label:'赤',value:'red'},
+          {label:'青',value:'blue'},
+          {label:'黄色',value:'yellow'}
+        ]
+      }
+    });
+    table.afterRendered =
+    table.afterEntered = function(){
+      document.querySelector('.test').innerText = this.getTable();
+      document.querySelector('.markdown').innerText = this.getMarkdown();
+    }
+    table.afterRendered();
+  </script>
+  </body>
+</html>
