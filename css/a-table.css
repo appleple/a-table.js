@@ -157,6 +157,79 @@
   position: relative;
 }
 
+.a-table-btn-list {
+  display: table;
+  float: left;
+  padding: 7px 10px;
+  padding-left: 0;
+}
+
+.a-table-btn {
+  border-radius: 3px;
+  background-color: #f2f2f2;
+  text-decoration: none;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff9f9f9', endColorstr='#ffe1e1e1', GradientType=0);
+  background-image: -moz-linear-gradient(top, #f9f9f9, #e1e1e1);
+  background-image: -ms-linear-gradient(top, #f9f9f9, #e1e1e1);
+  background-image: -o-linear-gradient(top, #f9f9f9, #e1e1e1);
+  background-image: -webkit-gradient(linear, center top, center bottom, from(#f9f9f9), to(#e1e1e1));
+  background-image: -webkit-linear-gradient(top, #f9f9f9, #e1e1e1);
+  background-image: linear-gradient(top, #f9f9f9, #e1e1e1);
+  color: #333333;
+  display: table-cell;
+  border-left: none;
+  border: 1px solid #a7a7aa;
+  font-size: 12px;
+  padding: 3px 5px;
+  border-radius: 0;
+  display: table-cell;
+  height: 28px;
+  border-right: none;
+}
+
+.a-table-btn:first-child {
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+
+.a-table-btn:last-child {
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-right: 1px solid #a7a7aa;
+}
+
+.a-table-selector{
+  -moz-appearance: none;
+  -webkit-appearance: button;
+  display: inline-block;
+  border: 1px solid #a7a7aa;
+  border-radius: 3px;
+  background-color: #cccccc;
+  text-decoration: none;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.3;
+  background-color: #e1e1e1;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff9f9f9', endColorstr='#ffe1e1e1', GradientType=0);
+  background: -moz-linear-gradient(top, #f9f9f9, #e1e1e1);
+  background: -ms-linear-gradient(top, #f9f9f9, #e1e1e1);
+  background: -o-linear-gradient(top, #f9f9f9, #e1e1e1);
+  background: -webkit-gradient(linear, center top, center bottom, from(#f9f9f9), to(#e1e1e1));
+  background: -webkit-linear-gradient(top, #f9f9f9, #e1e1e1);
+  background: linear-gradient(top, #f9f9f9, #e1e1e1);
+  background-repeat: no-repeat;
+  color: #333333;
+  padding-right: 20px\9;
+  background-color: #f0f0f0;
+  text-align: left;
+  padding: 5px 30px 5px 10px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
 .a-table-toggle-btn {
   display: inline-block;
   padding: 5px;
@@ -250,3 +323,5 @@
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
+
+

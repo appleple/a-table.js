@@ -59,37 +59,3 @@
 .a-table td.yellow {
   color: yellow;
 }
-
-.acms-admin-table-wrap{
-  -ms-overflow-x: scroll;
-      overflow-x: scroll;
-  padding-bottom: 30px;
-}
-
-@media screen and (max-width:767px){
-  .acms-admin-btn-group .acms-admin-btn{
-    height: 44px;
-  }
-  .acms-admin-table-inner{
-    width:2000px;
-  }
-  .acms-admin-table-container{
-    position: relative;
-    padding-top: 60px;
-  }
-  .a-table-btn-group-list{
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-  .a-table td, 
-  .a-table th{
-    padding: 10px !important;
-  }
-}
-
-@media screen and (max-width:480px){
-  .acms-admin-table-container{
-    padding-top: 120px;
-  }
-}

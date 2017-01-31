@@ -5,7 +5,7 @@
  * a-table:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
- *   version: 1.0.6
+ *   version: 1.0.8
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -28,8 +28,8 @@
  * clone:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: Paul Vorbach <paul@vorba.ch> (http://paul.vorba.ch/)
- *   contributors: Blake Miner <miner.blake@gmail.com> (http://www.blakeminer.com/), Tian You <axqd001@gmail.com> (http://blog.axqd.net/), George Stagas <gstagas@gmail.com> (http://stagas.com/), Tobiasz Cudnik <tobiasz.cudnik@gmail.com> (https://github.com/TobiaszCudnik), Pavel Lang <langpavel@phpskelet.org> (https://github.com/langpavel), Dan MacTough (http://yabfog.com/), w1nk (https://github.com/w1nk), Hugh Kennedy (http://twitter.com/hughskennedy), Dustin Diaz (http://dustindiaz.com), Ilya Shaisultanov (https://github.com/diversario), Nathan MacInnes <nathan@macinn.es> (http://macinn.es/), Benjamin E. Coe <ben@npmjs.com> (https://twitter.com/benjamincoe), Nathan Zadoks (https://github.com/nathan7), Róbert Oroszi <robert+gh@oroszi.net> (https://github.com/oroce), Aurélio A. Heckert (http://softwarelivre.org/aurium), Guy Ellis (http://www.guyellisrocks.com/), fscherwi (https://fscherwi.github.io), rictic (https://github.com/rictic)
- *   version: 2.0.0
+ *   contributors: Blake Miner <miner.blake@gmail.com> (http://www.blakeminer.com/), Tian You <axqd001@gmail.com> (http://blog.axqd.net/), George Stagas <gstagas@gmail.com> (http://stagas.com/), Tobiasz Cudnik <tobiasz.cudnik@gmail.com> (https://github.com/TobiaszCudnik), Pavel Lang <langpavel@phpskelet.org> (https://github.com/langpavel), Dan MacTough (http://yabfog.com/), w1nk (https://github.com/w1nk), Hugh Kennedy (http://twitter.com/hughskennedy), Dustin Diaz (http://dustindiaz.com), Ilya Shaisultanov (https://github.com/diversario), Nathan MacInnes <nathan@macinn.es> (http://macinn.es/), Benjamin E. Coe <ben@npmjs.com> (https://twitter.com/benjamincoe), Nathan Zadoks (https://github.com/nathan7), Róbert Oroszi <robert+gh@oroszi.net> (https://github.com/oroce), Aurélio A. Heckert (http://softwarelivre.org/aurium), Guy Ellis (http://www.guyellisrocks.com/), fscherwi (https://fscherwi.github.io), rictic (https://github.com/rictic), Martin Jurča (https://github.com/jurca), Misery Lee <miserylee@foxmail.com> (https://github.com/miserylee)
+ *   version: 2.1.0
  *
  * ieee754:
  *   license: BSD-3-Clause (http://opensource.org/licenses/BSD-3-Clause)
@@ -4175,13 +4175,15 @@ try {
  *    a particular depth. (optional - defaults to Infinity)
  * @param `prototype` - sets the prototype to be used when cloning an object.
  *    (optional - defaults to parent prototype).
+ * @param `includeNonEnumerable` - set to true if the non-enumerable properties
+ *    should be cloned as well. Non-enumerable properties on the prototype
+ *    chain will be ignored. (optional - false by default)
 */
-function clone(parent, circular, depth, prototype) {
-  var filter;
+function clone(parent, circular, depth, prototype, includeNonEnumerable) {
   if (typeof circular === 'object') {
     depth = circular.depth;
     prototype = circular.prototype;
-    filter = circular.filter;
+    includeNonEnumerable = circular.includeNonEnumerable;
     circular = circular.circular;
   }
   // maintain two arrays for circular references, where corresponding parents
@@ -4235,6 +4237,8 @@ function clone(parent, circular, depth, prototype) {
       child = new Buffer(parent.length);
       parent.copy(child);
       return child;
+    } else if (parent instanceof Error) {
+      child = Object.create(parent);
     } else {
       if (typeof prototype == 'undefined') {
         proto = Object.getPrototypeOf(parent);
@@ -4298,7 +4302,31 @@ function clone(parent, circular, depth, prototype) {
         // Don't need to worry about cloning a symbol because it is a primitive,
         // like a number or string.
         var symbol = symbols[i];
+        var descriptor = Object.getOwnPropertyDescriptor(parent, symbol);
+        if (descriptor && !descriptor.enumerable && !includeNonEnumerable) {
+          continue;
+        }
         child[symbol] = _clone(parent[symbol], depth - 1);
+        if (!descriptor.enumerable) {
+          Object.defineProperty(child, symbol, {
+            enumerable: false
+          });
+        }
+      }
+    }
+
+    if (includeNonEnumerable) {
+      var allPropertyNames = Object.getOwnPropertyNames(parent);
+      for (var i = 0; i < allPropertyNames.length; i++) {
+        var propertyName = allPropertyNames[i];
+        var descriptor = Object.getOwnPropertyDescriptor(parent, propertyName);
+        if (descriptor && descriptor.enumerable) {
+          continue;
+        }
+        child[propertyName] = _clone(parent[propertyName], depth - 1);
+        Object.defineProperty(child, propertyName, {
+          enumerable: false
+        });
       }
     }
 
@@ -6050,9 +6078,6 @@ exports.$ = window.$
 })(Zepto)
 ;
 },{}],9:[function(require,module,exports){
-module.exports = ".a-table-wrapper {\n  position: relative;\n  z-index: 0;\n  width: 100%;\n}\n\n.a-table-pseudo {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: -1;\n}\n\n.a-table-wrapper {\n  width: 100%;\n  -ms-overflow-x: scroll;\n  overflow-x: scroll;\n}\n\n.a-table {\n  border-collapse: collapse;\n  table-layout: fixed;\n  font-family: \"Open Sans\", Helvetica, Arial, sans-serif;\n}\n\n.a-table input {\n  width: 100%;\n  height: 100%;\n  display: block;\n}\n\n.a-table td,\n.a-table th {\n  text-align: left;\n  width: 100px;\n  white-space: nowrap;\n  background-color: #fff;\n  z-index: 0;\n}\n\n.a-table-cell-inner {\n  position: relative;\n  width: 100%;\n  height: 100%;\n}\n\n.a-table th {\n  border: 1px dashed #a7a7aa;\n  background-color: transparent;\n  font-weight: normal;\n  cursor: pointer;\n}\n\n.a-table th:hover {\n  background-image: -webkit-linear-gradient(#f8f8f8 0%, #e1e1e1 100%);\n  background-image: -o-linear-gradient(#f8f8f8 0%, #e1e1e1 100%);\n  background-image: linear-gradient(#f8f8f8 0%, #e1e1e1 100%);\n  border: 1px solid #a7a7aa;\n}\n\n.a-table td {\n  border: 1px solid #cccccc;\n}\n\n.a-table-editable:focus {\n  outline: none;\n}\n\n.a-table td:first-child,\n.a-table th:first-child {\n  width: 30px;\n}\n\n.a-table .left {\n  text-align: left;\n}\n\n.a-table .right {\n  text-align: right;\n}\n\n.a-table .center {\n  text-align: center;\n}\n\n.a-table .a-table-th {\n  background-color: #ddd;\n  font-weight: bold;\n}\n\n.a-table .a-table-selected {\n  background-color: #eaf2f9;\n}\n\n.a-table-editable {\n  min-width: 100%;\n  min-height: 100%;\n}\n\n.a-table-pseudo {\n  background-color: #ffffff;\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: -1;\n}\n\n.a-table-menu {\n  display: block;\n  list-style-type: none;\n  padding: 0;\n  margin: 0;\n  position: fixed;\n  top: 0;\n  left: 0;\n  z-index: 999999;\n  background-color: #fff;\n  border: 1px solid #cccccc;\n  color: #474747;\n  font-size: 13px;\n  -webkit-box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);\n  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);\n}\n\n.a-table-menu li {\n  display: block;\n  font-size: 13px;\n  padding: 9px 7px;\n  border-bottom: 1px solid #ddd;\n  cursor: pointer;\n}\n\n.a-table-menu li:hover {\n  background-color: #ebf0f6;\n}\n\n.a-table-header th {\n  text-align: center;\n  height: 27px;\n  vertical-align: middle;\n}\n\n.a-table-header .selected {\n  background-color: #eaf2f9;\n}\n\n.a-table-side.selected {\n  background-color: #eaf2f9;\n}\n\n.a-table .a-table-side {\n  text-align: center;\n  position: relative;\n}\n\n.a-table-btn-list {\n  margin-bottom: 10px;\n  display: table;\n}\n\n.a-table-btn {\n  display: table-cell;\n  border-left: none;\n  border: 1px solid #d9d9d9;\n  background-color: #f2f2f2;\n  font-size: 12px;\n  padding: 3px 5px;\n}\n\n.a-table-btn:first-child {\n  border-top-left-radius: 3px;\n  border-bottom-left-radius: 3px;\n}\n\n.a-table-btn:last-child {\n  border-top-right-radius: 3px;\n  border-bottom-right-radius: 3px;\n}\n\n.a-table-toggle-btn {\n  display: inline-block;\n  padding: 5px;\n  cursor: pointer;\n  position: relative;\n}\n\n.a-table-toggle-btn:after {\n  content: \"\";\n  display: block;\n  border: solid transparent;\n  content: \" \";\n  height: 0;\n  width: 0;\n  border-color: rgba(136, 183, 213, 0);\n  border-top-color: #fff;\n  border-width: 5px;\n  margin-left: -5px;\n  position: absolute;\n  top: 2px;\n  left: 5px;\n}\n\n.a-table-header th:hover .a-table-toggle-btn:after {\n  border-top-color: #999;\n}\n\n.a-table-side .a-table-toggle-btn:after {\n  border: solid transparent;\n  border-left-color: #fff;\n  border-width: 5px;\n  top: 0;\n}\n\n.a-table-side:hover .a-table-toggle-btn:after {\n  border-left-color: #999;\n}\n\n.a-table-first {\n  width: 15px;\n}\n\n.a-table .a-table-border-left {\n  border-left: 2px solid #006dec;\n}\n\n.a-table .a-table-border-top {\n  border-top: 2px solid #006dec;\n}\n\n.a-table .a-table-border-right {\n  border-right: 2px solid #006dec;\n}\n\n.a-table .a-table-border-bottom {\n  border-bottom: 2px solid #006dec;\n}\n\n.a-table-border-top.a-table-border-left .a-table-pseudo:before {\n  content: \"\";\n  display: block;\n  position: absolute;\n  top: -3px;\n  left: -3px;\n  width: 6px;\n  height: 6px;\n  background-color: #006dec;\n  -webkit-border-radius: 5px;\n  border-radius: 5px;\n}\n\n.a-table-border-bottom.a-table-border-right .a-table-pseudo:before {\n  content: \"\";\n  display: block;\n  position: absolute;\n  bottom: -3px;\n  right: -3px;\n  width: 6px;\n  height: 6px;\n  background-color: #006dec;\n  -webkit-border-radius: 5px;\n  border-radius: 5px;\n}\n\n.a-table-textarea {\n  width: 100%;\n  height: 200px;\n  margin-bottom: 10px;\n  line-height: 1.7;\n  border: 1px solid #ccc;\n  -webkit-border-radius: 5px;\n  border-radius: 5px;\n}\n";
-
-},{}],10:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -6074,10 +6099,6 @@ var _table2 = _interopRequireDefault(_table);
 var _returnTable = require('./return-table.html');
 
 var _returnTable2 = _interopRequireDefault(_returnTable);
-
-var _aTable = require('./a-table.css');
-
-var _aTable2 = _interopRequireDefault(_aTable);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6113,11 +6134,12 @@ var defs = {
       source: 'a-table-icon a-table-icon-source01',
       td: 'a-table-icon a-table-icon-td03',
       th: 'a-table-icon a-table-icon-th02'
+    },
+    selector: {
+      self: 'a-table-selector'
     }
   }
 };
-
-(0, _zeptoBrowserify.$)('body').append('<style>' + _aTable2.default + '</style>');
 
 var aTable = function (_aTemplate) {
   _inherits(aTable, _aTemplate);
@@ -6480,7 +6502,7 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'getTableClass',
     value: function getTableClass(html) {
-      return (0, _zeptoBrowserify.$)(html).attr("class");
+      return (0, _zeptoBrowserify.$)(html).attr('class');
     }
   }, {
     key: 'toMarkdown',
@@ -7203,11 +7225,11 @@ var aTable = function (_aTemplate) {
 
 module.exports = aTable;
 
-},{"./a-table.css":9,"./return-table.html":11,"./table.html":12,"a-template":1,"clone":5,"zepto-browserify":8}],11:[function(require,module,exports){
+},{"./return-table.html":10,"./table.html":11,"a-template":1,"clone":5,"zepto-browserify":8}],10:[function(require,module,exports){
 module.exports = "<table class=\"{tableClass}\">\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<!-- \\BEGIN type:touch#th -->\n\t\t<th<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 --> class=\"<!-- \\BEGIN align:exist -->\\{align\\}[getStyleByAlign]<!-- \\END align:exist --><!-- \\BEGIN cellClass:exist --> \\{cellClass\\}<!-- \\END cellClass:exist -->\">\\{value\\}</th>\n\t\t<!-- \\END type:touch#th -->\n\t\t<!-- \\BEGIN type:touch#td -->\n\t\t<td<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 --> class=\"<!-- \\BEGIN align:exist -->\\{align\\}[getStyleByAlign] <!-- \\END align:exist --><!-- \\BEGIN cellClass:exist -->\\{cellClass\\}<!-- \\END cellClass:exist -->\">\\{value\\}</td>\n\t\t<!-- \\END type:touch#td -->\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>\n";
 
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports = "<!-- BEGIN showMenu:exist -->\n<ul class=\"a-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t<!-- BEGIN mode:touch#cell -->\n\t<li data-action-click=\"mergeCells\"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"splitCell()\"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"changeCellTypeTo(th)\"><!-- BEGIN lang:touch#ja -->thに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to th<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"changeCellTypeTo(td)\"><!-- BEGIN lang:touch#ja -->tdに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to td<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"align(left)\"><!-- BEGIN lang:touch#ja -->左寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align left<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"align(center)\"><!-- BEGIN lang:touch#ja -->中央寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align center<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"align(right)\"><!-- BEGIN lang:touch#ja -->右寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align right<!-- END lang:touch#en --></li>\n\t<!-- END mode:touch#cell -->\n\t<!-- BEGIN mode:touch#col -->\n\t<li data-action-click=\"insertColLeft({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->左に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the left<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"insertColRight({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->右に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the right<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"removeCol({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->列を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove column<!-- END lang:touch#en --></li>\n\t<!-- END mode:touch#col -->\n\t<!-- BEGIN mode:touch#row -->\n\t<li data-action-click=\"insertRowAbove({selectedColNo})\"><!-- BEGIN lang:touch#ja -->上に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row above<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"insertRowBelow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->下に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row below<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"removeRow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->行を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove row<!-- END lang:touch#en --></li>\n\t<!-- END mode:touch#row -->\n</ul>\n<!-- END showMenu:exist -->\n<!-- BEGIN showBtnList:exist -->\n<div class=\"a-table-btn-group-list\">\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<!-- BEGIN inputMode:touch#table -->\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"changeInputMode(source)\"><i class=\"\\{mark.icon.source\\}\"></i><!-- BEGIN lang:touch#ja -->ソース<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->Source<!-- END lang:touch#en --></button>\n\t\t<!-- END inputMode:touch#table -->\n\t\t<!-- BEGIN inputMode:touch#source -->\n\t\t<button type=\"button\" class=\"\\{mark.btn.itemActive\\}\" data-action-click=\"changeInputMode(table)\"><i class=\"\\{mark.icon.source\\}\"></i><!-- BEGIN lang:touch#ja -->ソース<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->Source<!-- END lang:touch#en --></button>\n\t\t<!-- END inputMode:touch#source -->\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"mergeCells\"><i class=\"\\{mark.icon.merge\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"splitCell()\"><i class=\"\\{mark.icon.split\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"undo()\"><i class=\"\\{mark.icon.undo\\}\"></i></button>\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"changeCellTypeTo(td)\"><!-- BEGIN mark.icon.td:empty -->td<!-- END mark.icon.td:empty --><!-- BEGIN mark.icon.td:exist --><i class=\"\\{mark.icon.td\\}\"></i><!-- END mark.icon.td:exist --></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"changeCellTypeTo(th)\"><!-- BEGIN mark.icon.th:empty -->th<!-- END mark.icon.th:empty --><!-- BEGIN mark.icon.th:exist --><i class=\"\\{mark.icon.th\\}\"></i><!-- END mark.icon.th:exist --></button>\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"align(left)\"><i class=\"\\{mark.icon.alignLeft\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"align(center)\"><i class=\"\\{mark.icon.alignCenter\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"align(right)\"><i class=\"\\{mark.icon.alignRight\\}\"></i></button>\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<select class=\"\\{mark.selector.self\\}\" data-bind=\"cellClass\" data-action-change=\"changeCellClass()\">\n\t\t\t<option value=\"\"></option>\n\t\t\t<!-- BEGIN selector.option:loop -->\n\t\t\t<option value=\"{value}\">{label}</option>\n\t\t\t<!-- END selector.option:loop -->\n\t\t</select>\n\t</div>\n</div>\n<!-- END showBtnList:exist -->\n<div class=\"a-table-wrapper\">\n\t<!-- BEGIN inputMode:touch#table -->\n\t<table class=\"a-table\">\n\t\t<tr class=\"a-table-header js-table-header\">\n\t\t\t<th class=\"a-table-first\"></th>\n\t\t\t<!-- BEGIN highestRow:loop -->\n\t\t\t<th data-action-click=\"selectRow({i})\"<!-- \\BEGIN selectedRowNo:touch#{i} -->class=\"selected\"<!-- \\END selectedRowNo:touch#{i} -->><span class=\"a-table-toggle-btn\"></span></th>\n\t\t\t<!-- END highestRow:loop -->\n\t\t</tr>\n\t\t<!-- BEGIN row:loop -->\n\t\t<tr>\n\t\t\t<th class=\"a-table-side js-table-side<!-- \\BEGIN selectedColNo:touch#{i} --> selected<!-- \\END selectedColNo:touch#{i} -->\" data-action-click=\"selectCol({i})\"><span class=\"a-table-toggle-btn\"></span></th>\n\t\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->a-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> a-table-th<!-- END \\type:touch#th --><!-- \\BEGIN mark.top:exist --> a-table-border-top<!-- \\END mark.top:exist --><!-- \\BEGIN mark.right:exist --> a-table-border-right<!-- \\END mark.right:exist --><!-- \\BEGIN mark.bottom:exist --> a-table-border-bottom<!-- \\END mark.bottom:exist --><!-- \\BEGIN mark.left:exist --> a-table-border-left<!-- \\END mark.left:exist --><!-- \\BEGIN cellClass:exist --> \\{cellClass\\}<!-- \\END cellClass:exist -->\"><div class='a-table-editable \\{align\\}' contenteditable>\\{value\\}</div></td>\n\t\t\t<!-- \\END row.{i}.col:loop -->\n\t\t</tr>\n\t\t<!-- END row:loop -->\n\t</table>\n\t<!-- END inputMode:touch#table -->\n\t<!-- BEGIN inputMode:touch#source -->\n\t<textarea data-bind=\"tableResult\" class=\"a-table-textarea\"></textarea>\n\t<!-- END inputMode:touch#source -->\n</div>\n";
 
-},{}]},{},[10])(10)
+},{}]},{},[9])(9)
 });
