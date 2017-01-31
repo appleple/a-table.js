@@ -1,5 +1,5 @@
 # a-table.js
-simple table generator
+Simple Table UI for generating table html
 
 [![CircleCI](https://circleci.com/gh/appleple/a-table.js.svg?style=shield)](https://circleci.com/gh/appleple/a-table.js)
 
