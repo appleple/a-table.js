@@ -7003,7 +7003,11 @@ var aTable = function (_aTemplate) {
       var data = this.data;
       var points = this.getSelectedPoints();
       if (!this.isSelectedCellsRectangle()) {
-        alert('結合するには、結合範囲のすべてのセルを選択する必要があります。');
+        if (data.lang === 'en') {
+          alert('All possible cells should be selected so to merge cells into one');
+        } else if (data.lang === 'ja') {
+          alert('結合するには、結合範囲のすべてのセルを選択する必要があります。');
+        }
         return;
       }
       if (points.length === 0) {
@@ -7027,7 +7031,11 @@ var aTable = function (_aTemplate) {
       if (length === 0) {
         return;
       } else if (length > 1) {
-        alert('結合解除するには、セルが一つだけ選択されている必要があります');
+        if (data.lang === 'en') {
+          alert('Only One cell should be selected so to split');
+        } else if (data.lang === 'ja') {
+          alert('結合解除するには、セルが一つだけ選択されている必要があります');
+        }
         return;
       }
       var selectedPoint = this.getSelectedPoint();
