@@ -10,7 +10,12 @@ simple table generator
 
 ### standalone
 ```html
-<script src="./build/a-table.min.js"></script>
+<script src="https://unpkg.com/a-table@1.0.8/build/a-table.min.js"></script>
+```
+
+### css
+```html
+<link rel="stylesheet" href="https://unpkg.com/a-table@1.0.8/css/a-table.css">
 ```
 
 ## Demo
