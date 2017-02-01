@@ -5,7 +5,7 @@
  * a-table:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
- *   version: 1.0.8
+ *   version: 1.0.11
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -6848,7 +6848,8 @@ var aTable = function (_aTemplate) {
     key: 'insertColLeft',
     value: function insertColLeft(selectedno) {
       var data = this.data;
-      data.selectedRowNo = parseInt(selectedno) + 1;
+      selectedno = parseInt(selectedno);
+      data.selectedRowNo = selectedno + 1;
       data.showMenu = false;
       var self = this;
       var points = this.getAllPoints();
@@ -6866,6 +6867,7 @@ var aTable = function (_aTemplate) {
           var newcell = { type: 'td', colspan: 1, rowspan: 1, value: '' };
           self.insertCellAt(i, 0, newcell);
         }
+        data.history.push((0, _clone2.default)(data.row));
         self.update();
         return;
       }

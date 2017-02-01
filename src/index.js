@@ -719,7 +719,8 @@ class aTable extends aTemplate {
 
   insertColLeft (selectedno) {
     const data = this.data
-    data.selectedRowNo = parseInt(selectedno) + 1
+    selectedno = parseInt(selectedno)
+    data.selectedRowNo = selectedno + 1
     data.showMenu = false
     const self = this
     const points = this.getAllPoints()
@@ -737,6 +738,7 @@ class aTable extends aTemplate {
         const newcell = { type: 'td', colspan: 1, rowspan: 1, value: '' }
         self.insertCellAt(i, 0, newcell)
       }
+      data.history.push(clone(data.row))
       self.update()
       return
     }
