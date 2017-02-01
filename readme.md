@@ -10,12 +10,17 @@ Simple Table UI for generating table html
 
 ### standalone
 ```html
-<script src="https://unpkg.com/a-table@1.0.8/build/a-table.min.js"></script>
+<script src="https://unpkg.com/a-table@1.0.11/build/a-table.min.js"></script>
 ```
 
 ### css
 ```html
-<link rel="stylesheet" href="https://unpkg.com/a-table@1.0.8/css/a-table.css">
+<link rel="stylesheet" href="https://unpkg.com/a-table@1.0.11/css/a-table.css">
+```
+
+### fonts
+```html
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/a-table@1.0.11/fonts/a-table-icon.css">
 ```
 
 ## Demo
