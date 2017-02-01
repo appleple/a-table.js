@@ -939,6 +939,7 @@ a:hover {
 	color: yellow;
 }
 
-.a-table-wrapper {
+.acms-admin-table-inner {
 	background-color: #ccc;
+	padding: 10px;
 }
