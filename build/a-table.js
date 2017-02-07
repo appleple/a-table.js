@@ -5,7 +5,7 @@
  * a-table:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
- *   version: 1.0.13
+ *   version: 1.0.14
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -6500,6 +6500,29 @@ var aTable = function (_aTemplate) {
       return arr1;
     }
   }, {
+    key: 'parseText',
+    value: function parseText(text) {
+      var arr1 = [];
+      var rows = text.split(String.fromCharCode(13));
+      rows.forEach(function (row) {
+        var ret2 = {};
+        var arr2 = [];
+        ret2.col = arr2;
+        var cells = row.split(String.fromCharCode(9));
+        cells.forEach(function (cell) {
+          var obj = {};
+          obj.type = 'td';
+          obj.colspan = 1;
+          obj.rowspan = 1;
+          obj.value = cell;
+          arr2.push(obj);
+        });
+        arr1.push(ret2);
+      });
+      arr1.pop();
+      return arr1;
+    }
+  }, {
     key: 'getTableClass',
     value: function getTableClass(html) {
       return (0, _zeptoBrowserify.$)(html).attr('class');
@@ -6783,11 +6806,21 @@ var aTable = function (_aTemplate) {
           var tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
           if (tableHtml && tableHtml[0]) {
             var newRow = this.parse(tableHtml[0]);
-            if (newRow.length) {
+            if (newRow && newRow.length) {
               e.preventDefault();
               data.row = newRow;
               this.update();
+              return;
             }
+          }
+          //for excel;
+          var pastedTextData = clipboardData.getData('text/plain');
+          var row = this.parseText(pastedTextData);
+          if (row && row.length) {
+            e.preventDefault();
+            data.row = row;
+            this.update();
+            return;
           }
         }
       } else if (type === 'mousedown' && !isSmartPhone) {
