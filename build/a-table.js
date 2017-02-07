@@ -10,7 +10,7 @@
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: steelydylan
- *   version: 0.0.16
+ *   version: 0.0.17
  *
  * base64-js:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -59,7 +59,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var $ = require("zepto-browserify").$;
 var objs = [];
-var eventType = "input click change keydown contextmenu mouseup mousedown mousemove touchstart touchend touchmove compositionstart compositionend";
+var eventType = "input paste click change keydown contextmenu mouseup mousedown mousemove touchstart touchend touchmove compositionstart compositionend";
 var dataAction = eventType.replace(/([a-z]+)/g, "[data-action-$1],") + "[data-action]";
 var getObjectById = function getObjectById(id) {
 	for (var i = 0, n = objs.length; i < n; i++) {
@@ -6753,7 +6753,8 @@ var aTable = function (_aTemplate) {
     key: 'updateTable',
     value: function updateTable(b, a) {
       var data = this.data;
-      var type = this.e.type;
+      var e = this.e;
+      var type = e.type;
       var points = this.getSelectedPoints();
       var isSmartPhone = aTable.isSmartPhone();
       if (type === 'mouseup' && this.data.showMenu) {
@@ -6769,13 +6770,22 @@ var aTable = function (_aTemplate) {
       data.showMenu = false;
       if (type === 'compositionstart') {
         data.beingInput = true;
-      }
-      if (type === 'compositionend') {
+      } else if (type === 'compositionend') {
         data.beingInput = false;
-      }
-      if (type === 'click' && !isSmartPhone) {
+      } else if (type === 'click' && !isSmartPhone) {
         if (this.e.shiftKey) {
           this.selectRange(a, b);
+        }
+      } else if (type === 'paste') {
+        var clipboardData = e.originalEvent.clipboardData || window.clipboardData;
+        if (clipboardData) {
+          var pastedData = clipboardData.getData('text/html');
+          var tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
+          if (tableHtml && tableHtml[0]) {
+            e.preventDefault();
+            data.row = this.parse(tableHtml[0]);
+            this.update();
+          }
         }
       } else if (type === 'mousedown' && !isSmartPhone) {
         if (this.e.button !== 2 && !this.e.ctrlKey) {
