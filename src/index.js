@@ -655,9 +655,12 @@ class aTable extends aTemplate {
         const pastedData = clipboardData.getData('text/html')
         const tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i)
         if(tableHtml && tableHtml[0]) {
-          e.preventDefault()
-          data.row = this.parse(tableHtml[0])
-          this.update()
+          const newRow = this.parse(tableHtml[0]);
+          if(newRow.length) {
+              e.preventDefault()
+              data.row = newRow
+              this.update()
+          }
         }
       }
     } else if (type === 'mousedown' && !isSmartPhone) {

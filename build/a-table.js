@@ -5,7 +5,7 @@
  * a-table:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
- *   version: 1.0.11
+ *   version: 1.0.13
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -6782,9 +6782,12 @@ var aTable = function (_aTemplate) {
           var pastedData = clipboardData.getData('text/html');
           var tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
           if (tableHtml && tableHtml[0]) {
-            e.preventDefault();
-            data.row = this.parse(tableHtml[0]);
-            this.update();
+            var newRow = this.parse(tableHtml[0]);
+            if (newRow.length) {
+              e.preventDefault();
+              data.row = newRow;
+              this.update();
+            }
           }
         }
       } else if (type === 'mousedown' && !isSmartPhone) {
