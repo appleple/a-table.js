@@ -650,17 +650,17 @@ class aTable extends aTemplate {
         this.selectRange(a, b)
       }
     } else if (type === 'paste') {
-      const clipboardData = e.originalEvent.clipboardData || window.clipboardData;
+      const clipboardData = e.originalEvent.clipboardData || window.clipboardData
       if( clipboardData ) {
-        const pastedData = clipboardData.getData('text/html');
-        const tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
+        const pastedData = clipboardData.getData('text/html')
+        const tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i)
         if(tableHtml && tableHtml[0]) {
-          e.preventDefault();
-          data.row = this.parse(tableHtml[0]);
-          this.update();
+          e.preventDefault()
+          data.row = this.parse(tableHtml[0])
+          this.update()
         }
       }
-    }else if (type === 'mousedown' && !isSmartPhone) {
+    } else if (type === 'mousedown' && !isSmartPhone) {
       if (this.e.button !== 2 && !this.e.ctrlKey) {
         this.mousedown = true
         if (!this.data.beingInput) {
