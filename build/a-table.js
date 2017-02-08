@@ -5,7 +5,7 @@
  * a-table:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
- *   version: 1.0.14
+ *   version: 1.0.15
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -6503,6 +6503,10 @@ var aTable = function (_aTemplate) {
     key: 'parseText',
     value: function parseText(text) {
       var arr1 = [];
+      //replace newline codes inside double quotes to <br> tag
+      text = text.replace(/"(([\n\r\t]|.)*?)"/g, function (match, str) {
+        return str.replace(/[\n\r]/g, '<br>');
+      });
       var rows = text.split(String.fromCharCode(13));
       rows.forEach(function (row) {
         var ret2 = {};
