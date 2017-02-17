@@ -2,6 +2,7 @@
 Simple Table UI for generating table html
 
 [![CircleCI](https://circleci.com/gh/appleple/a-table.js.svg?style=shield)](https://circleci.com/gh/appleple/a-table.js)
+[![npm version](https://badge.fury.io/js/a-table.svg)](https://badge.fury.io/js/a-table)
 
 ## Install
 
@@ -10,17 +11,17 @@ Simple Table UI for generating table html
 
 ### standalone
 ```html
-<script src="https://unpkg.com/a-table@1.0.11/build/a-table.min.js"></script>
+<script src="https://unpkg.com/a-table@1.0.17/build/a-table.min.js"></script>
 ```
 
 ### css
 ```html
-<link rel="stylesheet" href="https://unpkg.com/a-table@1.0.11/css/a-table.css">
+<link rel="stylesheet" href="https://unpkg.com/a-table@1.0.17/css/a-table.css">
 ```
 
 ### fonts
 ```html
-<link rel="stylesheet" type="text/css" href="https://unpkg.com/a-table@1.0.11/fonts/a-table-icon.css">
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/a-table@1.0.17/fonts/a-table-icon.css">
 ```
 
 ## Demo
