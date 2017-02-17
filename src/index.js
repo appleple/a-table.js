@@ -685,6 +685,7 @@ class aTable extends aTemplate {
           if(newRow && newRow.length) {
               e.preventDefault()
               data.row = newRow
+              data.history.push(clone(data.row))
               this.update()
               return;
           }
@@ -696,6 +697,7 @@ class aTable extends aTemplate {
             e.preventDefault()
             data.row = row
             this.update()
+            data.history.push(clone(data.row))
             return;
         }
       }
@@ -727,11 +729,22 @@ class aTable extends aTemplate {
       }
     } else if (type === 'input') {
       if ($(this.e.target).hasClass('a-table-editable') && $(this.e.target).parents('td').attr('data-cell-id') === `${b}-${a}`) {
+        data.history.push(clone(data.row))
         data.row[a].col[b].value = $(this.e.target).html()
       }
       if (this.afterEntered) {
         this.afterEntered()
       }
+    }
+  }
+
+  updateResult () {
+    if (this.afterEntered) {
+      const data = this.data
+      data.row = this.parse(data.tableResult)
+      data.tableClass = this.getTableClass(data.tableResult)
+      data.history.push(clone(data.row))
+      this.afterEntered()
     }
   }
 
@@ -946,7 +959,12 @@ class aTable extends aTemplate {
     const selectedPoints = this.getSelectedPoints()
     const length = selectedPoints.length
     if (length === 0) {
-      return
+      if (data.lang === 'en') {
+        alert('No cell is selected')
+      } else if (data.lang === 'ja') {
+        alert('セルが選択されていません');
+      }
+      return;
     } else if (length > 1) {
       if (data.lang === 'en') {
         alert('Only One cell should be selected so to split')
@@ -962,10 +980,19 @@ class aTable extends aTemplate {
     const currentCell = this.getCellByPos(selectedPoint.x, selectedPoint.y)
     const width = parseInt(currentCell.colspan)
     const height = parseInt(currentCell.rowspan)
+    const currentValue = currentCell.value;
     const self = this
     const targets = []
     const cells = []
     const rows = []
+    if(width === 1 && height === 1){
+      if (data.lang === 'en') {
+        alert('Selected cell cannnot be splited anymore')
+      } else if (data.lang === 'ja') {
+        alert('選択されたセルはこれ以上分割できません');
+      }
+      return;
+    }
     points.forEach((point) => {
       if (self.hitTest(bound, point)) {
         const index = self.getCellIndexByPos(point.x, point.y)
@@ -1001,10 +1028,17 @@ class aTable extends aTemplate {
         rows[i].push({ row: i, col: -1 })
       }
     }
+    let first = true;
     rows.forEach((row) => {
       const index = row[row.length - 1]
       for (let i = 0; i < width; i++) {
-        self.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: 1, rowspan: 1, value: '', selected: true })
+        let val = "";
+        //スプリットされる前のコルのデータを保存
+        if(first === true && i === width - 1){
+          val = currentValue;
+          first = false;
+        }
+        self.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: 1, rowspan: 1, value: val, selected: true })
       }
     })
     this.removeCell(currentCell)
