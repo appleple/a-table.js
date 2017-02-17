@@ -5,7 +5,7 @@
  * a-table:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
- *   version: 1.0.16
+ *   version: 1.0.17
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -6096,6 +6096,10 @@ var _table = require('./table.html');
 
 var _table2 = _interopRequireDefault(_table);
 
+var _menu = require('./menu.html');
+
+var _menu2 = _interopRequireDefault(_menu);
+
 var _returnTable = require('./return-table.html');
 
 var _returnTable2 = _interopRequireDefault(_returnTable);
@@ -6150,7 +6154,9 @@ var aTable = function (_aTemplate) {
     var _this = _possibleConstructorReturn(this, (aTable.__proto__ || Object.getPrototypeOf(aTable)).call(this));
 
     _this.id = _this.getRandText(10);
+    _this.menu_id = _this.getRandText(10);
     _this.addTemplate(_table2.default, _this.id);
+    _this.addTemplate(_menu2.default, _this.menu_id);
     _this.data = _zeptoBrowserify.$.extend(true, {}, defs, option);
     var data = _this.data;
     data.point = { x: -1, y: -1 };
@@ -6167,7 +6173,8 @@ var aTable = function (_aTemplate) {
     _this.convert = {};
     _this.convert.getStyleByAlign = _this.getStyleByAlign;
     _this.convert.setClass = _this.setClass;
-    (0, _zeptoBrowserify.$)(ele).wrap('<div data-id="' + _this.id + '"></div>');
+    var html = '\n    <div class=\'a-table-container\'>\n        <div data-id="' + _this.menu_id + '"></div>\n        <div class=\'a-table-outer\'>\n          <div class=\'a-table-inner\'>\n            <div data-id="' + _this.id + '">\n          </div>\n        </div>\n    </div>';
+    (0, _zeptoBrowserify.$)(ele).before(html);
     (0, _zeptoBrowserify.$)(ele).remove();
     _this.update();
     return _this;
@@ -6382,7 +6389,7 @@ var aTable = function (_aTemplate) {
         });
       });
       if (points.length > 1) {
-        this.update();
+        this.update("html", this.id);
       }
     }
   }, {
@@ -6458,7 +6465,7 @@ var aTable = function (_aTemplate) {
       data.showMenu = true;
       data.menuX = this.e.clientX;
       data.menuY = this.e.clientY;
-      this.update();
+      this.update("html", this.id);
     }
   }, {
     key: 'parse',
@@ -6571,6 +6578,8 @@ var aTable = function (_aTemplate) {
       var width = point.width;
       var selectedPoints = this.getSelectedPoints();
       var $th = (0, _zeptoBrowserify.$)('.js-table-header th', '[data-id="' + this.id + '"]');
+      var $table = (0, _zeptoBrowserify.$)('table', '[data-id="' + this.id + '"]');
+      var $inner = $table.parents('.a-table-inner');
       var elem = (0, _zeptoBrowserify.$)('.a-table-selected .a-table-editable', '[data-id="' + this.id + '"]')[0];
       if (elem && !this.data.showMenu && selectedPoints.length === 1) {
         setTimeout(function () {
@@ -6595,6 +6604,12 @@ var aTable = function (_aTemplate) {
           (0, _zeptoBrowserify.$)(this).remove();
         }
       });
+
+      //for scroll
+      $inner.width(9999);
+      var tableWidth = $table.width();
+      $inner.width(tableWidth);
+
       if (this.afterRendered) {
         this.afterRendered();
       }
@@ -6618,7 +6633,7 @@ var aTable = function (_aTemplate) {
           hist.push((0, _clone2.default)(row));
         }
         data.row = row;
-        this.update();
+        this.update("html", this.id);
       }
     }
   }, {
@@ -6665,7 +6680,7 @@ var aTable = function (_aTemplate) {
       data.selectedColNo = -1;
       data.selectedRowNo = i;
       this.contextmenu();
-      this.update();
+      this.update("html", this.id);
     }
   }, {
     key: 'selectCol',
@@ -6691,7 +6706,7 @@ var aTable = function (_aTemplate) {
       data.selectedRowNo = -1;
       data.selectedColNo = i;
       this.contextmenu();
-      this.update();
+      this.update("html", this.id);
     }
   }, {
     key: 'removeCol',
@@ -6717,7 +6732,7 @@ var aTable = function (_aTemplate) {
         }
       });
       data.history.push((0, _clone2.default)(data.row));
-      this.update();
+      this.update("html", this.id);
     }
   }, {
     key: 'removeRow',
@@ -6774,7 +6789,7 @@ var aTable = function (_aTemplate) {
         data.row[selectedno] = { col: insertCells };
       }
       data.history.push((0, _clone2.default)(data.row));
-      this.update();
+      this.update("html", this.id);
     }
   }, {
     key: 'updateTable',
@@ -6814,7 +6829,7 @@ var aTable = function (_aTemplate) {
               e.preventDefault();
               data.row = newRow;
               data.history.push((0, _clone2.default)(data.row));
-              this.update();
+              this.update("html", this.id);
               return;
             }
           }
@@ -6824,7 +6839,7 @@ var aTable = function (_aTemplate) {
           if (row && row.length) {
             e.preventDefault();
             data.row = row;
-            this.update();
+            this.update("html", this.id);
             data.history.push((0, _clone2.default)(data.row));
             return;
           }
@@ -6835,7 +6850,7 @@ var aTable = function (_aTemplate) {
           if (!this.data.beingInput) {
             if (points.length !== 1 || !this.data.row[a].col[b].selected) {
               this.select(a, b);
-              this.update();
+              this.update("html", this.id);
             }
           }
         }
@@ -6852,7 +6867,7 @@ var aTable = function (_aTemplate) {
         if (points.length !== 1 || !this.data.row[a].col[b].selected) {
           if (!this.data.beingInput) {
             this.select(a, b);
-            this.update();
+            this.update("html", this.id);
           }
         }
       } else if (type === 'input') {
@@ -6906,7 +6921,7 @@ var aTable = function (_aTemplate) {
         }
       });
       data.history.push((0, _clone2.default)(data.row));
-      this.update();
+      this.update("html", this.id);
     }
   }, {
     key: 'insertColLeft',
@@ -6949,7 +6964,7 @@ var aTable = function (_aTemplate) {
         }
       });
       data.history.push((0, _clone2.default)(data.row));
-      this.update();
+      this.update("html", this.id);
     }
   }, {
     key: 'beforeUpdated',
@@ -7008,7 +7023,7 @@ var aTable = function (_aTemplate) {
       });
       this.insertRow(selectedno + 1, newRow);
       data.history.push((0, _clone2.default)(data.row));
-      this.update();
+      this.update("html", this.id);
     }
   }, {
     key: 'insertRowAbove',
@@ -7061,7 +7076,7 @@ var aTable = function (_aTemplate) {
       });
       this.insertRow(selectedno, newRow);
       data.history.push((0, _clone2.default)(this.data.row));
-      this.update();
+      this.update("html", this.id);
     }
   }, {
     key: 'mergeCells',
@@ -7086,7 +7101,7 @@ var aTable = function (_aTemplate) {
       cell.rowspan = point.height;
       data.showMenu = false;
       data.history.push((0, _clone2.default)(data.row));
-      this.update();
+      this.update("html", this.id);
     }
   }, {
     key: 'splitCell',
@@ -7181,7 +7196,7 @@ var aTable = function (_aTemplate) {
       data.showMenu = false;
       data.history.push((0, _clone2.default)(data.row));
       data.splited = true;
-      this.update();
+      this.update("html", this.id);
     }
   }, {
     key: 'changeCellTypeTo',
@@ -7196,7 +7211,7 @@ var aTable = function (_aTemplate) {
       });
       data.showMenu = false;
       data.history.push((0, _clone2.default)(data.row));
-      this.update();
+      this.update("html", this.id);
     }
   }, {
     key: 'align',
@@ -7211,7 +7226,7 @@ var aTable = function (_aTemplate) {
       });
       data.showMenu = false;
       data.history.push((0, _clone2.default)(data.row));
-      this.update();
+      this.update("html", this.id);
     }
   }, {
     key: 'getStyleByAlign',
@@ -7278,7 +7293,7 @@ var aTable = function (_aTemplate) {
         });
       });
       data.history.push((0, _clone2.default)(data.row));
-      this.update();
+      this.update("html", this.id);
     }
   }, {
     key: 'changeSelectOption',
@@ -7320,11 +7335,14 @@ var aTable = function (_aTemplate) {
 
 module.exports = aTable;
 
-},{"./return-table.html":10,"./table.html":11,"a-template":1,"clone":5,"zepto-browserify":8}],10:[function(require,module,exports){
-module.exports = "<table class=\"{tableClass}\">\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<!-- \\BEGIN type:touch#th -->\n\t\t<th<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 --> class=\"<!-- \\BEGIN align:exist -->\\{align\\}[getStyleByAlign]<!-- \\END align:exist --><!-- \\BEGIN cellClass:exist --> \\{cellClass\\}<!-- \\END cellClass:exist -->\">\\{value\\}</th>\n\t\t<!-- \\END type:touch#th -->\n\t\t<!-- \\BEGIN type:touch#td -->\n\t\t<td<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 --> class=\"<!-- \\BEGIN align:exist -->\\{align\\}[getStyleByAlign] <!-- \\END align:exist --><!-- \\BEGIN cellClass:exist -->\\{cellClass\\}<!-- \\END cellClass:exist -->\">\\{value\\}</td>\n\t\t<!-- \\END type:touch#td -->\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>\n";
+},{"./menu.html":10,"./return-table.html":11,"./table.html":12,"a-template":1,"clone":5,"zepto-browserify":8}],10:[function(require,module,exports){
+module.exports = "<!-- BEGIN showBtnList:exist -->\n<div class=\"a-table-btn-group-list\">\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<!-- BEGIN inputMode:touch#table -->\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"changeInputMode(source)\"><i class=\"\\{mark.icon.source\\}\"></i><!-- BEGIN lang:touch#ja -->ソース<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->Source<!-- END lang:touch#en --></button>\n\t\t<!-- END inputMode:touch#table -->\n\t\t<!-- BEGIN inputMode:touch#source -->\n\t\t<button type=\"button\" class=\"\\{mark.btn.itemActive\\}\" data-action-click=\"changeInputMode(table)\"><i class=\"\\{mark.icon.source\\}\"></i><!-- BEGIN lang:touch#ja -->ソース<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->Source<!-- END lang:touch#en --></button>\n\t\t<!-- END inputMode:touch#source -->\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"mergeCells\"><i class=\"\\{mark.icon.merge\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"splitCell()\"><i class=\"\\{mark.icon.split\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"undo()\"><i class=\"\\{mark.icon.undo\\}\"></i></button>\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"changeCellTypeTo(td)\"><!-- BEGIN mark.icon.td:empty -->td<!-- END mark.icon.td:empty --><!-- BEGIN mark.icon.td:exist --><i class=\"\\{mark.icon.td\\}\"></i><!-- END mark.icon.td:exist --></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"changeCellTypeTo(th)\"><!-- BEGIN mark.icon.th:empty -->th<!-- END mark.icon.th:empty --><!-- BEGIN mark.icon.th:exist --><i class=\"\\{mark.icon.th\\}\"></i><!-- END mark.icon.th:exist --></button>\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"align(left)\"><i class=\"\\{mark.icon.alignLeft\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"align(center)\"><i class=\"\\{mark.icon.alignCenter\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"align(right)\"><i class=\"\\{mark.icon.alignRight\\}\"></i></button>\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<select class=\"\\{mark.selector.self\\}\" data-bind=\"cellClass\" data-action-change=\"changeCellClass()\">\n\t\t\t<option value=\"\"></option>\n\t\t\t<!-- BEGIN selector.option:loop -->\n\t\t\t<option value=\"{value}\">{label}</option>\n\t\t\t<!-- END selector.option:loop -->\n\t\t</select>\n\t</div>\n</div>\n<!-- END showBtnList:exist -->\n";
 
 },{}],11:[function(require,module,exports){
-module.exports = "<!-- BEGIN showMenu:exist -->\n<ul class=\"a-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t<!-- BEGIN mode:touch#cell -->\n\t<li data-action-click=\"mergeCells\"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"splitCell()\"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"changeCellTypeTo(th)\"><!-- BEGIN lang:touch#ja -->thに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to th<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"changeCellTypeTo(td)\"><!-- BEGIN lang:touch#ja -->tdに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to td<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"align(left)\"><!-- BEGIN lang:touch#ja -->左寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align left<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"align(center)\"><!-- BEGIN lang:touch#ja -->中央寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align center<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"align(right)\"><!-- BEGIN lang:touch#ja -->右寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align right<!-- END lang:touch#en --></li>\n\t<!-- END mode:touch#cell -->\n\t<!-- BEGIN mode:touch#col -->\n\t<li data-action-click=\"insertColLeft({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->左に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the left<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"insertColRight({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->右に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the right<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"removeCol({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->列を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove column<!-- END lang:touch#en --></li>\n\t<!-- END mode:touch#col -->\n\t<!-- BEGIN mode:touch#row -->\n\t<li data-action-click=\"insertRowAbove({selectedColNo})\"><!-- BEGIN lang:touch#ja -->上に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row above<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"insertRowBelow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->下に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row below<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"removeRow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->行を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove row<!-- END lang:touch#en --></li>\n\t<!-- END mode:touch#row -->\n</ul>\n<!-- END showMenu:exist -->\n<!-- BEGIN showBtnList:exist -->\n<div class=\"a-table-btn-group-list\">\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<!-- BEGIN inputMode:touch#table -->\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"changeInputMode(source)\"><i class=\"\\{mark.icon.source\\}\"></i><!-- BEGIN lang:touch#ja -->ソース<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->Source<!-- END lang:touch#en --></button>\n\t\t<!-- END inputMode:touch#table -->\n\t\t<!-- BEGIN inputMode:touch#source -->\n\t\t<button type=\"button\" class=\"\\{mark.btn.itemActive\\}\" data-action-click=\"changeInputMode(table)\"><i class=\"\\{mark.icon.source\\}\"></i><!-- BEGIN lang:touch#ja -->ソース<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->Source<!-- END lang:touch#en --></button>\n\t\t<!-- END inputMode:touch#source -->\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"mergeCells\"><i class=\"\\{mark.icon.merge\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"splitCell()\"><i class=\"\\{mark.icon.split\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"undo()\"><i class=\"\\{mark.icon.undo\\}\"></i></button>\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"changeCellTypeTo(td)\"><!-- BEGIN mark.icon.td:empty -->td<!-- END mark.icon.td:empty --><!-- BEGIN mark.icon.td:exist --><i class=\"\\{mark.icon.td\\}\"></i><!-- END mark.icon.td:exist --></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"changeCellTypeTo(th)\"><!-- BEGIN mark.icon.th:empty -->th<!-- END mark.icon.th:empty --><!-- BEGIN mark.icon.th:exist --><i class=\"\\{mark.icon.th\\}\"></i><!-- END mark.icon.th:exist --></button>\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"align(left)\"><i class=\"\\{mark.icon.alignLeft\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"align(center)\"><i class=\"\\{mark.icon.alignCenter\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"align(right)\"><i class=\"\\{mark.icon.alignRight\\}\"></i></button>\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<select class=\"\\{mark.selector.self\\}\" data-bind=\"cellClass\" data-action-change=\"changeCellClass()\">\n\t\t\t<option value=\"\"></option>\n\t\t\t<!-- BEGIN selector.option:loop -->\n\t\t\t<option value=\"{value}\">{label}</option>\n\t\t\t<!-- END selector.option:loop -->\n\t\t</select>\n\t</div>\n</div>\n<!-- END showBtnList:exist -->\n<div class=\"a-table-wrapper\">\n\t<!-- BEGIN inputMode:touch#table -->\n\t<table class=\"a-table\">\n\t\t<tr class=\"a-table-header js-table-header\">\n\t\t\t<th class=\"a-table-first\"></th>\n\t\t\t<!-- BEGIN highestRow:loop -->\n\t\t\t<th data-action-click=\"selectRow({i})\"<!-- \\BEGIN selectedRowNo:touch#{i} -->class=\"selected\"<!-- \\END selectedRowNo:touch#{i} -->><span class=\"a-table-toggle-btn\"></span></th>\n\t\t\t<!-- END highestRow:loop -->\n\t\t</tr>\n\t\t<!-- BEGIN row:loop -->\n\t\t<tr>\n\t\t\t<th class=\"a-table-side js-table-side<!-- \\BEGIN selectedColNo:touch#{i} --> selected<!-- \\END selectedColNo:touch#{i} -->\" data-action-click=\"selectCol({i})\"><span class=\"a-table-toggle-btn\"></span></th>\n\t\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->a-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> a-table-th<!-- END \\type:touch#th --><!-- \\BEGIN mark.top:exist --> a-table-border-top<!-- \\END mark.top:exist --><!-- \\BEGIN mark.right:exist --> a-table-border-right<!-- \\END mark.right:exist --><!-- \\BEGIN mark.bottom:exist --> a-table-border-bottom<!-- \\END mark.bottom:exist --><!-- \\BEGIN mark.left:exist --> a-table-border-left<!-- \\END mark.left:exist --><!-- \\BEGIN cellClass:exist --> \\{cellClass\\}<!-- \\END cellClass:exist -->\"><div class='a-table-editable \\{align\\}' contenteditable>\\{value\\}</div></td>\n\t\t\t<!-- \\END row.{i}.col:loop -->\n\t\t</tr>\n\t\t<!-- END row:loop -->\n\t</table>\n\t<!-- END inputMode:touch#table -->\n\t<!-- BEGIN inputMode:touch#source -->\n\t<textarea data-bind=\"tableResult\" class=\"a-table-textarea\" data-action-input=\"updateResult\"></textarea>\n\t<!-- END inputMode:touch#source -->\n</div>\n";
+module.exports = "<table class=\"{tableClass}\">\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<!-- \\BEGIN type:touch#th -->\n\t\t<th<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 --> class=\"<!-- \\BEGIN align:exist -->\\{align\\}[getStyleByAlign]<!-- \\END align:exist --><!-- \\BEGIN cellClass:exist --> \\{cellClass\\}<!-- \\END cellClass:exist -->\">\\{value\\}</th>\n\t\t<!-- \\END type:touch#th -->\n\t\t<!-- \\BEGIN type:touch#td -->\n\t\t<td<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 --> class=\"<!-- \\BEGIN align:exist -->\\{align\\}[getStyleByAlign] <!-- \\END align:exist --><!-- \\BEGIN cellClass:exist -->\\{cellClass\\}<!-- \\END cellClass:exist -->\">\\{value\\}</td>\n\t\t<!-- \\END type:touch#td -->\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>\n";
+
+},{}],12:[function(require,module,exports){
+module.exports = "<!-- BEGIN showMenu:exist -->\n<ul class=\"a-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t<!-- BEGIN mode:touch#cell -->\n\t<li data-action-click=\"mergeCells\"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"splitCell()\"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"changeCellTypeTo(th)\"><!-- BEGIN lang:touch#ja -->thに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to th<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"changeCellTypeTo(td)\"><!-- BEGIN lang:touch#ja -->tdに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to td<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"align(left)\"><!-- BEGIN lang:touch#ja -->左寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align left<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"align(center)\"><!-- BEGIN lang:touch#ja -->中央寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align center<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"align(right)\"><!-- BEGIN lang:touch#ja -->右寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align right<!-- END lang:touch#en --></li>\n\t<!-- END mode:touch#cell -->\n\t<!-- BEGIN mode:touch#col -->\n\t<li data-action-click=\"insertColLeft({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->左に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the left<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"insertColRight({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->右に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the right<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"removeCol({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->列を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove column<!-- END lang:touch#en --></li>\n\t<!-- END mode:touch#col -->\n\t<!-- BEGIN mode:touch#row -->\n\t<li data-action-click=\"insertRowAbove({selectedColNo})\"><!-- BEGIN lang:touch#ja -->上に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row above<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"insertRowBelow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->下に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row below<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"removeRow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->行を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove row<!-- END lang:touch#en --></li>\n\t<!-- END mode:touch#row -->\n</ul>\n<!-- END showMenu:exist -->\n<div class=\"a-table-wrapper\">\n\t<!-- BEGIN inputMode:touch#table -->\n\t<table class=\"a-table\">\n\t\t<tr class=\"a-table-header js-table-header\">\n\t\t\t<th class=\"a-table-first\"></th>\n\t\t\t<!-- BEGIN highestRow:loop -->\n\t\t\t<th data-action-click=\"selectRow({i})\"<!-- \\BEGIN selectedRowNo:touch#{i} -->class=\"selected\"<!-- \\END selectedRowNo:touch#{i} -->><span class=\"a-table-toggle-btn\"></span></th>\n\t\t\t<!-- END highestRow:loop -->\n\t\t</tr>\n\t\t<!-- BEGIN row:loop -->\n\t\t<tr>\n\t\t\t<th class=\"a-table-side js-table-side<!-- \\BEGIN selectedColNo:touch#{i} --> selected<!-- \\END selectedColNo:touch#{i} -->\" data-action-click=\"selectCol({i})\"><span class=\"a-table-toggle-btn\"></span></th>\n\t\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->a-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> a-table-th<!-- END \\type:touch#th --><!-- \\BEGIN mark.top:exist --> a-table-border-top<!-- \\END mark.top:exist --><!-- \\BEGIN mark.right:exist --> a-table-border-right<!-- \\END mark.right:exist --><!-- \\BEGIN mark.bottom:exist --> a-table-border-bottom<!-- \\END mark.bottom:exist --><!-- \\BEGIN mark.left:exist --> a-table-border-left<!-- \\END mark.left:exist --><!-- \\BEGIN cellClass:exist --> \\{cellClass\\}<!-- \\END cellClass:exist -->\"><div class='a-table-editable \\{align\\}' contenteditable>\\{value\\}</div></td>\n\t\t\t<!-- \\END row.{i}.col:loop -->\n\t\t</tr>\n\t\t<!-- END row:loop -->\n\t</table>\n\t<!-- END inputMode:touch#table -->\n\t<!-- BEGIN inputMode:touch#source -->\n\t<textarea data-bind=\"tableResult\" class=\"a-table-textarea\" data-action-input=\"updateResult\"></textarea>\n\t<!-- END inputMode:touch#source -->\n</div>\n";
 
 },{}]},{},[9])(9)
 });

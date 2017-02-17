@@ -2,6 +2,7 @@ import aTemplate from 'a-template'
 import { $ } from 'zepto-browserify'
 import clone from 'clone'
 import template from './table.html'
+import menu from './menu.html'
 import returnTable from './return-table.html'
 
 const defs = {
@@ -42,7 +43,9 @@ class aTable extends aTemplate {
   constructor (ele, option) {
     super()
     this.id = this.getRandText(10)
+    this.menu_id = this.getRandText(10)
     this.addTemplate(template, this.id)
+    this.addTemplate(menu, this.menu_id)
     this.data = $.extend(true, {}, defs, option)
     const data = this.data
     data.point = { x: -1, y: -1 }
@@ -59,7 +62,16 @@ class aTable extends aTemplate {
     this.convert = {}
     this.convert.getStyleByAlign = this.getStyleByAlign
     this.convert.setClass = this.setClass
-    $(ele).wrap(`<div data-id="${this.id}"></div>`)
+    const html = `
+    <div class='a-table-container'>
+        <div data-id="${this.menu_id}"></div>
+        <div class='a-table-outer'>
+          <div class='a-table-inner'>
+            <div data-id="${this.id}">
+          </div>
+        </div>
+    </div>`
+    $(ele).before(html);
     $(ele).remove()
     this.update()
   }
@@ -263,7 +275,7 @@ class aTable extends aTemplate {
       })
     })
     if (points.length > 1) {
-      this.update()
+      this.update("html",this.id)
     }
   }
 
@@ -334,7 +346,7 @@ class aTable extends aTemplate {
     data.showMenu = true
     data.menuX = this.e.clientX
     data.menuY = this.e.clientY
-    this.update()
+    this.update("html",this.id)
   }
 
   parse (html) {
@@ -443,6 +455,8 @@ class aTable extends aTemplate {
     const width = point.width
     const selectedPoints = this.getSelectedPoints()
     const $th = $('.js-table-header th', `[data-id="${this.id}"]`)
+    const $table = $('table', `[data-id="${this.id}"]`)
+    const $inner = $table.parents('.a-table-inner')
     const elem = $('.a-table-selected .a-table-editable', `[data-id="${this.id}"]`)[0]
     if (elem && !this.data.showMenu && selectedPoints.length === 1) {
       setTimeout(() => {
@@ -468,6 +482,12 @@ class aTable extends aTemplate {
         $(this).remove()
       }
     })
+
+    //for scroll
+    $inner.width(9999);
+    const tableWidth = $table.width();
+    $inner.width(tableWidth);
+
     if (this.afterRendered) {
       this.afterRendered()
     }
@@ -490,7 +510,7 @@ class aTable extends aTemplate {
         hist.push(clone(row))
       }
       data.row = row
-      this.update()
+      this.update("html",this.id)
     }
   }
 
@@ -534,7 +554,7 @@ class aTable extends aTemplate {
     data.selectedColNo = -1
     data.selectedRowNo = i
     this.contextmenu()
-    this.update()
+    this.update("html",this.id)
   }
 
   selectCol (i) {
@@ -559,7 +579,7 @@ class aTable extends aTemplate {
     data.selectedRowNo = -1
     data.selectedColNo = i
     this.contextmenu()
-    this.update()
+    this.update("html",this.id)
   }
 
   removeCol (selectedno) {
@@ -584,7 +604,7 @@ class aTable extends aTemplate {
       }
     })
     data.history.push(clone(data.row))
-    this.update()
+    this.update("html",this.id)
   }
 
   removeRow (selectedno) {
@@ -640,7 +660,7 @@ class aTable extends aTemplate {
       data.row[selectedno] = { col: insertCells }
     }
     data.history.push(clone(data.row))
-    this.update()
+    this.update("html",this.id)
   }
 
   static isSmartPhone () {
@@ -686,7 +706,7 @@ class aTable extends aTemplate {
               e.preventDefault()
               data.row = newRow
               data.history.push(clone(data.row))
-              this.update()
+              this.update("html",this.id)
               return;
           }
         }
@@ -696,7 +716,7 @@ class aTable extends aTemplate {
         if(row && row.length) {
             e.preventDefault()
             data.row = row
-            this.update()
+            this.update("html",this.id)
             data.history.push(clone(data.row))
             return;
         }
@@ -707,7 +727,7 @@ class aTable extends aTemplate {
         if (!this.data.beingInput) {
           if (points.length !== 1 || !this.data.row[a].col[b].selected) {
             this.select(a, b)
-            this.update()
+            this.update("html",this.id)
           }
         }
       }
@@ -724,7 +744,7 @@ class aTable extends aTemplate {
       if (points.length !== 1 || !this.data.row[a].col[b].selected) {
         if (!this.data.beingInput) {
           this.select(a, b)
-          this.update()
+          this.update("html",this.id)
         }
       }
     } else if (type === 'input') {
@@ -776,7 +796,7 @@ class aTable extends aTemplate {
       }
     })
     data.history.push(clone(data.row))
-    this.update()
+    this.update("html",this.id)
   }
 
   insertColLeft (selectedno) {
@@ -818,7 +838,7 @@ class aTable extends aTemplate {
       }
     })
     data.history.push(clone(data.row))
-    this.update()
+    this.update("html",this.id)
   }
 
   beforeUpdated () {
@@ -875,7 +895,7 @@ class aTable extends aTemplate {
     })
     this.insertRow(selectedno + 1, newRow)
     data.history.push(clone(data.row))
-    this.update()
+    this.update("html",this.id)
   }
 
   insertRowAbove (selectedno) {
@@ -927,7 +947,7 @@ class aTable extends aTemplate {
     })
     this.insertRow(selectedno, newRow)
     data.history.push(clone(this.data.row))
-    this.update()
+    this.update("html",this.id)
   }
 
   mergeCells () {
@@ -951,7 +971,7 @@ class aTable extends aTemplate {
     cell.rowspan = point.height
     data.showMenu = false
     data.history.push(clone(data.row))
-    this.update()
+    this.update("html",this.id)
   }
 
   splitCell () {
@@ -1045,7 +1065,7 @@ class aTable extends aTemplate {
     data.showMenu = false
     data.history.push(clone(data.row))
     data.splited = true
-    this.update()
+    this.update("html",this.id)
   }
 
   changeCellTypeTo (type) {
@@ -1059,7 +1079,7 @@ class aTable extends aTemplate {
     })
     data.showMenu = false
     data.history.push(clone(data.row))
-    this.update()
+    this.update("html",this.id)
   }
 
   align (align) {
@@ -1073,7 +1093,7 @@ class aTable extends aTemplate {
     })
     data.showMenu = false
     data.history.push(clone(data.row))
-    this.update()
+    this.update("html",this.id)
   }
 
   getStyleByAlign (val) {
@@ -1135,7 +1155,7 @@ class aTable extends aTemplate {
       })
     })
     data.history.push(clone(data.row))
-    this.update()
+    this.update("html",this.id)
   }
 
   changeSelectOption () {
