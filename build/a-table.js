@@ -5,7 +5,7 @@
  * a-table:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
- *   version: 1.0.17
+ *   version: 1.0.18
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -6819,9 +6819,13 @@ var aTable = function (_aTemplate) {
           this.selectRange(a, b);
         }
       } else if (type === 'paste') {
-        var clipboardData = e.originalEvent.clipboardData || window.clipboardData;
-        if (clipboardData) {
-          var pastedData = clipboardData.getData('text/html');
+        var pastedData = void 0;
+        if (e.originalEvent.clipboardData) {
+          pastedData = e.originalEvent.clipboardData.getData('text/html');
+        } else if (window.clipboardData) {
+          pastedData = window.clipboardData.getData('Text');
+        }
+        if (pastedData) {
           var tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
           if (tableHtml && tableHtml[0]) {
             var newRow = this.parse(tableHtml[0]);
@@ -6834,8 +6838,7 @@ var aTable = function (_aTemplate) {
             }
           }
           //for excel;
-          var pastedTextData = clipboardData.getData('text/plain');
-          var row = this.parseText(pastedTextData);
+          var row = this.parseText(pastedData);
           if (row && row.length) {
             e.preventDefault();
             data.row = row;
