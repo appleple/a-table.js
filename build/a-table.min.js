@@ -5,7 +5,7 @@
  * a-table:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
- *   version: 1.0.18
+ *   version: 1.0.19
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
