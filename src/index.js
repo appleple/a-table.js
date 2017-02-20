@@ -64,10 +64,10 @@ class aTable extends aTemplate {
     this.convert.setClass = this.setClass
     const html = `
     <div class='a-table-container'>
-        <div data-id="${this.menu_id}"></div>
+        <div data-id='${this.menu_id}'></div>
         <div class='a-table-outer'>
           <div class='a-table-inner'>
-            <div data-id="${this.id}">
+            <div data-id='${this.id}'>
           </div>
         </div>
     </div>`
@@ -93,7 +93,7 @@ class aTable extends aTemplate {
   }
 
   getCellByIndex (x, y) {
-    return $(`[data-id="${this.id}"] [data-cell-id="${x}-${y}"]`)
+    return $(`[data-id='${this.id}'] [data-cell-id='${x}-${y}']`)
   }
 
   getCellInfoByIndex (x, y) {
@@ -108,12 +108,12 @@ class aTable extends aTemplate {
     let returnTop = -1
     const width = parseInt($cell.attr('colspan'))
     const height = parseInt($cell.attr('rowspan'))
-    $(`[data-id="${this.id}"] .js-table-header th`).each(function (i) {
+    $(`[data-id='${this.id}'] .js-table-header th`).each(function (i) {
       if ($(this).offset().left === left) {
         returnLeft = i
       }
     })
-    $(`[data-id="${this.id}"] .js-table-side`).each(function (i) {
+    $(`[data-id='${this.id}'] .js-table-side`).each(function (i) {
       if ($(this).offset().top === top) {
         returnTop = i
       }
@@ -275,7 +275,7 @@ class aTable extends aTemplate {
       })
     })
     if (points.length > 1) {
-      this.update("html",this.id)
+      this.update('html',this.id)
     }
   }
 
@@ -339,14 +339,14 @@ class aTable extends aTemplate {
   }
 
   contextmenu () {
-    const $ele = $(`[data-id="${this.id}"]`)
+    const $ele = $(`[data-id='${this.id}']`)
     const $target = $(this.e.target)
     const data = this.data
     this.e.preventDefault()
     data.showMenu = true
     data.menuX = this.e.clientX
     data.menuY = this.e.clientY
-    this.update("html",this.id)
+    this.update('html',this.id)
   }
 
   parse (html) {
@@ -454,10 +454,10 @@ class aTable extends aTemplate {
     const point = this.getLargePoint.apply(null, points)
     const width = point.width
     const selectedPoints = this.getSelectedPoints()
-    const $th = $('.js-table-header th', `[data-id="${this.id}"]`)
-    const $table = $('table', `[data-id="${this.id}"]`)
+    const $th = $('.js-table-header th', `[data-id='${this.id}']`)
+    const $table = $('table', `[data-id='${this.id}']`)
     const $inner = $table.parents('.a-table-inner')
-    const elem = $('.a-table-selected .a-table-editable', `[data-id="${this.id}"]`)[0]
+    const elem = $('.a-table-selected .a-table-editable', `[data-id='${this.id}']`)[0]
     if (elem && !this.data.showMenu && selectedPoints.length === 1) {
       setTimeout(() => {
         elem.focus()
@@ -510,7 +510,7 @@ class aTable extends aTemplate {
         hist.push(clone(row))
       }
       data.row = row
-      this.update("html",this.id)
+      this.update('html',this.id)
     }
   }
 
@@ -554,7 +554,7 @@ class aTable extends aTemplate {
     data.selectedColNo = -1
     data.selectedRowNo = i
     this.contextmenu()
-    this.update("html",this.id)
+    this.update('html',this.id)
   }
 
   selectCol (i) {
@@ -579,7 +579,7 @@ class aTable extends aTemplate {
     data.selectedRowNo = -1
     data.selectedColNo = i
     this.contextmenu()
-    this.update("html",this.id)
+    this.update('html',this.id)
   }
 
   removeCol (selectedno) {
@@ -604,7 +604,7 @@ class aTable extends aTemplate {
       }
     })
     data.history.push(clone(data.row))
-    this.update("html",this.id)
+    this.update('html',this.id)
   }
 
   removeRow (selectedno) {
@@ -660,7 +660,7 @@ class aTable extends aTemplate {
       data.row[selectedno] = { col: insertCells }
     }
     data.history.push(clone(data.row))
-    this.update("html",this.id)
+    this.update('html',this.id)
   }
 
   static isSmartPhone () {
@@ -710,7 +710,7 @@ class aTable extends aTemplate {
               e.preventDefault()
               data.row = newRow
               data.history.push(clone(data.row))
-              this.update("html",this.id)
+              this.update('html',this.id)
               return;
           }
         }
@@ -719,7 +719,7 @@ class aTable extends aTemplate {
         if(row && row.length) {
             e.preventDefault()
             data.row = row
-            this.update("html",this.id)
+            this.update('html',this.id)
             data.history.push(clone(data.row))
             return;
         }
@@ -730,7 +730,7 @@ class aTable extends aTemplate {
         if (!this.data.beingInput) {
           if (points.length !== 1 || !this.data.row[a].col[b].selected) {
             this.select(a, b)
-            this.update("html",this.id)
+            this.update('html',this.id)
           }
         }
       }
@@ -747,7 +747,7 @@ class aTable extends aTemplate {
       if (points.length !== 1 || !this.data.row[a].col[b].selected) {
         if (!this.data.beingInput) {
           this.select(a, b)
-          this.update("html",this.id)
+          this.update('html',this.id)
         }
       }
     } else if (type === 'input') {
@@ -799,7 +799,7 @@ class aTable extends aTemplate {
       }
     })
     data.history.push(clone(data.row))
-    this.update("html",this.id)
+    this.update('html',this.id)
   }
 
   insertColLeft (selectedno) {
@@ -841,7 +841,7 @@ class aTable extends aTemplate {
       }
     })
     data.history.push(clone(data.row))
-    this.update("html",this.id)
+    this.update('html',this.id)
   }
 
   beforeUpdated () {
@@ -898,7 +898,7 @@ class aTable extends aTemplate {
     })
     this.insertRow(selectedno + 1, newRow)
     data.history.push(clone(data.row))
-    this.update("html",this.id)
+    this.update('html',this.id)
   }
 
   insertRowAbove (selectedno) {
@@ -950,7 +950,7 @@ class aTable extends aTemplate {
     })
     this.insertRow(selectedno, newRow)
     data.history.push(clone(this.data.row))
-    this.update("html",this.id)
+    this.update('html',this.id)
   }
 
   mergeCells () {
@@ -974,7 +974,7 @@ class aTable extends aTemplate {
     cell.rowspan = point.height
     data.showMenu = false
     data.history.push(clone(data.row))
-    this.update("html",this.id)
+    this.update('html',this.id)
   }
 
   splitCell () {
@@ -1055,7 +1055,7 @@ class aTable extends aTemplate {
     rows.forEach((row) => {
       const index = row[row.length - 1]
       for (let i = 0; i < width; i++) {
-        let val = "";
+        let val = '';
         //スプリットされる前のコルのデータを保存
         if(first === true && i === width - 1){
           val = currentValue;
@@ -1068,7 +1068,7 @@ class aTable extends aTemplate {
     data.showMenu = false
     data.history.push(clone(data.row))
     data.splited = true
-    this.update("html",this.id)
+    this.update('html',this.id)
   }
 
   changeCellTypeTo (type) {
@@ -1082,7 +1082,7 @@ class aTable extends aTemplate {
     })
     data.showMenu = false
     data.history.push(clone(data.row))
-    this.update("html",this.id)
+    this.update('html',this.id)
   }
 
   align (align) {
@@ -1096,7 +1096,7 @@ class aTable extends aTemplate {
     })
     data.showMenu = false
     data.history.push(clone(data.row))
-    this.update("html",this.id)
+    this.update('html',this.id)
   }
 
   getStyleByAlign (val) {
@@ -1158,7 +1158,7 @@ class aTable extends aTemplate {
       })
     })
     data.history.push(clone(data.row))
-    this.update("html",this.id)
+    this.update('html',this.id)
   }
 
   changeSelectOption () {
