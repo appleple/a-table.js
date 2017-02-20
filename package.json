@@ -1,6 +1,6 @@
 {
   "name": "a-table",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "main": "lib/index.js",
   "description": "Editable table library",
   "author": "appleple",
