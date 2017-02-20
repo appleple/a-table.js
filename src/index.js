@@ -663,16 +663,6 @@ class aTable extends aTemplate {
     this.update('html',this.id)
   }
 
-  static isSmartPhone () {
-    const agent = navigator.userAgent
-    if (agent.indexOf('iPhone') > 0 || agent.indexOf('iPad') > 0
-        || agent.indexOf('ipod') > 0 || agent.indexOf('Android') > 0) {
-      return true
-    } else {
-      return false
-    }
-  }
-
   updateTable (b, a) {
     const data = this.data
     const e = this.e
@@ -751,6 +741,14 @@ class aTable extends aTemplate {
         }
       }
     } else if (type === 'input') {
+      if ($(this.e.target).hasClass('a-table-editable') && $(this.e.target).parents('td').attr('data-cell-id') === `${b}-${a}`) {
+        data.history.push(clone(data.row))
+        data.row[a].col[b].value = $(this.e.target).html()
+      }
+      if (this.afterEntered) {
+        this.afterEntered()
+      }
+    } else if (type === 'keyup' && aTable.getBrowser().indexOf('ie') !== -1 ) {
       if ($(this.e.target).hasClass('a-table-editable') && $(this.e.target).parents('td').attr('data-cell-id') === `${b}-${a}`) {
         data.history.push(clone(data.row))
         data.row[a].col[b].value = $(this.e.target).html()
@@ -1182,6 +1180,50 @@ class aTable extends aTemplate {
       data.cellClass = ''
     }
   }
+
+  static isSmartPhone () {
+    const agent = navigator.userAgent
+    if (agent.indexOf('iPhone') > 0 || agent.indexOf('iPad') > 0
+        || agent.indexOf('ipod') > 0 || agent.indexOf('Android') > 0) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  static getBrowser () {
+      const ua = window.navigator.userAgent.toLowerCase();
+      const ver = window.navigator.appVersion.toLowerCase();
+      let name = 'unknown';
+
+      if (ua.indexOf("msie") != -1){
+          if (ver.indexOf("msie 6.") != -1){
+              name = 'ie6';
+          }else if (ver.indexOf("msie 7.") != -1){
+              name = 'ie7';
+          }else if (ver.indexOf("msie 8.") != -1){
+              name = 'ie8';
+          }else if (ver.indexOf("msie 9.") != -1){
+              name = 'ie9';
+          }else if (ver.indexOf("msie 10.") != -1){
+              name = 'ie10';
+          }else{
+              name = 'ie';
+          }
+      }else if(ua.indexOf('trident/7') != -1){
+          name = 'ie11';
+      }else if (ua.indexOf('chrome') != -1){
+          name = 'chrome';
+      }else if (ua.indexOf('safari') != -1){
+          name = 'safari';
+      }else if (ua.indexOf('opera') != -1){
+          name = 'opera';
+      }else if (ua.indexOf('firefox') != -1){
+          name = 'firefox';
+      }
+      return name;
+  }
+
 }
 
 module.exports = aTable
