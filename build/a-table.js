@@ -5,7 +5,7 @@
  * a-table:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
- *   version: 1.0.22
+ *   version: 1.0.23
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -6174,7 +6174,7 @@ var aTable = function (_aTemplate) {
     _this.convert = {};
     _this.convert.getStyleByAlign = _this.getStyleByAlign;
     _this.convert.setClass = _this.setClass;
-    var html = '\n    <div class=\'a-table-container\'>\n        <div data-id=\'' + _this.menu_id + '\'></div>\n        <div class=\'a-table-outer\'>\n          <div class=\'a-table-inner\'>\n            <div data-id=\'' + _this.id + '\'>\n          </div>\n        </div>\n    </div>';
+    var html = '\n    <div class=\'a-table-container\'>\n        <div data-id=\'' + _this.menu_id + '\'></div>\n        <div class=\'a-table-outer\'>\n          <div class=\'a-table-inner\'>\n            <div data-id=\'' + _this.id + '\'></div>\n          </div>\n        </div>\n    </div>';
     (0, _zeptoBrowserify.$)(ele).before(html);
     (0, _zeptoBrowserify.$)(ele).remove();
     _this.update();
