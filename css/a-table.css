@@ -41,6 +41,7 @@
 	border-collapse: collapse;
 	table-layout: fixed;
 	font-family: "Open Sans", Helvetica, Arial, sans-serif;
+	width: auto !important;
 }
 
 .a-table input {
