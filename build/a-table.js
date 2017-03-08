@@ -5,12 +5,11 @@
  * a-table:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
- *   version: 1.0.24
+ *   version: 1.0.25
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: steelydylan
- *   maintainers: steelydylan <ess_president@me.com>
  *   version: 0.0.19
  *
  * base64-js:
@@ -6390,7 +6389,7 @@ var aTable = function (_aTemplate) {
         });
       });
       if (points.length > 1) {
-        this.update('html', this.id);
+        this.update();
       }
     }
   }, {
@@ -6466,7 +6465,7 @@ var aTable = function (_aTemplate) {
       data.showMenu = true;
       data.menuX = this.e.clientX;
       data.menuY = this.e.clientY;
-      this.update('html', this.id);
+      this.update();
     }
   }, {
     key: 'parse',
@@ -6634,7 +6633,7 @@ var aTable = function (_aTemplate) {
           hist.push((0, _clone2.default)(row));
         }
         data.row = row;
-        this.update('html', this.id);
+        this.update();
       }
     }
   }, {
@@ -6681,7 +6680,7 @@ var aTable = function (_aTemplate) {
       data.selectedColNo = -1;
       data.selectedRowNo = i;
       this.contextmenu();
-      this.update('html', this.id);
+      this.update();
     }
   }, {
     key: 'selectCol',
@@ -6707,7 +6706,7 @@ var aTable = function (_aTemplate) {
       data.selectedRowNo = -1;
       data.selectedColNo = i;
       this.contextmenu();
-      this.update('html', this.id);
+      this.update();
     }
   }, {
     key: 'removeCol',
@@ -6733,7 +6732,7 @@ var aTable = function (_aTemplate) {
         }
       });
       data.history.push((0, _clone2.default)(data.row));
-      this.update('html', this.id);
+      this.update();
     }
   }, {
     key: 'removeRow',
@@ -6790,7 +6789,7 @@ var aTable = function (_aTemplate) {
         data.row[selectedno] = { col: insertCells };
       }
       data.history.push((0, _clone2.default)(data.row));
-      this.update('html', this.id);
+      this.update();
     }
   }, {
     key: 'updateTable',
@@ -6834,7 +6833,7 @@ var aTable = function (_aTemplate) {
               e.preventDefault();
               data.row = newRow;
               data.history.push((0, _clone2.default)(data.row));
-              this.update('html', this.id);
+              this.update();
               return;
             }
           }
@@ -6843,7 +6842,7 @@ var aTable = function (_aTemplate) {
           if (row && row.length) {
             e.preventDefault();
             data.row = row;
-            this.update('html', this.id);
+            this.update();
             data.history.push((0, _clone2.default)(data.row));
             return;
           }
@@ -6854,7 +6853,7 @@ var aTable = function (_aTemplate) {
           if (!this.data.beingInput) {
             if (points.length !== 1 || !this.data.row[a].col[b].selected) {
               this.select(a, b);
-              this.update('html', this.id);
+              this.update();
             }
           }
         }
@@ -6871,7 +6870,7 @@ var aTable = function (_aTemplate) {
         if (points.length !== 1 || !this.data.row[a].col[b].selected) {
           if (!this.data.beingInput) {
             this.select(a, b);
-            this.update('html', this.id);
+            this.update();
           }
         }
       } else if (type === 'input') {
@@ -6933,7 +6932,7 @@ var aTable = function (_aTemplate) {
         }
       });
       data.history.push((0, _clone2.default)(data.row));
-      this.update('html', this.id);
+      this.update();
     }
   }, {
     key: 'insertColLeft',
@@ -6976,7 +6975,7 @@ var aTable = function (_aTemplate) {
         }
       });
       data.history.push((0, _clone2.default)(data.row));
-      this.update('html', this.id);
+      this.update();
     }
   }, {
     key: 'beforeUpdated',
@@ -7035,7 +7034,7 @@ var aTable = function (_aTemplate) {
       });
       this.insertRow(selectedno + 1, newRow);
       data.history.push((0, _clone2.default)(data.row));
-      this.update('html', this.id);
+      this.update();
     }
   }, {
     key: 'insertRowAbove',
@@ -7088,7 +7087,7 @@ var aTable = function (_aTemplate) {
       });
       this.insertRow(selectedno, newRow);
       data.history.push((0, _clone2.default)(this.data.row));
-      this.update('html', this.id);
+      this.update();
     }
   }, {
     key: 'mergeCells',
@@ -7106,6 +7105,9 @@ var aTable = function (_aTemplate) {
       if (points.length === 0) {
         return;
       }
+      if (!confirm('セルを結合すると、一番左上の値のみが保持されます。 結合しますか？')) {
+        return;
+      }
       var point = this.getLargePoint.apply(null, points);
       var cell = this.getCellByPos(point.x, point.y);
       this.removeSelectedCellExcept(cell);
@@ -7113,7 +7115,7 @@ var aTable = function (_aTemplate) {
       cell.rowspan = point.height;
       data.showMenu = false;
       data.history.push((0, _clone2.default)(data.row));
-      this.update('html', this.id);
+      this.update();
     }
   }, {
     key: 'splitCell',
@@ -7208,7 +7210,7 @@ var aTable = function (_aTemplate) {
       data.showMenu = false;
       data.history.push((0, _clone2.default)(data.row));
       data.splited = true;
-      this.update('html', this.id);
+      this.update();
     }
   }, {
     key: 'changeCellTypeTo',
@@ -7223,7 +7225,7 @@ var aTable = function (_aTemplate) {
       });
       data.showMenu = false;
       data.history.push((0, _clone2.default)(data.row));
-      this.update('html', this.id);
+      this.update();
     }
   }, {
     key: 'align',
@@ -7238,7 +7240,7 @@ var aTable = function (_aTemplate) {
       });
       data.showMenu = false;
       data.history.push((0, _clone2.default)(data.row));
-      this.update('html', this.id);
+      this.update();
     }
   }, {
     key: 'getStyleByAlign',
@@ -7305,7 +7307,7 @@ var aTable = function (_aTemplate) {
         });
       });
       data.history.push((0, _clone2.default)(data.row));
-      this.update('html', this.id);
+      this.update();
     }
   }, {
     key: 'changeSelectOption',

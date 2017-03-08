@@ -275,7 +275,7 @@ class aTable extends aTemplate {
       })
     })
     if (points.length > 1) {
-      this.update('html',this.id)
+      this.update();
     }
   }
 
@@ -346,7 +346,7 @@ class aTable extends aTemplate {
     data.showMenu = true
     data.menuX = this.e.clientX
     data.menuY = this.e.clientY
-    this.update('html',this.id)
+    this.update();
   }
 
   parse (html) {
@@ -510,7 +510,7 @@ class aTable extends aTemplate {
         hist.push(clone(row))
       }
       data.row = row
-      this.update('html',this.id)
+      this.update();
     }
   }
 
@@ -554,7 +554,7 @@ class aTable extends aTemplate {
     data.selectedColNo = -1
     data.selectedRowNo = i
     this.contextmenu()
-    this.update('html',this.id)
+    this.update();
   }
 
   selectCol (i) {
@@ -579,7 +579,7 @@ class aTable extends aTemplate {
     data.selectedRowNo = -1
     data.selectedColNo = i
     this.contextmenu()
-    this.update('html',this.id)
+    this.update();
   }
 
   removeCol (selectedno) {
@@ -604,7 +604,7 @@ class aTable extends aTemplate {
       }
     })
     data.history.push(clone(data.row))
-    this.update('html',this.id)
+    this.update();
   }
 
   removeRow (selectedno) {
@@ -660,7 +660,7 @@ class aTable extends aTemplate {
       data.row[selectedno] = { col: insertCells }
     }
     data.history.push(clone(data.row))
-    this.update('html',this.id)
+    this.update();
   }
 
   updateTable (b, a) {
@@ -700,7 +700,7 @@ class aTable extends aTemplate {
               e.preventDefault()
               data.row = newRow
               data.history.push(clone(data.row))
-              this.update('html',this.id)
+              this.update();
               return;
           }
         }
@@ -709,7 +709,7 @@ class aTable extends aTemplate {
         if(row && row.length) {
             e.preventDefault()
             data.row = row
-            this.update('html',this.id)
+            this.update();
             data.history.push(clone(data.row))
             return;
         }
@@ -720,7 +720,7 @@ class aTable extends aTemplate {
         if (!this.data.beingInput) {
           if (points.length !== 1 || !this.data.row[a].col[b].selected) {
             this.select(a, b)
-            this.update('html',this.id)
+            this.update();
           }
         }
       }
@@ -737,7 +737,7 @@ class aTable extends aTemplate {
       if (points.length !== 1 || !this.data.row[a].col[b].selected) {
         if (!this.data.beingInput) {
           this.select(a, b)
-          this.update('html',this.id)
+          this.update();
         }
       }
     } else if (type === 'input') {
@@ -797,7 +797,7 @@ class aTable extends aTemplate {
       }
     })
     data.history.push(clone(data.row))
-    this.update('html',this.id)
+    this.update();
   }
 
   insertColLeft (selectedno) {
@@ -839,7 +839,7 @@ class aTable extends aTemplate {
       }
     })
     data.history.push(clone(data.row))
-    this.update('html',this.id)
+    this.update();
   }
 
   beforeUpdated () {
@@ -896,7 +896,7 @@ class aTable extends aTemplate {
     })
     this.insertRow(selectedno + 1, newRow)
     data.history.push(clone(data.row))
-    this.update('html',this.id)
+    this.update();
   }
 
   insertRowAbove (selectedno) {
@@ -948,7 +948,7 @@ class aTable extends aTemplate {
     })
     this.insertRow(selectedno, newRow)
     data.history.push(clone(this.data.row))
-    this.update('html',this.id)
+    this.update();
   }
 
   mergeCells () {
@@ -965,6 +965,9 @@ class aTable extends aTemplate {
     if (points.length === 0) {
       return
     }
+    if (!confirm('セルを結合すると、一番左上の値のみが保持されます。 結合しますか？')){
+      return
+    }
     const point = this.getLargePoint.apply(null, points)
     const cell = this.getCellByPos(point.x, point.y)
     this.removeSelectedCellExcept(cell)
@@ -972,7 +975,7 @@ class aTable extends aTemplate {
     cell.rowspan = point.height
     data.showMenu = false
     data.history.push(clone(data.row))
-    this.update('html',this.id)
+    this.update();
   }
 
   splitCell () {
@@ -1066,7 +1069,7 @@ class aTable extends aTemplate {
     data.showMenu = false
     data.history.push(clone(data.row))
     data.splited = true
-    this.update('html',this.id)
+    this.update();
   }
 
   changeCellTypeTo (type) {
@@ -1080,7 +1083,7 @@ class aTable extends aTemplate {
     })
     data.showMenu = false
     data.history.push(clone(data.row))
-    this.update('html',this.id)
+    this.update();
   }
 
   align (align) {
@@ -1094,7 +1097,7 @@ class aTable extends aTemplate {
     })
     data.showMenu = false
     data.history.push(clone(data.row))
-    this.update('html',this.id)
+    this.update();
   }
 
   getStyleByAlign (val) {
@@ -1156,7 +1159,7 @@ class aTable extends aTemplate {
       })
     })
     data.history.push(clone(data.row))
-    this.update('html',this.id)
+    this.update();
   }
 
   changeSelectOption () {
