@@ -689,61 +689,16 @@ class aTable extends aTemplate {
         this.selectRange(a, b)
       }
     } else if (type === 'copy') {
-      e.preventDefault()
-      let copy_y = -1
-      let copy_text = ''
-      points.forEach((point) => {
-        const cell = this.getCellByPos(point.x, point.y)
-        if (copy_y !== point.y) {
-          copy_text += `${String.fromCharCode(13)}${cell.value}`
-        } else {
-          copy_text += `${String.fromCharCode(9)}${cell.value}`
-        }
-        copy_y = point.y
-      })
-      copy_text += String.fromCharCode(13)
-      copy_text = copy_text.substr(1)
-      if (e.originalEvent.clipboardData) {
-        e.originalEvent.clipboardData.setData('text/html',copy_text)
-      } else if ( window.clipboardData ) {
-        window.clipboardData.setData('Text',copy_text)
-      }
+      this.copyTable(e,points)
     } else if (type === 'paste') {
-      let pastedData
-      if (e.originalEvent.clipboardData) {
-        pastedData = e.originalEvent.clipboardData.getData('text/html')
-      } else if ( window.clipboardData ) {
-        pastedData = window.clipboardData.getData('Text')
-      }
-      if( pastedData ) {
-        const tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i)
-        if(tableHtml && tableHtml[0]) {
-          const newRow = this.parse(tableHtml[0]);
-          if(newRow && newRow.length) {
-              e.preventDefault()
-              data.row = newRow
-              data.history.push(clone(data.row))
-              this.update();
-              return;
-          }
-        }
-        //for excel;
-        const row = this.parseText(pastedData);
-        if(row && row.length) {
-            e.preventDefault()
-            data.row = row
-            this.update();
-            data.history.push(clone(data.row))
-            return;
-        }
-      }
+      this.pasteTable(e)
     } else if (type === 'mousedown' && !isSmartPhone) {
       if (this.e.button !== 2 && !this.e.ctrlKey) {
         this.mousedown = true
         if (!this.data.beingInput) {
           if (points.length !== 1 || !this.data.row[a].col[b].selected) {
             this.select(a, b)
-            this.update();
+            this.update()
           }
         }
       }
@@ -780,6 +735,64 @@ class aTable extends aTemplate {
         this.afterEntered()
       }
     }
+  }
+
+  copyTable (e, points) {
+      e.preventDefault()
+      let copy_y = -1
+      let copy_text = '<meta name="generator" content="Sheets"><table>'
+      let first = true
+      points.forEach((point) => {
+        const cell = this.getCellByPos(point.x, point.y)
+        if (copy_y !== point.y) {
+          if(!first){
+            copy_text += '</tr>'
+            first = false
+          }
+          copy_text += `<tr><td>${cell.value}</td>`
+        } else {
+          copy_text += `<td>${cell.value}</td>`
+        }
+        copy_y = point.y
+      })
+      copy_text += '</tr></table>'
+      if (e.originalEvent.clipboardData) {
+        e.originalEvent.clipboardData.setData('text/html',copy_text)
+      } else if ( window.clipboardData ) {
+        window.clipboardData.setData('Text',copy_text)
+      }
+  }
+
+  pasteTable (e) {
+      let pastedData
+      const data = this.data
+      if (e.originalEvent.clipboardData) {
+        pastedData = e.originalEvent.clipboardData.getData('text/html')
+      } else if ( window.clipboardData ) {
+        pastedData = window.clipboardData.getData('Text')
+      }
+      if( pastedData ) {
+        const tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i)
+        if(tableHtml && tableHtml[0]) {
+          const newRow = this.parse(tableHtml[0]);
+          if(newRow && newRow.length) {
+              e.preventDefault()
+              data.row = newRow
+              data.history.push(clone(data.row))
+              this.update();
+              return;
+          }
+        }
+        //for excel;
+        const row = this.parseText(pastedData);
+        if(row && row.length) {
+            e.preventDefault()
+            data.row = row
+            this.update();
+            data.history.push(clone(data.row))
+            return;
+        }
+      }
   }
 
   updateResult () {

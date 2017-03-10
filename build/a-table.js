@@ -5,7 +5,7 @@
  * a-table:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
- *   version: 1.0.26
+ *   version: 1.0.27
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -4130,7 +4130,14 @@ function isnan (val) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":3,"ieee754":6,"isarray":7}],5:[function(require,module,exports){
+},{"base64-js":3,"ieee754":7,"isarray":5}],5:[function(require,module,exports){
+var toString = {}.toString;
+
+module.exports = Array.isArray || function (arr) {
+  return toString.call(arr) == '[object Array]';
+};
+
+},{}],6:[function(require,module,exports){
 (function (Buffer){
 var clone = (function() {
 'use strict';
@@ -4391,7 +4398,7 @@ if (typeof module === 'object' && module.exports) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":4}],6:[function(require,module,exports){
+},{"buffer":4}],7:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -4476,13 +4483,6 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
   buffer[offset + i - d] |= s * 128
 }
-
-},{}],7:[function(require,module,exports){
-var toString = {}.toString;
-
-module.exports = Array.isArray || function (arr) {
-  return toString.call(arr) == '[object Array]';
-};
 
 },{}],8:[function(require,module,exports){
 /* Zepto v1.1.6 - zepto event ajax form ie - zeptojs.com/license */
@@ -6797,8 +6797,6 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'updateTable',
     value: function updateTable(b, a) {
-      var _this2 = this;
-
       var data = this.data;
       var e = this.e;
       var type = e.type;
@@ -6824,56 +6822,9 @@ var aTable = function (_aTemplate) {
           this.selectRange(a, b);
         }
       } else if (type === 'copy') {
-        (function () {
-          e.preventDefault();
-          var copy_y = -1;
-          var copy_text = '';
-          points.forEach(function (point) {
-            var cell = _this2.getCellByPos(point.x, point.y);
-            if (copy_y !== point.y) {
-              copy_text += '' + String.fromCharCode(13) + cell.value;
-            } else {
-              copy_text += '' + String.fromCharCode(9) + cell.value;
-            }
-            copy_y = point.y;
-          });
-          copy_text += String.fromCharCode(13);
-          copy_text = copy_text.substr(1);
-          if (e.originalEvent.clipboardData) {
-            e.originalEvent.clipboardData.setData('text/html', copy_text);
-          } else if (window.clipboardData) {
-            window.clipboardData.setData('Text', copy_text);
-          }
-        })();
+        this.copyTable(e, points);
       } else if (type === 'paste') {
-        var pastedData = void 0;
-        if (e.originalEvent.clipboardData) {
-          pastedData = e.originalEvent.clipboardData.getData('text/html');
-        } else if (window.clipboardData) {
-          pastedData = window.clipboardData.getData('Text');
-        }
-        if (pastedData) {
-          var tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
-          if (tableHtml && tableHtml[0]) {
-            var newRow = this.parse(tableHtml[0]);
-            if (newRow && newRow.length) {
-              e.preventDefault();
-              data.row = newRow;
-              data.history.push((0, _clone2.default)(data.row));
-              this.update();
-              return;
-            }
-          }
-          //for excel;
-          var row = this.parseText(pastedData);
-          if (row && row.length) {
-            e.preventDefault();
-            data.row = row;
-            this.update();
-            data.history.push((0, _clone2.default)(data.row));
-            return;
-          }
-        }
+        this.pasteTable(e);
       } else if (type === 'mousedown' && !isSmartPhone) {
         if (this.e.button !== 2 && !this.e.ctrlKey) {
           this.mousedown = true;
@@ -6915,6 +6866,68 @@ var aTable = function (_aTemplate) {
         }
         if (this.afterEntered) {
           this.afterEntered();
+        }
+      }
+    }
+  }, {
+    key: 'copyTable',
+    value: function copyTable(e, points) {
+      var _this2 = this;
+
+      e.preventDefault();
+      var copy_y = -1;
+      var copy_text = '<meta name="generator" content="Sheets"><table>';
+      var first = true;
+      points.forEach(function (point) {
+        var cell = _this2.getCellByPos(point.x, point.y);
+        if (copy_y !== point.y) {
+          if (!first) {
+            copy_text += '</tr>';
+            first = false;
+          }
+          copy_text += '<tr><td>' + cell.value + '</td>';
+        } else {
+          copy_text += '<td>' + cell.value + '</td>';
+        }
+        copy_y = point.y;
+      });
+      copy_text += '</tr></table>';
+      if (e.originalEvent.clipboardData) {
+        e.originalEvent.clipboardData.setData('text/html', copy_text);
+      } else if (window.clipboardData) {
+        window.clipboardData.setData('Text', copy_text);
+      }
+    }
+  }, {
+    key: 'pasteTable',
+    value: function pasteTable(e) {
+      var pastedData = void 0;
+      var data = this.data;
+      if (e.originalEvent.clipboardData) {
+        pastedData = e.originalEvent.clipboardData.getData('text/html');
+      } else if (window.clipboardData) {
+        pastedData = window.clipboardData.getData('Text');
+      }
+      if (pastedData) {
+        var tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
+        if (tableHtml && tableHtml[0]) {
+          var newRow = this.parse(tableHtml[0]);
+          if (newRow && newRow.length) {
+            e.preventDefault();
+            data.row = newRow;
+            data.history.push((0, _clone2.default)(data.row));
+            this.update();
+            return;
+          }
+        }
+        //for excel;
+        var row = this.parseText(pastedData);
+        if (row && row.length) {
+          e.preventDefault();
+          data.row = row;
+          this.update();
+          data.history.push((0, _clone2.default)(data.row));
+          return;
         }
       }
     }
@@ -7410,7 +7423,7 @@ var aTable = function (_aTemplate) {
 
 module.exports = aTable;
 
-},{"./menu.html":10,"./return-table.html":11,"./table.html":12,"a-template":1,"clone":5,"zepto-browserify":8}],10:[function(require,module,exports){
+},{"./menu.html":10,"./return-table.html":11,"./table.html":12,"a-template":1,"clone":6,"zepto-browserify":8}],10:[function(require,module,exports){
 module.exports = "<!-- BEGIN showBtnList:exist -->\n<div class=\"a-table-btn-group-list\">\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<!-- BEGIN inputMode:touch#table -->\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"changeInputMode(source)\"><i class=\"\\{mark.icon.source\\}\"></i><!-- BEGIN lang:touch#ja -->ソース<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->Source<!-- END lang:touch#en --></button>\n\t\t<!-- END inputMode:touch#table -->\n\t\t<!-- BEGIN inputMode:touch#source -->\n\t\t<button type=\"button\" class=\"\\{mark.btn.itemActive\\}\" data-action-click=\"changeInputMode(table)\"><i class=\"\\{mark.icon.source\\}\"></i><!-- BEGIN lang:touch#ja -->ソース<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->Source<!-- END lang:touch#en --></button>\n\t\t<!-- END inputMode:touch#source -->\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"mergeCells\"><i class=\"\\{mark.icon.merge\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"splitCell()\"><i class=\"\\{mark.icon.split\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"undo()\"><i class=\"\\{mark.icon.undo\\}\"></i></button>\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"changeCellTypeTo(td)\"><!-- BEGIN mark.icon.td:empty -->td<!-- END mark.icon.td:empty --><!-- BEGIN mark.icon.td:exist --><i class=\"\\{mark.icon.td\\}\"></i><!-- END mark.icon.td:exist --></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"changeCellTypeTo(th)\"><!-- BEGIN mark.icon.th:empty -->th<!-- END mark.icon.th:empty --><!-- BEGIN mark.icon.th:exist --><i class=\"\\{mark.icon.th\\}\"></i><!-- END mark.icon.th:exist --></button>\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"align(left)\"><i class=\"\\{mark.icon.alignLeft\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"align(center)\"><i class=\"\\{mark.icon.alignCenter\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"align(right)\"><i class=\"\\{mark.icon.alignRight\\}\"></i></button>\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<select class=\"\\{mark.selector.self\\}\" data-bind=\"cellClass\" data-action-change=\"changeCellClass()\">\n\t\t\t<option value=\"\"></option>\n\t\t\t<!-- BEGIN selector.option:loop -->\n\t\t\t<option value=\"{value}\">{label}</option>\n\t\t\t<!-- END selector.option:loop -->\n\t\t</select>\n\t</div>\n</div>\n<!-- END showBtnList:exist -->\n";
 
 },{}],11:[function(require,module,exports){
