@@ -458,9 +458,12 @@ class aTable extends aTemplate {
     const $table = $('table', `[data-id='${this.id}']`)
     const $inner = $table.parents('.a-table-inner')
     const elem = $('.a-table-selected .a-table-editable', `[data-id='${this.id}']`)[0]
-    if (elem && !this.data.showMenu && selectedPoints.length === 1) {
+    if (elem && !this.data.showMenu) {
       setTimeout(() => {
         elem.focus()
+        if (selectedPoints.length !== 1){
+          return;
+        }
         if (typeof window.getSelection !== 'undefined'
           && typeof document.createRange !== 'undefined') {
           const range = document.createRange()
@@ -685,8 +688,28 @@ class aTable extends aTemplate {
       if (this.e.shiftKey) {
         this.selectRange(a, b)
       }
+    } else if (type === 'copy') {
+      e.preventDefault()
+      let copy_y = -1
+      let copy_text = ''
+      points.forEach((point) => {
+        const cell = this.getCellByPos(point.x, point.y)
+        if (copy_y !== point.y) {
+          copy_text += `${String.fromCharCode(13)}${cell.value}`
+        } else {
+          copy_text += `${String.fromCharCode(9)}${cell.value}`
+        }
+        copy_y = point.y
+      })
+      copy_text += String.fromCharCode(13)
+      copy_text = copy_text.substr(1)
+      if (e.originalEvent.clipboardData) {
+        e.originalEvent.clipboardData.setData('text/html',copy_text)
+      } else if ( window.clipboardData ) {
+        window.clipboardData.setData('Text',copy_text)
+      }
     } else if (type === 'paste') {
-      let pastedData;
+      let pastedData
       if (e.originalEvent.clipboardData) {
         pastedData = e.originalEvent.clipboardData.getData('text/html')
       } else if ( window.clipboardData ) {
