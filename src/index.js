@@ -749,9 +749,9 @@ class aTable extends aTemplate {
             copy_text += '</tr>'
             first = false
           }
-          copy_text += `<tr><td>${cell.value}</td>`
+          copy_text += `<tr><${cell.type} colspan="${cell.colspan}" rowspan="${cell.rowspan}">${cell.value}</${cell.type}>`
         } else {
-          copy_text += `<td>${cell.value}</td>`
+          copy_text += `<${cell.type} colspan="${cell.colspan}" rowspan="${cell.rowspan}">${cell.value}</${cell.type}>`
         }
         copy_y = point.y
       })
