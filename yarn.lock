@@ -9,10 +9,11 @@ JSONStream@^1.0.3:
     jsonparse "^1.2.0"
     through ">=2.2.7 <3"
 
-a-template@0.0.20:
-  version "0.0.20"
-  resolved "https://registry.yarnpkg.com/a-template/-/a-template-0.0.20.tgz#a51c5870379e89503fe5339f101e5bd4d1b0549f"
+a-template@0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/a-template/-/a-template-0.1.2.tgz#b9d8956930df395d88d5e3410fe08e2661e281ef"
   dependencies:
+    morphdom "^2.3.1"
     zepto-browserify "*"
 
 abbrev@1:
@@ -3098,6 +3099,10 @@ module-deps@^4.0.8:
     subarg "^1.0.0"
     through2 "^2.0.0"
     xtend "^4.0.0"
+
+morphdom@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/morphdom/-/morphdom-2.3.1.tgz#94247c316360b92cee49e529815370763e27da90"
 
 ms@0.7.1:
   version "0.7.1"

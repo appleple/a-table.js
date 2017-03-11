@@ -1,6 +1,6 @@
 {
   "name": "a-table",
-  "version": "1.0.28",
+  "version": "1.1.0",
   "main": "lib/index.js",
   "description": "Editable table library",
   "author": "appleple",
@@ -16,7 +16,7 @@
     "test": "mocha ./test/test.js --timeout 1000000"
   },
   "dependencies": {
-    "a-template": "0.0.20",
+    "a-template": "0.1.2",
     "clone": "^2.0.0",
     "zepto-browserify": "^1.1.6-1"
   },

@@ -5,12 +5,12 @@
  * a-table:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
- *   version: 1.0.28
+ *   version: 1.1.0
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: steelydylan
- *   version: 0.0.20
+ *   version: 0.1.2
  *
  * base64-js:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -43,6 +43,11 @@
  *   homepage: https://github.com/juliangruber/isarray
  *   version: 1.0.0
  *
+ * morphdom:
+ *   license: MIT (http://opensource.org/licenses/MIT)
+ *   author: Patrick Steele-Idem <pnidem@gmail.com>
+ *   version: 2.3.1
+ *
  * zepto-browserify:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: Thomas Fuchs, jiyinyiyong
@@ -58,578 +63,621 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var $ = require("zepto-browserify").$;
+var morphdom = require('morphdom');
 var objs = [];
-var eventType = "input copy paste click change keydown keyup contextmenu mouseup mousedown mousemove touchstart touchend touchmove compositionstart compositionend";
+var eventType = "input paste copy click change keydown keyup contextmenu mouseup mousedown mousemove touchstart touchend touchmove compositionstart compositionend";
 var dataAction = eventType.replace(/([a-z]+)/g, "[data-action-$1],") + "[data-action]";
 var getObjectById = function getObjectById(id) {
-    for (var i = 0, n = objs.length; i < n; i++) {
-        var obj = objs[i];
-        var templates = obj.templates;
-        for (var t = 0, m = templates.length; t < m; t++) {
-            if (templates[t] == id) {
-                return obj;
-            }
-        }
+  for (var i = 0, n = objs.length; i < n; i++) {
+    var obj = objs[i];
+    var templates = obj.templates;
+    for (var t = 0, m = templates.length; t < m; t++) {
+      if (templates[t] == id) {
+        return obj;
+      }
     }
-    return null;
+  }
+  return null;
 };
+
 if (typeof jQuery !== "undefined") {
-    // for IE
-    $ = jQuery;
+  // for IE
+  $ = jQuery;
 }
+
+if (!Array.prototype.find) {
+  Array.prototype.find = function (predicate) {
+    if (this === null) {
+      throw new TypeError('Array.prototype.find called on null or undefined');
+    }
+    if (typeof predicate !== 'function') {
+      throw new TypeError('predicate must be a function');
+    }
+    var list = Object(this);
+    var length = list.length >>> 0;
+    var thisArg = arguments[1];
+    var value = void 0;
+
+    for (var i = 0; i < length; i++) {
+      value = list[i];
+      if (predicate.call(thisArg, value, i, list)) {
+        return value;
+      }
+    }
+    return undefined;
+  };
+}
+
 if (typeof document !== "undefined") {
-    //data binding
-    $(document).on("input change click", "[data-bind]", function (e) {
-        var data = $(this).data("bind");
-        var val = $(this).val();
-        var attr = $(this).attr("href");
-        if (attr) {
-            val = attr.replace("#", "");
+  //data binding
+  $(document).on("input change click", "[data-bind]", function (e) {
+    var data = $(this).attr("data-bind");
+    var val = $(this).val();
+    var attr = $(this).attr("href");
+    if (attr) {
+      val = attr.replace("#", "");
+    }
+    var id = $(this).parents("[data-id]").attr("data-id");
+    if (id) {
+      var obj = getObjectById(id);
+      if ($(e.target).attr("type") == "radio") {
+        if ($(this).is(":checked")) {
+          obj.updateDataByString(data, val);
+        } else {
+          obj.updateDataByString(data, '');
         }
-        var id = $(this).parents("[data-id]").data("id");
-        if (id) {
-            var obj = getObjectById(id);
-            if ($(e.target).attr("type") == "radio") {
-                if ($(this).is(":checked")) {
-                    obj.updateDataByString(data, val);
-                } else {
-                    obj.updateDataByString(data, '');
-                }
-            } else if ($(e.target).attr("type") == "checkbox") {
-                var arr = [];
-                $("[data-bind=\"" + data + "\"]").each(function () {
-                    if ($(this).is(":checked")) {
-                        arr.push($(this).val());
-                    }
-                });
-                obj.updateDataByString(data, arr);
-            } else {
-                obj.updateDataByString(data, val);
+      } else if ($(e.target).attr("type") == "checkbox") {
+        (function () {
+          var arr = [];
+          $("[data-bind=\"" + data + "\"]").each(function () {
+            if ($(this).is(":checked")) {
+              arr.push($(this).val());
             }
+          });
+          obj.updateDataByString(data, arr);
+        })();
+      } else {
+        obj.updateDataByString(data, val);
+      }
+    }
+  });
+  //action
+  $(document).on(eventType, dataAction, function (e) {
+    if (e.type == "click" && $(e.target).is("select")) {
+      return;
+    }
+    if (e.type == "input" && $(e.target).attr("type") == "button") {
+      return;
+    }
+    var events = eventType.split(" ");
+    var $self = $(this);
+    var action = "action";
+    events.forEach(function (event) {
+      if ($self.attr("data-action-" + event)) {
+        if (e.type === event) {
+          action += "-" + event;
         }
+      }
     });
-    //action
-    $(document).on(eventType, dataAction, function (e) {
-        if (e.type == "click" && $(e.target).is("select")) {
-            return;
-        }
-        if (e.type == "input" && $(e.target).attr("type") == "button") {
-            return;
-        }
-        var events = eventType.split(" ");
-        var $self = $(this);
-        var action = "action";
-        events.forEach(function (event) {
-            if ($self.data("action-" + event)) {
-                if (e.type === event) {
-                    action += "-" + event;
-                }
-            }
-        });
-        var string = $self.data(action);
-        if (!string) {
-            return;
-        }
-        var action = string.replace(/\(.*?\);?/, "");
-        var parameter = string.replace(/(.*?)\((.*?)\);?/, "$2");
-        var pts = parameter.split(","); //引き数
-        var id = $self.parents("[data-id]").data("id");
-        if (id) {
-            var obj = getObjectById(id);
-            obj.e = e;
-            if (obj.method && obj.method[action]) {
-                obj.method[action].apply(obj, pts);
-            } else if (obj[action]) {
-                obj[action].apply(obj, pts);
-            }
-        }
-    });
+    var string = $self.attr("data-" + action);
+    if (!string) {
+      return;
+    }
+    var method = string.replace(/\(.*?\);?/, "");
+    var parameter = string.replace(/(.*?)\((.*?)\);?/, "$2");
+    var pts = parameter.split(","); //引き数
+    var id = $self.parents("[data-id]").attr("data-id");
+    if (id) {
+      var obj = getObjectById(id);
+      obj.e = e;
+      if (obj.method && obj.method[method]) {
+        obj.method[method].apply(obj, pts);
+      } else if (obj[method]) {
+        obj[method].apply(obj, pts);
+      }
+    }
+  });
 }
 
 var aTemplate = function () {
-    function aTemplate(opt) {
-        _classCallCheck(this, aTemplate);
+  function aTemplate(opt) {
+    _classCallCheck(this, aTemplate);
 
-        objs.push(this);
-        for (var i in opt) {
-            this[i] = opt[i];
-        }
-        if (!this.data) {
-            this.data = {};
-        }
-        this.setId();
+    this.atemplate = [];
+    objs.push(this);
+    for (var i in opt) {
+      this[i] = opt[i];
     }
+    if (!this.data) {
+      this.data = {};
+    }
+    if (!this.templates) {
+      this.templates = [];
+    }
+    var templates = this.templates;
+    for (var _i = 0, n = this.templates.length; _i < n; _i++) {
+      var template = this.templates[_i];
+      this.atemplate.push({ id: template, html: $("#" + template).html() });
+    }
+    this.setId();
+  }
 
-    _createClass(aTemplate, [{
-        key: "addTemplate",
-        value: function addTemplate(template, id) {
-            $("body").append("<script type='text/template' id='" + id + "'>" + template + "</script>");
-            if (!this.templates) {
-                this.templates = [];
-            }
-            this.templates.push(id);
+  _createClass(aTemplate, [{
+    key: "addTemplate",
+    value: function addTemplate(id, html) {
+      this.atemplate.push({ id: id, html: html });
+      this.templates.push(id);
+    }
+  }, {
+    key: "loadHtml",
+    value: function loadHtml() {
+      var templates = this.templates;
+      var promises = [];
+      templates.forEach(function (template) {
+        var d = new $.Deferred();
+        promises.push(d);
+        var src = $("#" + template).attr("src");
+        $.ajax({
+          url: src,
+          type: 'GET',
+          dataType: 'text'
+        }).success(function (data) {
+          $("#" + template).html(data);
+          d.resolve();
+        });
+      });
+      return $.when.apply($, promises);
+    }
+  }, {
+    key: "getData",
+    value: function getData() {
+      return JSON.parse(JSON.stringify(this.data));
+    }
+  }, {
+    key: "saveData",
+    value: function saveData(key) {
+      var data = JSON.stringify(this.data);
+      localStorage.setItem(key, data);
+    }
+  }, {
+    key: "setData",
+    value: function setData(val) {
+      for (var i in val) {
+        if (typeof val[i] !== "function") {
+          this.data[i] = val[i];
         }
-    }, {
-        key: "loadHtml",
-        value: function loadHtml() {
-            var templates = this.templates;
-            var promises = [];
-            templates.forEach(function (template) {
-                var d = new $.Deferred();
-                promises.push(d);
-                var src = $("#" + template).attr("src");
-                $.ajax({
-                    url: src,
-                    type: 'GET',
-                    dataType: 'text'
-                }).success(function (data) {
-                    $("#" + template).html(data);
-                    d.resolve();
-                });
-            });
-            return $.when.apply($, promises);
+      }
+    }
+  }, {
+    key: "loadData",
+    value: function loadData(key) {
+      var data = JSON.parse(localStorage.getItem(key));
+      if (data) {
+        for (var i in data) {
+          if (typeof data[i] !== "function") {
+            this.data[i] = data[i];
+          }
         }
-    }, {
-        key: "getData",
-        value: function getData() {
-            return JSON.parse(JSON.stringify(this.data));
+      }
+    }
+  }, {
+    key: "getRand",
+    value: function getRand(a, b) {
+      return ~~(Math.random() * (b - a + 1)) + a;
+    }
+  }, {
+    key: "getRandText",
+    value: function getRandText(limit) {
+      var ret = "";
+      var strings = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      var length = strings.length;
+      for (var i = 0; i < limit; i++) {
+        ret += strings.charAt(Math.floor(this.getRand(0, length)));
+      }
+      return ret;
+    }
+  }, {
+    key: "setId",
+    value: function setId() {
+      var text = void 0;
+      var ids = aTemplate.ids;
+      var flag = false;
+      while (1) {
+        text = this.getRandText(10);
+        for (var i = 0, n = aTemplate.ids; i < n; i++) {
+          if (aTemplate.ids[i] === text) {
+            flag = true;
+          }
         }
-    }, {
-        key: "saveData",
-        value: function saveData(key) {
-            var data = JSON.stringify(this.data);
-            localStorage.setItem(key, data);
+        if (flag === false) {
+          break;
         }
-    }, {
-        key: "setData",
-        value: function setData(val) {
-            for (var i in val) {
-                if (typeof val[i] !== "function") {
-                    this.data[i] = val[i];
-                }
-            }
+      }
+      this.data.aTemplate_id = text;
+    }
+  }, {
+    key: "getDataFromObj",
+    value: function getDataFromObj(s, o) {
+      s = s.replace(/\[([a-zA-Z0-9._-]+)\]/g, '.$1'); // convert indexes to properties
+      s = s.replace(/^\./, ''); // strip leading dot
+      var a = s.split('.');
+      while (a.length) {
+        var n = a.shift();
+        if (n in o) {
+          o = o[n];
+        } else {
+          return;
         }
-    }, {
-        key: "loadData",
-        value: function loadData(key) {
-            var data = JSON.parse(localStorage.getItem(key));
-            if (data) {
-                for (var i in data) {
-                    if (typeof data[i] !== "function") {
-                        this.data[i] = data[i];
-                    }
-                }
-            }
-        }
-    }, {
-        key: "getRand",
-        value: function getRand(a, b) {
-            return ~~(Math.random() * (b - a + 1)) + a;
-        }
-    }, {
-        key: "getRandText",
-        value: function getRandText(limit) {
-            var ret = "";
-            var strings = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            var length = strings.length;
-            for (var i = 0; i < limit; i++) {
-                ret += strings.charAt(Math.floor(this.getRand(0, length)));
-            }
-            return ret;
-        }
-    }, {
-        key: "setId",
-        value: function setId() {
-            var text;
-            var ids = aTemplate.ids;
-            var flag = false;
-            while (1) {
-                text = this.getRandText(10);
-                for (var i = 0, n = aTemplate.ids; i < n; i++) {
-                    if (aTemplate.ids[i] === text) {
-                        flag = true;
-                    }
-                }
-                if (flag === false) {
-                    break;
-                }
-            }
-            this.data.aTemplate_id = text;
-        }
-    }, {
-        key: "getDataFromObj",
-        value: function getDataFromObj(s, o) {
-            s = s.replace(/\[([a-zA-Z0-9._-]+)\]/g, '.$1'); // convert indexes to properties
-            s = s.replace(/^\./, ''); // strip leading dot
-            var a = s.split('.');
-            while (a.length) {
-                var n = a.shift();
-                if (n in o) {
-                    o = o[n];
-                } else {
-                    return;
-                }
-            }
-            return o;
-        }
-    }, {
-        key: "getDataByString",
-        value: function getDataByString(s) {
-            var o = this.data;
-            return this.getDataFromObj(s, o);
-        }
-    }, {
-        key: "updateDataByString",
-        value: function updateDataByString(path, newValue) {
-            var object = this.data;
-            var stack = path.split('.');
-            while (stack.length > 1) {
-                object = object[stack.shift()];
-            }
-            object[stack.shift()] = newValue;
-        }
-    }, {
-        key: "removeDataByString",
-        value: function removeDataByString(path) {
-            var object = this.data;
-            var stack = path.split('.');
-            while (stack.length > 1) {
-                object = object[stack.shift()];
-            }
-            var shift = stack.shift();
-            if (shift.match(/^\d+$/)) {
-                object.splice(Number(shift), 1);
+      }
+      return o;
+    }
+  }, {
+    key: "getDataByString",
+    value: function getDataByString(s) {
+      var o = this.data;
+      return this.getDataFromObj(s, o);
+    }
+  }, {
+    key: "updateDataByString",
+    value: function updateDataByString(path, newValue) {
+      var object = this.data;
+      var stack = path.split('.');
+      while (stack.length > 1) {
+        object = object[stack.shift()];
+      }
+      object[stack.shift()] = newValue;
+    }
+  }, {
+    key: "removeDataByString",
+    value: function removeDataByString(path) {
+      var object = this.data;
+      var stack = path.split('.');
+      while (stack.length > 1) {
+        object = object[stack.shift()];
+      }
+      var shift = stack.shift();
+      if (shift.match(/^\d+$/)) {
+        object.splice(Number(shift), 1);
+      } else {
+        delete object[shift];
+      }
+    }
+  }, {
+    key: "resolveBlock",
+    value: function resolveBlock(html, item, i) {
+      var that = this;
+      var touchs = html.match(/<!-- BEGIN ([a-zA-Z0-9._-]+):touch#([a-zA-Z0-9._-]+) -->/g);
+      var touchnots = html.match(/<!-- BEGIN ([a-zA-Z0-9._-]+):touchnot#([a-zA-Z0-9._-]+) -->/g);
+      var exists = html.match(/<!-- BEGIN ([a-zA-Z0-9._-]+):exist -->/g);
+      var empties = html.match(/<!-- BEGIN ([a-zA-Z0-9._-]+):empty -->/g);
+      /*タッチブロック解決*/
+      if (touchs) {
+        for (var k = 0, n = touchs.length; k < n; k++) {
+          var start = touchs[k];
+          start = start.replace(/([a-zA-Z0-9._-]+):touch#([a-zA-Z0-9._-]+)/, "($1):touch#($2)");
+          var end = start.replace(/BEGIN/, "END");
+          var reg = new RegExp(start + "(([\\n\\r\\t]|.)*?)" + end, "g");
+          html = html.replace(reg, function (m, key2, val, next) {
+            var itemkey = typeof item[key2] === "function" ? item[key2].apply(that) : that.getDataFromObj(key2, item);
+            if (itemkey == val) {
+              return next;
             } else {
-                delete object[shift];
+              return "";
             }
+          });
         }
-    }, {
-        key: "resolveBlock",
-        value: function resolveBlock(html, item, i) {
-            var that = this;
-            var touchs = html.match(/<!-- BEGIN ([a-zA-Z0-9._-]+):touch#([a-zA-Z0-9._-]+) -->/g);
-            var touchnots = html.match(/<!-- BEGIN ([a-zA-Z0-9._-]+):touchnot#([a-zA-Z0-9._-]+) -->/g);
-            var exists = html.match(/<!-- BEGIN ([a-zA-Z0-9._-]+):exist -->/g);
-            var empties = html.match(/<!-- BEGIN ([a-zA-Z0-9._-]+):empty -->/g);
-            /*タッチブロック解決*/
-            if (touchs) {
-                for (var k = 0, n = touchs.length; k < n; k++) {
-                    var start = touchs[k];
-                    start = start.replace(/([a-zA-Z0-9._-]+):touch#([a-zA-Z0-9._-]+)/, "($1):touch#($2)");
-                    var end = start.replace(/BEGIN/, "END");
-                    var reg = new RegExp(start + "(([\\n\\r\\t]|.)*?)" + end, "g");
-                    html = html.replace(reg, function (m, key2, val, next) {
-                        var itemkey = typeof item[key2] === "function" ? item[key2].apply(that) : that.getDataFromObj(key2, item);
-                        if (itemkey == val) {
-                            return next;
-                        } else {
-                            return "";
-                        }
-                    });
-                }
+      }
+      /*タッチノットブロック解決*/
+      if (touchnots) {
+        for (var _k = 0, _n = touchnots.length; _k < _n; _k++) {
+          var _start = touchnots[_k];
+          _start = _start.replace(/([a-zA-Z0-9._-]+):touchnot#([a-zA-Z0-9._-]+)/, "($1):touchnot#($2)");
+          var _end = _start.replace(/BEGIN/, "END");
+          var _reg = new RegExp(_start + "(([\\n\\r\\t]|.)*?)" + _end, "g");
+          html = html.replace(_reg, function (m, key2, val, next) {
+            var itemkey = typeof item[key2] === "function" ? item[key2].apply(that) : that.getDataFromObj(key2, item);
+            if (itemkey != val) {
+              return next;
+            } else {
+              return "";
             }
-            /*タッチノットブロック解決*/
-            if (touchnots) {
-                for (var k = 0, n = touchnots.length; k < n; k++) {
-                    var start = touchnots[k];
-                    start = start.replace(/([a-zA-Z0-9._-]+):touchnot#([a-zA-Z0-9._-]+)/, "($1):touchnot#($2)");
-                    var end = start.replace(/BEGIN/, "END");
-                    var reg = new RegExp(start + "(([\\n\\r\\t]|.)*?)" + end, "g");
-                    html = html.replace(reg, function (m, key2, val, next) {
-                        var itemkey = typeof item[key2] === "function" ? item[key2].apply(that) : that.getDataFromObj(key2, item);
-                        if (itemkey != val) {
-                            return next;
-                        } else {
-                            return "";
-                        }
-                    });
-                }
-            }
-            /*existブロックを解決*/
-            if (exists) {
-                for (var k = 0, n = exists.length; k < n; k++) {
-                    var start = exists[k];
-                    start = start.replace(/([a-zA-Z0-9._-]+):exist/, "($1):exist");
-                    var end = start.replace(/BEGIN/, "END");
-                    var reg = new RegExp(start + "(([\\n\\r\\t]|.)*?)" + end, "g");
-                    html = html.replace(reg, function (m, key2, next) {
-                        var itemkey = typeof item[key2] === "function" ? item[key2].apply(that) : that.getDataFromObj(key2, item);
-                        if (itemkey) {
-                            return next;
-                        } else {
-                            return "";
-                        }
-                    });
-                }
-            }
-            /*emptyブロックを解決*/
-            if (empties) {
-                for (var k = 0, n = empties.length; k < n; k++) {
-                    var start = empties[k];
-                    start = start.replace(/([a-zA-Z0-9._-]+):empty/, "($1):empty");
-                    var end = start.replace(/BEGIN/, "END");
-                    var empty = new RegExp(start + "(([\\n\\r\\t]|.)*?)" + end, "g");
-                    html = html.replace(empty, function (m, key2, next) {
-                        var itemkey = typeof item[key2] === "function" ? item[key2].apply(that) : that.getDataFromObj(key2, item);
-                        if (!itemkey) {
-                            return next;
-                        } else {
-                            return "";
-                        }
-                    });
-                }
-            }
-            /*変数解決*/
-            html = html.replace(/{([a-zA-Z0-9._-]+)}(\[([a-zA-Z0-9._-]+)\])*/g, function (n, key3, key4, converter) {
-                var data;
-                if (key3 == "i") {
-                    data = i;
-                } else {
-                    if (item[key3]) {
-                        if (typeof item[key3] === "function") {
-                            data = item[key3].apply(that);
-                        } else {
-                            data = item[key3];
-                        }
-                    } else {
-                        if (converter && that.convert && that.convert[converter]) {
-                            return that.convert[converter].call(that, "");
-                        } else {
-                            return "";
-                        }
-                    }
-                }
-                if (converter && that.convert && that.convert[converter]) {
-                    return that.convert[converter].call(that, data);
-                } else {
-                    return data;
-                }
-            });
-            return html;
+          });
         }
-        /*絶対パス形式の変数を解決*/
+      }
+      /*existブロックを解決*/
+      if (exists) {
+        for (var _k2 = 0, _n2 = exists.length; _k2 < _n2; _k2++) {
+          var _start2 = exists[_k2];
+          _start2 = _start2.replace(/([a-zA-Z0-9._-]+):exist/, "($1):exist");
+          var _end2 = _start2.replace(/BEGIN/, "END");
+          var _reg2 = new RegExp(_start2 + "(([\\n\\r\\t]|.)*?)" + _end2, "g");
+          html = html.replace(_reg2, function (m, key2, next) {
+            var itemkey = typeof item[key2] === "function" ? item[key2].apply(that) : that.getDataFromObj(key2, item);
+            if (itemkey) {
+              return next;
+            } else {
+              return "";
+            }
+          });
+        }
+      }
+      /*emptyブロックを解決*/
+      if (empties) {
+        for (var _k3 = 0, _n3 = empties.length; _k3 < _n3; _k3++) {
+          var _start3 = empties[_k3];
+          _start3 = _start3.replace(/([a-zA-Z0-9._-]+):empty/, "($1):empty");
+          var _end3 = _start3.replace(/BEGIN/, "END");
+          var empty = new RegExp(_start3 + "(([\\n\\r\\t]|.)*?)" + _end3, "g");
+          html = html.replace(empty, function (m, key2, next) {
+            var itemkey = typeof item[key2] === "function" ? item[key2].apply(that) : that.getDataFromObj(key2, item);
+            if (!itemkey) {
+              return next;
+            } else {
+              return "";
+            }
+          });
+        }
+      }
+      /*変数解決*/
+      html = html.replace(/{([a-zA-Z0-9._-]+)}(\[([a-zA-Z0-9._-]+)\])*/g, function (n, key3, key4, converter) {
+        var data = void 0;
+        if (key3 == "i") {
+          data = i;
+        } else {
+          if (item[key3]) {
+            if (typeof item[key3] === "function") {
+              data = item[key3].apply(that);
+            } else {
+              data = item[key3];
+            }
+          } else {
+            if (converter && that.convert && that.convert[converter]) {
+              return that.convert[converter].call(that, "");
+            } else {
+              return "";
+            }
+          }
+        }
+        if (converter && that.convert && that.convert[converter]) {
+          return that.convert[converter].call(that, data);
+        } else {
+          return data;
+        }
+      });
+      return html;
+    }
+    /*絶対パス形式の変数を解決*/
 
-    }, {
-        key: "resolveAbsBlock",
-        value: function resolveAbsBlock(html) {
-            var that = this;
-            html = html.replace(/{(.*?)}/g, function (n, key3) {
-                var data = that.getDataByString(key3);
-                if (typeof data !== "undefined") {
-                    if (typeof data === "function") {
-                        return data.apply(that);
-                    } else {
-                        return data;
-                    }
-                } else {
-                    return n;
-                }
-            });
-            return html;
+  }, {
+    key: "resolveAbsBlock",
+    value: function resolveAbsBlock(html) {
+      var that = this;
+      html = html.replace(/{(.*?)}/g, function (n, key3) {
+        var data = that.getDataByString(key3);
+        if (typeof data !== "undefined") {
+          if (typeof data === "function") {
+            return data.apply(that);
+          } else {
+            return data;
+          }
+        } else {
+          return n;
         }
-    }, {
-        key: "resolveInclude",
-        value: function resolveInclude(html) {
-            var include = /<!-- #include id="(.*?)" -->/g;
-            html = html.replace(include, function (m, key) {
-                return $("#" + key).html();
-            });
-            return html;
+      });
+      return html;
+    }
+  }, {
+    key: "resolveInclude",
+    value: function resolveInclude(html) {
+      var include = /<!-- #include id="(.*?)" -->/g;
+      html = html.replace(include, function (m, key) {
+        return $("#" + key).html();
+      });
+      return html;
+    }
+  }, {
+    key: "resolveWith",
+    value: function resolveWith(html) {
+      var width = /<!-- BEGIN ([a-zA-Z0-9._-]+):with -->(([\n\r\t]|.)*?)<!-- END ([a-zA-Z0-9._-]+):with -->/g;
+      html = html.replace(width, function (m, key, val) {
+        m = m.replace(/data\-bind=['"](.*?)['"]/g, "data-bind='" + key + ".$1'");
+        return m;
+      });
+      return html;
+    }
+  }, {
+    key: "resolveLoop",
+    value: function resolveLoop(html) {
+      var loop = /<!-- BEGIN (.+?):loop -->(([\n\r\t]|.)*?)<!-- END (.+?):loop -->/g;
+      var that = this;
+      /*ループ文解決*/
+      html = html.replace(loop, function (m, key, val) {
+        var keyItem = that.getDataByString(key);
+        var keys = [];
+        if (typeof keyItem === "function") {
+          keys = keyItem.apply(that);
+        } else {
+          keys = keyItem;
         }
-    }, {
-        key: "resolveWith",
-        value: function resolveWith(html) {
-            var width = /<!-- BEGIN ([a-zA-Z0-9._-]+):with -->(([\n\r\t]|.)*?)<!-- END ([a-zA-Z0-9._-]+):with -->/g;
-            html = html.replace(width, function (m, key, val) {
-                m = m.replace(/data\-bind=['"](.*?)['"]/g, "data-bind='" + key + ".$1'");
-                return m;
-            });
-            return html;
+        var ret = "";
+        if (keys instanceof Array) {
+          for (var i = 0, n = keys.length; i < n; i++) {
+            ret += that.resolveBlock(val, keys[i], i);
+          }
         }
-    }, {
-        key: "resolveLoop",
-        value: function resolveLoop(html) {
-            var loop = /<!-- BEGIN (.+?):loop -->(([\n\r\t]|.)*?)<!-- END (.+?):loop -->/g;
-            var that = this;
-            /*ループ文解決*/
-            html = html.replace(loop, function (m, key, val) {
-                var keyItem = that.getDataByString(key);
-                var keys = [];
-                if (typeof keyItem === "function") {
-                    keys = keyItem.apply(that);
-                } else {
-                    keys = keyItem;
-                }
-                var ret = "";
-                if (keys instanceof Array) {
-                    for (var i = 0, n = keys.length; i < n; i++) {
-                        ret += that.resolveBlock(val, keys[i], i);
-                    }
-                }
-                /*エスケープ削除*/
-                ret = ret.replace(/\\([^\\])/g, "$1");
-                return ret;
-            });
-            return html;
+        /*エスケープ削除*/
+        ret = ret.replace(/\\([^\\])/g, "$1");
+        return ret;
+      });
+      return html;
+    }
+  }, {
+    key: "removeData",
+    value: function removeData(arr) {
+      var data = this.data;
+      for (var i in data) {
+        for (var t = 0, n = arr.length; t < n; t++) {
+          if (i === arr[t]) {
+            delete data[i];
+          }
         }
-    }, {
-        key: "removeData",
-        value: function removeData(arr) {
-            var data = this.data;
-            for (var i in data) {
-                for (var t = 0, n = arr.length; t < n; t++) {
-                    if (i === arr[t]) {
-                        delete data[i];
-                    }
-                }
-            }
-            return this;
-        }
-    }, {
-        key: "hasLoop",
-        value: function hasLoop(txt) {
-            var loop = /<!-- BEGIN (.+?):loop -->(([\n\r\t]|.)*?)<!-- END (.+?):loop -->/g;
-            if (txt.match(loop)) {
-                return true;
+      }
+      return this;
+    }
+  }, {
+    key: "hasLoop",
+    value: function hasLoop(txt) {
+      var loop = /<!-- BEGIN (.+?):loop -->(([\n\r\t]|.)*?)<!-- END (.+?):loop -->/g;
+      if (txt.match(loop)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }, {
+    key: "getHtml",
+    value: function getHtml(selector, row) {
+      var template = this.atemplate.find(function (item) {
+        return item.id === selector;
+      });
+      var html = "";
+      if (template && template.html) {
+        html = template.html;
+      }
+      if (row) {
+        html = selector;
+      }
+      if (!html) {
+        return "";
+      }
+      var data = this.data;
+      /*インクルード解決*/
+      html = this.resolveInclude(html);
+      /*with解決*/
+      html = this.resolveWith(html);
+      /*ループ解決*/
+      while (this.hasLoop(html)) {
+        html = this.resolveLoop(html);
+      }
+      /*変数解決*/
+      html = this.resolveBlock(html, data);
+      /*エスケープ削除*/
+      html = html.replace(/\\([^\\])/g, "$1");
+      /*絶対パスで指定された変数を解決*/
+      html = this.resolveAbsBlock(html);
+      /*空行削除*/
+      return html.replace(/^([\t ])*\n/gm, "");
+    }
+  }, {
+    key: "update",
+    value: function update(txt, part) {
+      var html = this.getHtml();
+      var templates = this.templates;
+      var renderWay = txt || "html";
+      if (this.beforeUpdated) {
+        this.beforeUpdated();
+      }
+      for (var i = 0, n = templates.length; i < n; i++) {
+        var tem = templates[i];
+        var selector = "#" + tem;
+        var _html = this.getHtml(tem);
+        var $target = $("[data-id='" + tem + "']");
+        if (!part || part == tem) {
+          if ($target.length == 0) {
+            var $newitem = $("<div data-id='" + tem + "'></div>");
+            $newitem[renderWay](_html);
+            $(selector).after($newitem);
+          } else {
+            if (renderWay === 'text') {
+              $target.text(_html);
             } else {
-                return false;
+              morphdom($target.get(0), "<div data-id='" + tem + "'>" + _html + "</div>");
             }
+          }
+          if (part) {
+            break;
+          }
         }
-    }, {
-        key: "getHtml",
-        value: function getHtml(selector, row) {
-            var $template = $(selector);
-            var html = $template.html();
-            if (row) {
-                html = selector;
-            }
-            if (!html) {
-                return "";
-            }
-            var data = this.data;
-            /*インクルード解決*/
-            html = this.resolveInclude(html);
-            /*with解決*/
-            html = this.resolveWith(html);
-            /*ループ解決*/
-            while (this.hasLoop(html)) {
-                html = this.resolveLoop(html);
-            }
-            /*変数解決*/
-            html = this.resolveBlock(html, data);
-            /*エスケープ削除*/
-            html = html.replace(/\\([^\\])/g, "$1");
-            /*絶対パスで指定された変数を解決*/
-            html = this.resolveAbsBlock(html);
-            /*空行削除*/
-            return html.replace(/^([\t ])*\n/gm, "");
-        }
-    }, {
-        key: "update",
-        value: function update(txt, part) {
-            var html = this.getHtml();
-            var templates = this.templates;
-            var renderWay = txt || "html";
-            if (this.beforeUpdated) {
-                this.beforeUpdated();
-            }
-            for (var i = 0, n = templates.length; i < n; i++) {
-                var tem = templates[i];
-                var selector = "#" + tem;
-                var html = this.getHtml(selector);
-                var $target = $("[data-id='" + tem + "']");
-                if (!part || part == tem) {
-                    if ($target.length == 0) {
-                        var $newitem = $("<div data-id='" + tem + "'></div>");
-                        $newitem[renderWay](html);
-                        $(selector).after($newitem);
-                    } else {
-                        $target[renderWay](html);
-                    }
-                    if (part) {
-                        break;
-                    }
-                }
-            }
-            this.updateBindingData(part);
-            if (this.onUpdated) {
-                this.onUpdated();
-            }
-            return this;
-        }
-    }, {
-        key: "updateBindingData",
-        value: function updateBindingData(part) {
-            var that = this;
-            var templates = that.templates;
-            for (var i = 0, n = templates.length; i < n; i++) {
-                var temp = templates[i];
-                if (!part || part == temp) {
-                    var $template = $("[data-id='" + temp + "']");
-                    $template.find("[data-bind]").each(function () {
-                        var data = that.getDataByString($(this).data("bind"));
-                        if ($(this).attr("type") == "checkbox" || $(this).attr("type") == "radio") {
-                            if (data == $(this).val()) {
-                                $(this).prop("checked", true);
-                            }
-                        } else {
-                            $(this).val(data);
-                        }
-                    });
-                    if (part) {
-                        break;
-                    }
-                }
-            }
-            return this;
-        }
-    }, {
-        key: "copyToClipBoard",
-        value: function copyToClipBoard() {
-            var copyArea = $("<textarea/>");
-            $("body").append(copyArea);
-            copyArea.text(this.getHtml());
-            copyArea.select();
-            document.execCommand("copy");
-            copyArea.remove();
-            return this;
-        }
-    }, {
-        key: "applyMethod",
-        value: function applyMethod(method) {
-            var args = [].splice.call(arguments, 0);
-            args.shift();
-            return this.method[method].apply(this, args);
-        }
-    }, {
-        key: "getComputedProp",
-        value: function getComputedProp(prop) {
-            return this.data[prop].apply(this);
-        }
-    }, {
-        key: "remove",
-        value: function remove(path) {
-            var object = this.data;
-            var stack = path.split('.');
-            while (stack.length > 1) {
-                object = object[stack.shift()];
-            }
-            var shift = stack.shift();
-            if (shift.match(/^\d+$/)) {
-                object.splice(Number(shift), 1);
+      }
+      this.updateBindingData(part);
+      if (this.onUpdated) {
+        this.onUpdated(part);
+      }
+      return this;
+    }
+  }, {
+    key: "updateBindingData",
+    value: function updateBindingData(part) {
+      var that = this;
+      var templates = that.templates;
+      for (var i = 0, n = templates.length; i < n; i++) {
+        var temp = templates[i];
+        if (!part || part == temp) {
+          var $template = $("[data-id='" + temp + "']");
+          $template.find("[data-bind]").each(function () {
+            var data = that.getDataByString($(this).attr("data-bind"));
+            if ($(this).attr("type") == "checkbox" || $(this).attr("type") == "radio") {
+              if (data == $(this).val()) {
+                $(this).prop("checked", true);
+              }
             } else {
-                delete object[shift];
+              $(this).val(data);
             }
-            return this;
+          });
+          if (part) {
+            break;
+          }
         }
-    }]);
+      }
+      return this;
+    }
+  }, {
+    key: "copyToClipBoard",
+    value: function copyToClipBoard() {
+      var copyArea = $("<textarea/>");
+      $("body").append(copyArea);
+      copyArea.text(this.getHtml());
+      copyArea.select();
+      document.execCommand("copy");
+      copyArea.remove();
+      return this;
+    }
+  }, {
+    key: "applyMethod",
+    value: function applyMethod(method) {
+      var args = [].splice.call(arguments, 0);
+      args.shift();
+      return this.method[method].apply(this, args);
+    }
+  }, {
+    key: "getComputedProp",
+    value: function getComputedProp(prop) {
+      return this.data[prop].apply(this);
+    }
+  }, {
+    key: "remove",
+    value: function remove(path) {
+      var object = this.data;
+      var stack = path.split('.');
+      while (stack.length > 1) {
+        object = object[stack.shift()];
+      }
+      var shift = stack.shift();
+      if (shift.match(/^\d+$/)) {
+        object.splice(Number(shift), 1);
+      } else {
+        delete object[shift];
+      }
+      return this;
+    }
+  }]);
 
-    return aTemplate;
+  return aTemplate;
 }();
 
 module.exports = aTemplate;
 
-},{"zepto-browserify":2}],2:[function(require,module,exports){
+},{"morphdom":8,"zepto-browserify":2}],2:[function(require,module,exports){
 /* Zepto v1.0 - polyfill zepto detect event ajax form fx - zeptojs.com/license */
 
 ;(function(undefined){
@@ -4485,6 +4533,681 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 }
 
 },{}],8:[function(require,module,exports){
+'use strict';
+
+var range; // Create a range object for efficently rendering strings to elements.
+var NS_XHTML = 'http://www.w3.org/1999/xhtml';
+
+var doc = typeof document === 'undefined' ? undefined : document;
+
+var testEl = doc ?
+    doc.body || doc.createElement('div') :
+    {};
+
+// Fixes <https://github.com/patrick-steele-idem/morphdom/issues/32>
+// (IE7+ support) <=IE7 does not support el.hasAttribute(name)
+var actualHasAttributeNS;
+
+if (testEl.hasAttributeNS) {
+    actualHasAttributeNS = function(el, namespaceURI, name) {
+        return el.hasAttributeNS(namespaceURI, name);
+    };
+} else if (testEl.hasAttribute) {
+    actualHasAttributeNS = function(el, namespaceURI, name) {
+        return el.hasAttribute(name);
+    };
+} else {
+    actualHasAttributeNS = function(el, namespaceURI, name) {
+        return el.getAttributeNode(namespaceURI, name) != null;
+    };
+}
+
+var hasAttributeNS = actualHasAttributeNS;
+
+
+function toElement(str) {
+    if (!range && doc.createRange) {
+        range = doc.createRange();
+        range.selectNode(doc.body);
+    }
+
+    var fragment;
+    if (range && range.createContextualFragment) {
+        fragment = range.createContextualFragment(str);
+    } else {
+        fragment = doc.createElement('body');
+        fragment.innerHTML = str;
+    }
+    return fragment.childNodes[0];
+}
+
+/**
+ * Returns true if two node's names are the same.
+ *
+ * NOTE: We don't bother checking `namespaceURI` because you will never find two HTML elements with the same
+ *       nodeName and different namespace URIs.
+ *
+ * @param {Element} a
+ * @param {Element} b The target element
+ * @return {boolean}
+ */
+function compareNodeNames(fromEl, toEl) {
+    var fromNodeName = fromEl.nodeName;
+    var toNodeName = toEl.nodeName;
+
+    if (fromNodeName === toNodeName) {
+        return true;
+    }
+
+    if (toEl.actualize &&
+        fromNodeName.charCodeAt(0) < 91 && /* from tag name is upper case */
+        toNodeName.charCodeAt(0) > 90 /* target tag name is lower case */) {
+        // If the target element is a virtual DOM node then we may need to normalize the tag name
+        // before comparing. Normal HTML elements that are in the "http://www.w3.org/1999/xhtml"
+        // are converted to upper case
+        return fromNodeName === toNodeName.toUpperCase();
+    } else {
+        return false;
+    }
+}
+
+/**
+ * Create an element, optionally with a known namespace URI.
+ *
+ * @param {string} name the element name, e.g. 'div' or 'svg'
+ * @param {string} [namespaceURI] the element's namespace URI, i.e. the value of
+ * its `xmlns` attribute or its inferred namespace.
+ *
+ * @return {Element}
+ */
+function createElementNS(name, namespaceURI) {
+    return !namespaceURI || namespaceURI === NS_XHTML ?
+        doc.createElement(name) :
+        doc.createElementNS(namespaceURI, name);
+}
+
+/**
+ * Copies the children of one DOM element to another DOM element
+ */
+function moveChildren(fromEl, toEl) {
+    var curChild = fromEl.firstChild;
+    while (curChild) {
+        var nextChild = curChild.nextSibling;
+        toEl.appendChild(curChild);
+        curChild = nextChild;
+    }
+    return toEl;
+}
+
+function morphAttrs(fromNode, toNode) {
+    var attrs = toNode.attributes;
+    var i;
+    var attr;
+    var attrName;
+    var attrNamespaceURI;
+    var attrValue;
+    var fromValue;
+
+    for (i = attrs.length - 1; i >= 0; --i) {
+        attr = attrs[i];
+        attrName = attr.name;
+        attrNamespaceURI = attr.namespaceURI;
+        attrValue = attr.value;
+
+        if (attrNamespaceURI) {
+            attrName = attr.localName || attrName;
+            fromValue = fromNode.getAttributeNS(attrNamespaceURI, attrName);
+
+            if (fromValue !== attrValue) {
+                fromNode.setAttributeNS(attrNamespaceURI, attrName, attrValue);
+            }
+        } else {
+            fromValue = fromNode.getAttribute(attrName);
+
+            if (fromValue !== attrValue) {
+                fromNode.setAttribute(attrName, attrValue);
+            }
+        }
+    }
+
+    // Remove any extra attributes found on the original DOM element that
+    // weren't found on the target element.
+    attrs = fromNode.attributes;
+
+    for (i = attrs.length - 1; i >= 0; --i) {
+        attr = attrs[i];
+        if (attr.specified !== false) {
+            attrName = attr.name;
+            attrNamespaceURI = attr.namespaceURI;
+
+            if (attrNamespaceURI) {
+                attrName = attr.localName || attrName;
+
+                if (!hasAttributeNS(toNode, attrNamespaceURI, attrName)) {
+                    fromNode.removeAttributeNS(attrNamespaceURI, attrName);
+                }
+            } else {
+                if (!hasAttributeNS(toNode, null, attrName)) {
+                    fromNode.removeAttribute(attrName);
+                }
+            }
+        }
+    }
+}
+
+function syncBooleanAttrProp(fromEl, toEl, name) {
+    if (fromEl[name] !== toEl[name]) {
+        fromEl[name] = toEl[name];
+        if (fromEl[name]) {
+            fromEl.setAttribute(name, '');
+        } else {
+            fromEl.removeAttribute(name, '');
+        }
+    }
+}
+
+var specialElHandlers = {
+    /**
+     * Needed for IE. Apparently IE doesn't think that "selected" is an
+     * attribute when reading over the attributes using selectEl.attributes
+     */
+    OPTION: function(fromEl, toEl) {
+        syncBooleanAttrProp(fromEl, toEl, 'selected');
+    },
+    /**
+     * The "value" attribute is special for the <input> element since it sets
+     * the initial value. Changing the "value" attribute without changing the
+     * "value" property will have no effect since it is only used to the set the
+     * initial value.  Similar for the "checked" attribute, and "disabled".
+     */
+    INPUT: function(fromEl, toEl) {
+        syncBooleanAttrProp(fromEl, toEl, 'checked');
+        syncBooleanAttrProp(fromEl, toEl, 'disabled');
+
+        if (fromEl.value !== toEl.value) {
+            fromEl.value = toEl.value;
+        }
+
+        if (!hasAttributeNS(toEl, null, 'value')) {
+            fromEl.removeAttribute('value');
+        }
+    },
+
+    TEXTAREA: function(fromEl, toEl) {
+        var newValue = toEl.value;
+        if (fromEl.value !== newValue) {
+            fromEl.value = newValue;
+        }
+
+        if (fromEl.firstChild) {
+            // Needed for IE. Apparently IE sets the placeholder as the
+            // node value and vise versa. This ignores an empty update.
+            if (newValue === '' && fromEl.firstChild.nodeValue === fromEl.placeholder) {
+                return;
+            }
+
+            fromEl.firstChild.nodeValue = newValue;
+        }
+    },
+    SELECT: function(fromEl, toEl) {
+        if (!hasAttributeNS(toEl, null, 'multiple')) {
+            var selectedIndex = -1;
+            var i = 0;
+            var curChild = toEl.firstChild;
+            while(curChild) {
+                var nodeName = curChild.nodeName;
+                if (nodeName && nodeName.toUpperCase() === 'OPTION') {
+                    if (hasAttributeNS(curChild, null, 'selected')) {
+                        selectedIndex = i;
+                        break;
+                    }
+                    i++;
+                }
+                curChild = curChild.nextSibling;
+            }
+
+            fromEl.selectedIndex = i;
+        }
+    }
+};
+
+var ELEMENT_NODE = 1;
+var TEXT_NODE = 3;
+var COMMENT_NODE = 8;
+
+function noop() {}
+
+function defaultGetNodeKey(node) {
+    return node.id;
+}
+
+function morphdomFactory(morphAttrs) {
+
+    return function morphdom(fromNode, toNode, options) {
+        if (!options) {
+            options = {};
+        }
+
+        if (typeof toNode === 'string') {
+            if (fromNode.nodeName === '#document' || fromNode.nodeName === 'HTML') {
+                var toNodeHtml = toNode;
+                toNode = doc.createElement('html');
+                toNode.innerHTML = toNodeHtml;
+            } else {
+                toNode = toElement(toNode);
+            }
+        }
+
+        var getNodeKey = options.getNodeKey || defaultGetNodeKey;
+        var onBeforeNodeAdded = options.onBeforeNodeAdded || noop;
+        var onNodeAdded = options.onNodeAdded || noop;
+        var onBeforeElUpdated = options.onBeforeElUpdated || noop;
+        var onElUpdated = options.onElUpdated || noop;
+        var onBeforeNodeDiscarded = options.onBeforeNodeDiscarded || noop;
+        var onNodeDiscarded = options.onNodeDiscarded || noop;
+        var onBeforeElChildrenUpdated = options.onBeforeElChildrenUpdated || noop;
+        var childrenOnly = options.childrenOnly === true;
+
+        // This object is used as a lookup to quickly find all keyed elements in the original DOM tree.
+        var fromNodesLookup = {};
+        var keyedRemovalList;
+
+        function addKeyedRemoval(key) {
+            if (keyedRemovalList) {
+                keyedRemovalList.push(key);
+            } else {
+                keyedRemovalList = [key];
+            }
+        }
+
+        function walkDiscardedChildNodes(node, skipKeyedNodes) {
+            if (node.nodeType === ELEMENT_NODE) {
+                var curChild = node.firstChild;
+                while (curChild) {
+
+                    var key = undefined;
+
+                    if (skipKeyedNodes && (key = getNodeKey(curChild))) {
+                        // If we are skipping keyed nodes then we add the key
+                        // to a list so that it can be handled at the very end.
+                        addKeyedRemoval(key);
+                    } else {
+                        // Only report the node as discarded if it is not keyed. We do this because
+                        // at the end we loop through all keyed elements that were unmatched
+                        // and then discard them in one final pass.
+                        onNodeDiscarded(curChild);
+                        if (curChild.firstChild) {
+                            walkDiscardedChildNodes(curChild, skipKeyedNodes);
+                        }
+                    }
+
+                    curChild = curChild.nextSibling;
+                }
+            }
+        }
+
+        /**
+         * Removes a DOM node out of the original DOM
+         *
+         * @param  {Node} node The node to remove
+         * @param  {Node} parentNode The nodes parent
+         * @param  {Boolean} skipKeyedNodes If true then elements with keys will be skipped and not discarded.
+         * @return {undefined}
+         */
+        function removeNode(node, parentNode, skipKeyedNodes) {
+            if (onBeforeNodeDiscarded(node) === false) {
+                return;
+            }
+
+            if (parentNode) {
+                parentNode.removeChild(node);
+            }
+
+            onNodeDiscarded(node);
+            walkDiscardedChildNodes(node, skipKeyedNodes);
+        }
+
+        // // TreeWalker implementation is no faster, but keeping this around in case this changes in the future
+        // function indexTree(root) {
+        //     var treeWalker = document.createTreeWalker(
+        //         root,
+        //         NodeFilter.SHOW_ELEMENT);
+        //
+        //     var el;
+        //     while((el = treeWalker.nextNode())) {
+        //         var key = getNodeKey(el);
+        //         if (key) {
+        //             fromNodesLookup[key] = el;
+        //         }
+        //     }
+        // }
+
+        // // NodeIterator implementation is no faster, but keeping this around in case this changes in the future
+        //
+        // function indexTree(node) {
+        //     var nodeIterator = document.createNodeIterator(node, NodeFilter.SHOW_ELEMENT);
+        //     var el;
+        //     while((el = nodeIterator.nextNode())) {
+        //         var key = getNodeKey(el);
+        //         if (key) {
+        //             fromNodesLookup[key] = el;
+        //         }
+        //     }
+        // }
+
+        function indexTree(node) {
+            if (node.nodeType === ELEMENT_NODE) {
+                var curChild = node.firstChild;
+                while (curChild) {
+                    var key = getNodeKey(curChild);
+                    if (key) {
+                        fromNodesLookup[key] = curChild;
+                    }
+
+                    // Walk recursively
+                    indexTree(curChild);
+
+                    curChild = curChild.nextSibling;
+                }
+            }
+        }
+
+        indexTree(fromNode);
+
+        function handleNodeAdded(el) {
+            onNodeAdded(el);
+
+            var curChild = el.firstChild;
+            while (curChild) {
+                var nextSibling = curChild.nextSibling;
+
+                var key = getNodeKey(curChild);
+                if (key) {
+                    var unmatchedFromEl = fromNodesLookup[key];
+                    if (unmatchedFromEl && compareNodeNames(curChild, unmatchedFromEl)) {
+                        curChild.parentNode.replaceChild(unmatchedFromEl, curChild);
+                        morphEl(unmatchedFromEl, curChild);
+                    }
+                }
+
+                handleNodeAdded(curChild);
+                curChild = nextSibling;
+            }
+        }
+
+        function morphEl(fromEl, toEl, childrenOnly) {
+            var toElKey = getNodeKey(toEl);
+            var curFromNodeKey;
+
+            if (toElKey) {
+                // If an element with an ID is being morphed then it is will be in the final
+                // DOM so clear it out of the saved elements collection
+                delete fromNodesLookup[toElKey];
+            }
+
+            if (toNode.isSameNode && toNode.isSameNode(fromNode)) {
+                return;
+            }
+
+            if (!childrenOnly) {
+                if (onBeforeElUpdated(fromEl, toEl) === false) {
+                    return;
+                }
+
+                morphAttrs(fromEl, toEl);
+                onElUpdated(fromEl);
+
+                if (onBeforeElChildrenUpdated(fromEl, toEl) === false) {
+                    return;
+                }
+            }
+
+            if (fromEl.nodeName !== 'TEXTAREA') {
+                var curToNodeChild = toEl.firstChild;
+                var curFromNodeChild = fromEl.firstChild;
+                var curToNodeKey;
+
+                var fromNextSibling;
+                var toNextSibling;
+                var matchingFromEl;
+
+                outer: while (curToNodeChild) {
+                    toNextSibling = curToNodeChild.nextSibling;
+                    curToNodeKey = getNodeKey(curToNodeChild);
+
+                    while (curFromNodeChild) {
+                        fromNextSibling = curFromNodeChild.nextSibling;
+
+                        if (curToNodeChild.isSameNode && curToNodeChild.isSameNode(curFromNodeChild)) {
+                            curToNodeChild = toNextSibling;
+                            curFromNodeChild = fromNextSibling;
+                            continue outer;
+                        }
+
+                        curFromNodeKey = getNodeKey(curFromNodeChild);
+
+                        var curFromNodeType = curFromNodeChild.nodeType;
+
+                        var isCompatible = undefined;
+
+                        if (curFromNodeType === curToNodeChild.nodeType) {
+                            if (curFromNodeType === ELEMENT_NODE) {
+                                // Both nodes being compared are Element nodes
+
+                                if (curToNodeKey) {
+                                    // The target node has a key so we want to match it up with the correct element
+                                    // in the original DOM tree
+                                    if (curToNodeKey !== curFromNodeKey) {
+                                        // The current element in the original DOM tree does not have a matching key so
+                                        // let's check our lookup to see if there is a matching element in the original
+                                        // DOM tree
+                                        if ((matchingFromEl = fromNodesLookup[curToNodeKey])) {
+                                            if (curFromNodeChild.nextSibling === matchingFromEl) {
+                                                // Special case for single element removals. To avoid removing the original
+                                                // DOM node out of the tree (since that can break CSS transitions, etc.),
+                                                // we will instead discard the current node and wait until the next
+                                                // iteration to properly match up the keyed target element with its matching
+                                                // element in the original tree
+                                                isCompatible = false;
+                                            } else {
+                                                // We found a matching keyed element somewhere in the original DOM tree.
+                                                // Let's moving the original DOM node into the current position and morph
+                                                // it.
+
+                                                // NOTE: We use insertBefore instead of replaceChild because we want to go through
+                                                // the `removeNode()` function for the node that is being discarded so that
+                                                // all lifecycle hooks are correctly invoked
+                                                fromEl.insertBefore(matchingFromEl, curFromNodeChild);
+
+                                                fromNextSibling = curFromNodeChild.nextSibling;
+
+                                                if (curFromNodeKey) {
+                                                    // Since the node is keyed it might be matched up later so we defer
+                                                    // the actual removal to later
+                                                    addKeyedRemoval(curFromNodeKey);
+                                                } else {
+                                                    // NOTE: we skip nested keyed nodes from being removed since there is
+                                                    //       still a chance they will be matched up later
+                                                    removeNode(curFromNodeChild, fromEl, true /* skip keyed nodes */);
+                                                }
+
+                                                curFromNodeChild = matchingFromEl;
+                                            }
+                                        } else {
+                                            // The nodes are not compatible since the "to" node has a key and there
+                                            // is no matching keyed node in the source tree
+                                            isCompatible = false;
+                                        }
+                                    }
+                                } else if (curFromNodeKey) {
+                                    // The original has a key
+                                    isCompatible = false;
+                                }
+
+                                isCompatible = isCompatible !== false && compareNodeNames(curFromNodeChild, curToNodeChild);
+                                if (isCompatible) {
+                                    // We found compatible DOM elements so transform
+                                    // the current "from" node to match the current
+                                    // target DOM node.
+                                    morphEl(curFromNodeChild, curToNodeChild);
+                                }
+
+                            } else if (curFromNodeType === TEXT_NODE || curFromNodeType == COMMENT_NODE) {
+                                // Both nodes being compared are Text or Comment nodes
+                                isCompatible = true;
+                                // Simply update nodeValue on the original node to
+                                // change the text value
+                                curFromNodeChild.nodeValue = curToNodeChild.nodeValue;
+                            }
+                        }
+
+                        if (isCompatible) {
+                            // Advance both the "to" child and the "from" child since we found a match
+                            curToNodeChild = toNextSibling;
+                            curFromNodeChild = fromNextSibling;
+                            continue outer;
+                        }
+
+                        // No compatible match so remove the old node from the DOM and continue trying to find a
+                        // match in the original DOM. However, we only do this if the from node is not keyed
+                        // since it is possible that a keyed node might match up with a node somewhere else in the
+                        // target tree and we don't want to discard it just yet since it still might find a
+                        // home in the final DOM tree. After everything is done we will remove any keyed nodes
+                        // that didn't find a home
+                        if (curFromNodeKey) {
+                            // Since the node is keyed it might be matched up later so we defer
+                            // the actual removal to later
+                            addKeyedRemoval(curFromNodeKey);
+                        } else {
+                            // NOTE: we skip nested keyed nodes from being removed since there is
+                            //       still a chance they will be matched up later
+                            removeNode(curFromNodeChild, fromEl, true /* skip keyed nodes */);
+                        }
+
+                        curFromNodeChild = fromNextSibling;
+                    }
+
+                    // If we got this far then we did not find a candidate match for
+                    // our "to node" and we exhausted all of the children "from"
+                    // nodes. Therefore, we will just append the current "to" node
+                    // to the end
+                    if (curToNodeKey && (matchingFromEl = fromNodesLookup[curToNodeKey]) && compareNodeNames(matchingFromEl, curToNodeChild)) {
+                        fromEl.appendChild(matchingFromEl);
+                        morphEl(matchingFromEl, curToNodeChild);
+                    } else {
+                        var onBeforeNodeAddedResult = onBeforeNodeAdded(curToNodeChild);
+                        if (onBeforeNodeAddedResult !== false) {
+                            if (onBeforeNodeAddedResult) {
+                                curToNodeChild = onBeforeNodeAddedResult;
+                            }
+
+                            if (curToNodeChild.actualize) {
+                                curToNodeChild = curToNodeChild.actualize(fromEl.ownerDocument || doc);
+                            }
+                            fromEl.appendChild(curToNodeChild);
+                            handleNodeAdded(curToNodeChild);
+                        }
+                    }
+
+                    curToNodeChild = toNextSibling;
+                    curFromNodeChild = fromNextSibling;
+                }
+
+                // We have processed all of the "to nodes". If curFromNodeChild is
+                // non-null then we still have some from nodes left over that need
+                // to be removed
+                while (curFromNodeChild) {
+                    fromNextSibling = curFromNodeChild.nextSibling;
+                    if ((curFromNodeKey = getNodeKey(curFromNodeChild))) {
+                        // Since the node is keyed it might be matched up later so we defer
+                        // the actual removal to later
+                        addKeyedRemoval(curFromNodeKey);
+                    } else {
+                        // NOTE: we skip nested keyed nodes from being removed since there is
+                        //       still a chance they will be matched up later
+                        removeNode(curFromNodeChild, fromEl, true /* skip keyed nodes */);
+                    }
+                    curFromNodeChild = fromNextSibling;
+                }
+            }
+
+            var specialElHandler = specialElHandlers[fromEl.nodeName];
+            if (specialElHandler) {
+                specialElHandler(fromEl, toEl);
+            }
+        } // END: morphEl(...)
+
+        var morphedNode = fromNode;
+        var morphedNodeType = morphedNode.nodeType;
+        var toNodeType = toNode.nodeType;
+
+        if (!childrenOnly) {
+            // Handle the case where we are given two DOM nodes that are not
+            // compatible (e.g. <div> --> <span> or <div> --> TEXT)
+            if (morphedNodeType === ELEMENT_NODE) {
+                if (toNodeType === ELEMENT_NODE) {
+                    if (!compareNodeNames(fromNode, toNode)) {
+                        onNodeDiscarded(fromNode);
+                        morphedNode = moveChildren(fromNode, createElementNS(toNode.nodeName, toNode.namespaceURI));
+                    }
+                } else {
+                    // Going from an element node to a text node
+                    morphedNode = toNode;
+                }
+            } else if (morphedNodeType === TEXT_NODE || morphedNodeType === COMMENT_NODE) { // Text or comment node
+                if (toNodeType === morphedNodeType) {
+                    morphedNode.nodeValue = toNode.nodeValue;
+                    return morphedNode;
+                } else {
+                    // Text node to something else
+                    morphedNode = toNode;
+                }
+            }
+        }
+
+        if (morphedNode === toNode) {
+            // The "to node" was not compatible with the "from node" so we had to
+            // toss out the "from node" and use the "to node"
+            onNodeDiscarded(fromNode);
+        } else {
+            morphEl(morphedNode, toNode, childrenOnly);
+
+            // We now need to loop over any keyed nodes that might need to be
+            // removed. We only do the removal if we know that the keyed node
+            // never found a match. When a keyed node is matched up we remove
+            // it out of fromNodesLookup and we use fromNodesLookup to determine
+            // if a keyed node has been matched up or not
+            if (keyedRemovalList) {
+                for (var i=0, len=keyedRemovalList.length; i<len; i++) {
+                    var elToRemove = fromNodesLookup[keyedRemovalList[i]];
+                    if (elToRemove) {
+                        removeNode(elToRemove, elToRemove.parentNode, false);
+                    }
+                }
+            }
+        }
+
+        if (!childrenOnly && morphedNode !== fromNode && fromNode.parentNode) {
+            if (morphedNode.actualize) {
+                morphedNode = morphedNode.actualize(fromNode.ownerDocument || doc);
+            }
+            // If we had to swap out the from node with a new node because the old
+            // node was not compatible with the target node then we need to
+            // replace the old DOM node in the original DOM tree. This is only
+            // possible if the original DOM node was part of a DOM tree which
+            // we know is the case if it has a parent node.
+            fromNode.parentNode.replaceChild(morphedNode, fromNode);
+        }
+
+        return morphedNode;
+    };
+}
+
+var morphdom = morphdomFactory(morphAttrs);
+
+module.exports = morphdom;
+
+},{}],9:[function(require,module,exports){
 /* Zepto v1.1.6 - zepto event ajax form ie - zeptojs.com/license */
 
 var Zepto = (function() {
@@ -6077,7 +6800,7 @@ exports.$ = window.$
   }
 })(Zepto)
 ;
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -6155,8 +6878,8 @@ var aTable = function (_aTemplate) {
 
     _this.id = _this.getRandText(10);
     _this.menu_id = _this.getRandText(10);
-    _this.addTemplate(_table2.default, _this.id);
-    _this.addTemplate(_menu2.default, _this.menu_id);
+    _this.addTemplate(_this.id, _table2.default);
+    _this.addTemplate(_this.menu_id, _menu2.default);
     _this.data = _zeptoBrowserify.$.extend(true, {}, defs, option);
     var data = _this.data;
     data.point = { x: -1, y: -1 };
@@ -6934,11 +7657,14 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'updateResult',
     value: function updateResult() {
+      var data = this.data;
+      data.row = this.parse(data.tableResult);
+      data.tableClass = this.getTableClass(data.tableResult);
+      data.history.push((0, _clone2.default)(data.row));
+      if (data.inputMode === 'table') {
+        this.update();
+      }
       if (this.afterEntered) {
-        var data = this.data;
-        data.row = this.parse(data.tableResult);
-        data.tableClass = this.getTableClass(data.tableResult);
-        data.history.push((0, _clone2.default)(data.row));
         this.afterEntered();
       }
     }
@@ -7423,14 +8149,14 @@ var aTable = function (_aTemplate) {
 
 module.exports = aTable;
 
-},{"./menu.html":10,"./return-table.html":11,"./table.html":12,"a-template":1,"clone":6,"zepto-browserify":8}],10:[function(require,module,exports){
+},{"./menu.html":11,"./return-table.html":12,"./table.html":13,"a-template":1,"clone":6,"zepto-browserify":9}],11:[function(require,module,exports){
 module.exports = "<!-- BEGIN showBtnList:exist -->\n<div class=\"a-table-btn-group-list\">\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<!-- BEGIN inputMode:touch#table -->\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"changeInputMode(source)\"><i class=\"\\{mark.icon.source\\}\"></i><!-- BEGIN lang:touch#ja -->ソース<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->Source<!-- END lang:touch#en --></button>\n\t\t<!-- END inputMode:touch#table -->\n\t\t<!-- BEGIN inputMode:touch#source -->\n\t\t<button type=\"button\" class=\"\\{mark.btn.itemActive\\}\" data-action-click=\"changeInputMode(table)\"><i class=\"\\{mark.icon.source\\}\"></i><!-- BEGIN lang:touch#ja -->ソース<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->Source<!-- END lang:touch#en --></button>\n\t\t<!-- END inputMode:touch#source -->\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"mergeCells\"><i class=\"\\{mark.icon.merge\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"splitCell()\"><i class=\"\\{mark.icon.split\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"undo()\"><i class=\"\\{mark.icon.undo\\}\"></i></button>\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"changeCellTypeTo(td)\"><!-- BEGIN mark.icon.td:empty -->td<!-- END mark.icon.td:empty --><!-- BEGIN mark.icon.td:exist --><i class=\"\\{mark.icon.td\\}\"></i><!-- END mark.icon.td:exist --></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"changeCellTypeTo(th)\"><!-- BEGIN mark.icon.th:empty -->th<!-- END mark.icon.th:empty --><!-- BEGIN mark.icon.th:exist --><i class=\"\\{mark.icon.th\\}\"></i><!-- END mark.icon.th:exist --></button>\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"align(left)\"><i class=\"\\{mark.icon.alignLeft\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"align(center)\"><i class=\"\\{mark.icon.alignCenter\\}\"></i></button>\n\t\t<button type=\"button\" class=\"\\{mark.btn.item\\}\" data-action-click=\"align(right)\"><i class=\"\\{mark.icon.alignRight\\}\"></i></button>\n\t</div>\n\t<div class=\"\\{mark.btn.group\\}\">\n\t\t<select class=\"\\{mark.selector.self\\}\" data-bind=\"cellClass\" data-action-change=\"changeCellClass()\">\n\t\t\t<option value=\"\"></option>\n\t\t\t<!-- BEGIN selector.option:loop -->\n\t\t\t<option value=\"{value}\">{label}</option>\n\t\t\t<!-- END selector.option:loop -->\n\t\t</select>\n\t</div>\n</div>\n<!-- END showBtnList:exist -->\n";
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = "<table class=\"{tableClass}\">\n\t<!-- BEGIN row:loop -->\n\t<tr>\n\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t<!-- \\BEGIN type:touch#th -->\n\t\t<th<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 --> class=\"<!-- \\BEGIN align:exist -->\\{align\\}[getStyleByAlign]<!-- \\END align:exist --><!-- \\BEGIN cellClass:exist --> \\{cellClass\\}<!-- \\END cellClass:exist -->\">\\{value\\}</th>\n\t\t<!-- \\END type:touch#th -->\n\t\t<!-- \\BEGIN type:touch#td -->\n\t\t<td<!-- \\BEGIN colspan:touchnot#1 --> colspan=\"\\{colspan\\}\"<!-- \\END colspan:touchnot#1 --><!-- \\BEGIN rowspan:touchnot#1 --> rowspan=\"\\{rowspan\\}\"<!-- \\END rowspan:touchnot#1 --> class=\"<!-- \\BEGIN align:exist -->\\{align\\}[getStyleByAlign] <!-- \\END align:exist --><!-- \\BEGIN cellClass:exist -->\\{cellClass\\}<!-- \\END cellClass:exist -->\">\\{value\\}</td>\n\t\t<!-- \\END type:touch#td -->\n\t\t<!-- \\END row.{i}.col:loop -->\n\t</tr>\n\t<!-- END row:loop -->\n</table>\n";
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = "<!-- BEGIN showMenu:exist -->\n<ul class=\"a-table-menu\" style=\"top:{menuY}px;left:{menuX}px;\">\n\t<!-- BEGIN mode:touch#cell -->\n\t<li data-action-click=\"mergeCells\"><!-- BEGIN lang:touch#ja -->セルの結合<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->merge cells<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"splitCell()\"><!-- BEGIN lang:touch#ja -->セルの分割<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->split cell<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"changeCellTypeTo(th)\"><!-- BEGIN lang:touch#ja -->thに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to th<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"changeCellTypeTo(td)\"><!-- BEGIN lang:touch#ja -->tdに変更する<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->change to td<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"align(left)\"><!-- BEGIN lang:touch#ja -->左寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align left<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"align(center)\"><!-- BEGIN lang:touch#ja -->中央寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align center<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"align(right)\"><!-- BEGIN lang:touch#ja -->右寄せ<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->align right<!-- END lang:touch#en --></li>\n\t<!-- END mode:touch#cell -->\n\t<!-- BEGIN mode:touch#col -->\n\t<li data-action-click=\"insertColLeft({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->左に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the left<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"insertColRight({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->右に列を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert column on the right<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"removeCol({selectedRowNo})\"><!-- BEGIN lang:touch#ja -->列を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove column<!-- END lang:touch#en --></li>\n\t<!-- END mode:touch#col -->\n\t<!-- BEGIN mode:touch#row -->\n\t<li data-action-click=\"insertRowAbove({selectedColNo})\"><!-- BEGIN lang:touch#ja -->上に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row above<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"insertRowBelow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->下に行を追加<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->insert row below<!-- END lang:touch#en --></li>\n\t<li data-action-click=\"removeRow({selectedColNo})\"><!-- BEGIN lang:touch#ja -->行を削除<!-- END lang:touch#ja --><!-- BEGIN lang:touch#en -->remove row<!-- END lang:touch#en --></li>\n\t<!-- END mode:touch#row -->\n</ul>\n<!-- END showMenu:exist -->\n<div class=\"a-table-wrapper\">\n\t<!-- BEGIN inputMode:touch#table -->\n\t<table class=\"a-table\">\n\t\t<tr class=\"a-table-header js-table-header\">\n\t\t\t<th class=\"a-table-first\"></th>\n\t\t\t<!-- BEGIN highestRow:loop -->\n\t\t\t<th data-action-click=\"selectRow({i})\"<!-- \\BEGIN selectedRowNo:touch#{i} -->class=\"selected\"<!-- \\END selectedRowNo:touch#{i} -->><span class=\"a-table-toggle-btn\"></span></th>\n\t\t\t<!-- END highestRow:loop -->\n\t\t</tr>\n\t\t<!-- BEGIN row:loop -->\n\t\t<tr>\n\t\t\t<th class=\"a-table-side js-table-side<!-- \\BEGIN selectedColNo:touch#{i} --> selected<!-- \\END selectedColNo:touch#{i} -->\" data-action-click=\"selectCol({i})\"><span class=\"a-table-toggle-btn\"></span></th>\n\t\t\t<!-- \\BEGIN row.{i}.col:loop -->\n\t\t\t<td colspan=\"\\{colspan\\}\" rowspan=\"\\{rowspan\\}\" data-action=\"updateTable(\\{i\\},{i})\" data-cell-id=\"\\{i\\}-{i}\" class=\"<!-- \\BEGIN selected:exist -->a-table-selected<!-- \\END selected:exist --><!-- \\BEGIN type:touch#th --> a-table-th<!-- END \\type:touch#th --><!-- \\BEGIN mark.top:exist --> a-table-border-top<!-- \\END mark.top:exist --><!-- \\BEGIN mark.right:exist --> a-table-border-right<!-- \\END mark.right:exist --><!-- \\BEGIN mark.bottom:exist --> a-table-border-bottom<!-- \\END mark.bottom:exist --><!-- \\BEGIN mark.left:exist --> a-table-border-left<!-- \\END mark.left:exist --><!-- \\BEGIN cellClass:exist --> \\{cellClass\\}<!-- \\END cellClass:exist -->\"><div class='a-table-editable \\{align\\}' contenteditable>\\{value\\}</div></td>\n\t\t\t<!-- \\END row.{i}.col:loop -->\n\t\t</tr>\n\t\t<!-- END row:loop -->\n\t</table>\n\t<!-- END inputMode:touch#table -->\n\t<!-- BEGIN inputMode:touch#source -->\n\t<textarea data-bind=\"tableResult\" class=\"a-table-textarea\" data-action-input=\"updateResult\"></textarea>\n\t<!-- END inputMode:touch#source -->\n</div>\n";
 
-},{}]},{},[9])(9)
+},{}]},{},[10])(10)
 });
