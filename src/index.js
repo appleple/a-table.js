@@ -38,12 +38,49 @@ const defs = {
   }
 }
 
+function getRand (a, b) {
+  return ~~(Math.random() * (b - a + 1)) + a;
+}
+
+function getRandText (limit) {
+  let ret = "";
+  let strings = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let length = strings.length;
+  for (let i = 0; i < limit; i++) {
+    ret += strings.charAt(Math.floor(getRand(0, length)));
+  }
+  return ret;
+}
+
+function * getUniqId (limit) {
+  const ids = []
+  while(true) {
+    let id = getRandText(limit)
+    while(true) {
+      let flag = true
+      ids.forEach((item) => {
+        if(item === id){
+          flag = false
+          id = getRandText(limit)
+        }
+      })
+      if(flag === true) {
+        break
+      }
+    }
+    ids.push(id)
+    yield id
+  }
+}
+
+const idGen = getUniqId (10)
+
 class aTable extends aTemplate {
 
   constructor (ele, option) {
     super()
-    this.id = this.getRandText(10)
-    this.menu_id = this.getRandText(10)
+    this.id = idGen.next().value
+    this.menu_id = idGen.next().value
     this.addTemplate(this.id,template)
     this.addTemplate(this.menu_id,menu)
     this.data = $.extend(true, {}, defs, option)
@@ -78,16 +115,18 @@ class aTable extends aTemplate {
 
   highestRow () {
     const arr = []
-    this.data.row.forEach((item, i) => {
-      if (!item || !item.col) {
-        return
+    const firstRow = this.data.row[0]
+    let i = 0;
+    if(!firstRow){
+      return arr
+    }
+    const row = firstRow.col;
+    row.forEach((item) => {
+      const length = parseInt(item.colspan)
+      for (let t = 0; t < length; t++) {
+        arr.push(i)
+        i++
       }
-      item.col.forEach((obj, t) => {
-        const length = parseInt(obj.colspan)
-        for (let i = 0; i < length; i++) {
-          arr.push(i)
-        }
-      })
     })
     return arr
   }
@@ -480,16 +519,16 @@ class aTable extends aTemplate {
         }
       }, 1)
     }
-    $th.each(function (i) {
-      if (i > width) {
-        $(this).remove()
-      }
-    })
 
     //for scroll
     $inner.width(9999);
     const tableWidth = $table.width();
-    $inner.width(tableWidth);
+
+    if(tableWidth) {
+      $inner.width(tableWidth)
+    } else {
+      $inner.width('auto')
+    }
 
     if (this.afterRendered) {
       this.afterRendered()
