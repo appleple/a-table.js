@@ -38,49 +38,13 @@ const defs = {
   }
 }
 
-function getRand (a, b) {
-  return ~~(Math.random() * (b - a + 1)) + a;
-}
-
-function getRandText (limit) {
-  let ret = "";
-  let strings = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let length = strings.length;
-  for (let i = 0; i < limit; i++) {
-    ret += strings.charAt(Math.floor(getRand(0, length)));
-  }
-  return ret;
-}
-
-function * getUniqId (limit) {
-  const ids = []
-  while(true) {
-    let id = getRandText(limit)
-    while(true) {
-      let flag = true
-      ids.forEach((item) => {
-        if(item === id){
-          flag = false
-          id = getRandText(limit)
-        }
-      })
-      if(flag === true) {
-        break
-      }
-    }
-    ids.push(id)
-    yield id
-  }
-}
-
-const idGen = getUniqId (10)
 
 class aTable extends aTemplate {
 
   constructor (ele, option) {
     super()
-    this.id = idGen.next().value
-    this.menu_id = idGen.next().value
+    this.id = aTable.getUniqId()
+    this.menu_id = aTable.getUniqId()
     this.addTemplate(this.id,template)
     this.addTemplate(this.menu_id,menu)
     this.data = $.extend(true, {}, defs, option)
@@ -1303,6 +1267,10 @@ class aTable extends aTemplate {
           name = 'firefox';
       }
       return name;
+  }
+
+  static getUniqId () {
+    return (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
   }
 
 }
