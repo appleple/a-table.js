@@ -1,6 +1,6 @@
 {
   "name": "a-table",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "main": "lib/index.js",
   "description": "Editable table library",
   "author": "appleple",
@@ -30,6 +30,7 @@
     "eslint-config-airbnb": "^13.0.0",
     "eslint-config-airbnb-base": "^11.0.1",
     "eslint-plugin-import": "^2.2.0",
+    "jsesc": "^2.4.0",
     "licensify": "^3.1.2",
     "mocha": "^3.2.0",
     "nightmare": "^2.8.1",
