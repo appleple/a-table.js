@@ -5,7 +5,7 @@
  * a-table:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
- *   version: 1.1.5
+ *   version: 1.1.6
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -7203,6 +7203,7 @@ var aTable = function (_aTemplate) {
         ret2.col = arr2;
         (0, _zeptoBrowserify.$)('th,td', this).each(function () {
           var obj = {};
+          var html = (0, _zeptoBrowserify.$)(this).html();
           if ((0, _zeptoBrowserify.$)(this).is('th')) {
             obj.type = 'th';
           } else {
@@ -7210,7 +7211,10 @@ var aTable = function (_aTemplate) {
           }
           obj.colspan = (0, _zeptoBrowserify.$)(this).attr('colspan') || 1;
           obj.rowspan = (0, _zeptoBrowserify.$)(this).attr('rowspan') || 1;
-          obj.value = (0, _zeptoBrowserify.$)(this).html();
+          obj.value = '';
+          if (html) {
+            obj.value = html.replace(/{(.*?)}/g, "&lcub;$1&rcub;");
+          }
           var classAttr = (0, _zeptoBrowserify.$)(this).attr('class');
           var cellClass = '';
           if (classAttr) {
@@ -7250,7 +7254,10 @@ var aTable = function (_aTemplate) {
           obj.type = 'td';
           obj.colspan = 1;
           obj.rowspan = 1;
-          obj.value = cell;
+          obj.value = '';
+          if (cell) {
+            obj.value = cell.replace(/{(.*?)}/g, "&lcub;$1&rcub;");
+          }
           arr2.push(obj);
         });
         arr1.push(ret2);
@@ -7579,7 +7586,7 @@ var aTable = function (_aTemplate) {
       } else if (type === 'input') {
         if ((0, _zeptoBrowserify.$)(this.e.target).hasClass('a-table-editable') && (0, _zeptoBrowserify.$)(this.e.target).parents('td').attr('data-cell-id') === b + '-' + a) {
           data.history.push((0, _clone2.default)(data.row));
-          data.row[a].col[b].value = (0, _zeptoBrowserify.$)(this.e.target).html();
+          data.row[a].col[b].value = (0, _zeptoBrowserify.$)(this.e.target).html().replace(/{(.*?)}/g, "&lcub;$1&rcub;");
         }
         if (this.afterEntered) {
           this.afterEntered();
@@ -7587,7 +7594,7 @@ var aTable = function (_aTemplate) {
       } else if (type === 'keyup' && aTable.getBrowser().indexOf('ie') !== -1) {
         if ((0, _zeptoBrowserify.$)(this.e.target).hasClass('a-table-editable') && (0, _zeptoBrowserify.$)(this.e.target).parents('td').attr('data-cell-id') === b + '-' + a) {
           data.history.push((0, _clone2.default)(data.row));
-          data.row[a].col[b].value = (0, _zeptoBrowserify.$)(this.e.target).html();
+          data.row[a].col[b].value = (0, _zeptoBrowserify.$)(this.e.target).html().replace(/{(.*?)}/g, "&lcub;$1&rcub;");
         }
         if (this.afterEntered) {
           this.afterEntered();

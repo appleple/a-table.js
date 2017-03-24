@@ -361,6 +361,7 @@ class aTable extends aTemplate {
       ret2.col = arr2
       $('th,td', this).each(function () {
         const obj = {}
+        const html = $(this).html();
         if ($(this).is('th')) {
           obj.type = 'th'
         } else {
@@ -368,7 +369,10 @@ class aTable extends aTemplate {
         }
         obj.colspan = $(this).attr('colspan') || 1
         obj.rowspan = $(this).attr('rowspan') || 1
-        obj.value = $(this).html()
+        obj.value = '';
+        if (html) {
+          obj.value = html.replace(/{(.*?)}/g,"&lcub;$1&rcub;");
+        }
         const classAttr = $(this).attr('class')
         let cellClass = ''
         if (classAttr) {
@@ -407,7 +411,10 @@ class aTable extends aTemplate {
         obj.type = 'td';
         obj.colspan = 1;
         obj.rowspan = 1;
-        obj.value = cell;
+        obj.value = '';
+        if (cell) {
+          obj.value = cell.replace(/{(.*?)}/g,"&lcub;$1&rcub;");
+        }
         arr2.push(obj);
       })
       arr1.push(ret2);
@@ -724,7 +731,7 @@ class aTable extends aTemplate {
     } else if (type === 'input') {
       if ($(this.e.target).hasClass('a-table-editable') && $(this.e.target).parents('td').attr('data-cell-id') === `${b}-${a}`) {
         data.history.push(clone(data.row))
-        data.row[a].col[b].value = $(this.e.target).html()
+        data.row[a].col[b].value = $(this.e.target).html().replace(/{(.*?)}/g,"&lcub;$1&rcub;");
       }
       if (this.afterEntered) {
         this.afterEntered()
@@ -732,7 +739,7 @@ class aTable extends aTemplate {
     } else if (type === 'keyup' && aTable.getBrowser().indexOf('ie') !== -1 ) {
       if ($(this.e.target).hasClass('a-table-editable') && $(this.e.target).parents('td').attr('data-cell-id') === `${b}-${a}`) {
         data.history.push(clone(data.row))
-        data.row[a].col[b].value = $(this.e.target).html()
+        data.row[a].col[b].value = $(this.e.target).html().replace(/{(.*?)}/g,"&lcub;$1&rcub;");
       }
       if (this.afterEntered) {
         this.afterEntered()
