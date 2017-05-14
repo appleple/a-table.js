@@ -6,7 +6,7 @@
   "author": "appleple",
   "license": "MIT",
   "scripts": {
-    "test": "npm run lint && mocha ./test/test.js --timeout 1000000",
+    "test": "mocha ./test/test.js --timeout 1000000",
     "lint": "eslint ./src/index.js --fix",
     "build:js": "npm-run-all -p build:lib build:global",
     "build:lib": "npm run babel",
