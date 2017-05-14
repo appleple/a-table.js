@@ -449,7 +449,7 @@ class aTable extends aTemplate {
     const trs = table.querySelectorAll('tr');
     [].forEach.call(trs, (tr, i) => {
       ret += '| ';
-      const children = tr.childNodes;
+      const children = tr.querySelectorAll('td,th');
       [].forEach.call(children, child => {
         ret += child.innerHTML;
         ret += ' | ';
@@ -511,12 +511,9 @@ class aTable extends aTemplate {
     if (table) {
       inner.style.width = '9999px';
       const tableWidth = table.offsetWidth;
-
-      if (tableWidth) {
-        inner.style.width = `${tableWidth}px`;
-      } else {
-        inner.style.width = 'auto';
-      }
+      inner.style.width = `${tableWidth}px`;
+    } else {
+      inner.style.width = 'auto';
     }
 
     if (this.afterRendered) {
