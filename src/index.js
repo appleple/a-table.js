@@ -48,12 +48,13 @@ class aTable extends aTemplate {
     this.addTemplate(this.id,template)
     this.addTemplate(this.menu_id,menu)
     this.data = $.extend(true, {}, defs, option)
-    const data = this.data
+    const data = this.data;
+    const selector = document.querySelector(ele);
     data.point = { x: -1, y: -1 }
     data.selectedRowNo = -1
     data.selectedColNo = -1
     data.showBtnList = true
-    data.row = this.parse($(ele).html())
+    data.row = this.parse(selector.innerHTML);
     data.tableClass = this.getTableClass(data.tableResult)
     data.highestRow = this.highestRow
     data.history = []
@@ -71,9 +72,9 @@ class aTable extends aTemplate {
             <div data-id='${this.id}'></div>
           </div>
         </div>
-    </div>`
-    $(ele).before(html);
-    $(ele).remove()
+    </div>`;
+    util.before(selector,html);
+    util.removeElement(selector);
     this.update()
   }
 
@@ -95,32 +96,39 @@ class aTable extends aTemplate {
     return arr
   }
 
+  _getElementByQuery(query) {
+    return document.querySelector(`[data-id='${this.id}'] ${query}`);
+  }
+
   getCellByIndex (x, y) {
-    return $(`[data-id='${this.id}'] [data-cell-id='${x}-${y}']`)
+    return this._getElementByQuery(`[data-cell-id='${x}-${y}']`);
   }
 
   getCellInfoByIndex (x, y) {
     const id = this.id
-    const $cell = this.getCellByIndex(x, y)
+    const cell = this.getCellByIndex(x, y)
     if ($cell.length === 0) {
       return false
     }
-    const left = $cell.offset().left
-    const top = $cell.offset().top
+    const pos = util.offset(cell);
+    const left = pos.left;
+    const top = pos.top;
     let returnLeft = -1
     let returnTop = -1
-    const width = parseInt($cell.attr('colspan'))
-    const height = parseInt($cell.attr('rowspan'))
-    $(`[data-id='${this.id}'] .js-table-header th`).each(function (i) {
-      if ($(this).offset().left === left) {
-        returnLeft = i
+    const width = parseInt($cell.attr('colspan'));
+    const height = parseInt($cell.attr('rowspan'));
+    const headers = this._getElementByQuery('.js-table-header th');
+    const sides = this._getElementByQuery('.js-table-side');
+    [].forEach.call(headers, (header, index) => {
+      if (util.offset(header).left === left) {
+        returnLeft = index;
       }
-    })
-    $(`[data-id='${this.id}'] .js-table-side`).each(function (i) {
-      if ($(this).offset().top === top) {
-        returnTop = i
+    });
+    [].forEach.call(sides,(side, index) => {
+      if (util.offset(side).top === top){
+        returnTop = index;
       }
-    })
+    });
     return { x: returnLeft - 1, y: returnTop, width, height }
   }
 
@@ -186,8 +194,7 @@ class aTable extends aTemplate {
   }
 
   getCellIndexByPos (x, y) {
-    let a,
-      b
+    let a,b;
     const self = this
     this.data.row.forEach((item, i) => {
       if (!item || !item.col) {
@@ -342,8 +349,6 @@ class aTable extends aTemplate {
   }
 
   contextmenu () {
-    const $ele = $(`[data-id='${this.id}']`)
-    const $target = $(this.e.target)
     const data = this.data
     this.e.preventDefault()
     data.showMenu = true
@@ -354,7 +359,7 @@ class aTable extends aTemplate {
 
   parse (html) {
     const self = this
-    const arr1 = []
+    const arr1 = [];
     $('tr', html).each(function () {
       const ret2 = {}
       const arr2 = []
