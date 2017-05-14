@@ -450,13 +450,13 @@ class aTable extends aTemplate {
     [].forEach.call(trs, (tr, i) => {
       ret += '| ';
       const children = tr.querySelectorAll('td,th');
-      [].forEach.call(children, child => {
+      [].forEach.call(children, (child) => {
         ret += child.innerHTML;
         ret += ' | ';
       });
       if (i === 0) {
         ret += '\n| ';
-        [].forEach.call(children, child => {
+        [].forEach.call(children, (child) => {
           ret += '--- | ';
         });
       }
@@ -741,9 +741,9 @@ class aTable extends aTemplate {
           this.select(a, b);
           this.update();
         }
-      }//todo
+      }// todo
     } else if (type === 'input') {
-      if (util.hasClass(this.e.target,'a-table-editable') && this.e.target.parentNode.getAttribute('data-cell-id') === `${b}-${a}`) {
+      if (util.hasClass(this.e.target, 'a-table-editable') && this.e.target.parentNode.getAttribute('data-cell-id') === `${b}-${a}`) {
         data.history.push(clone(data.row));
         data.row[a].col[b].value = this.e.target.innerHTML.replace(/{(.*?)}/g, '&lcub;$1&rcub;');
       }
@@ -751,7 +751,7 @@ class aTable extends aTemplate {
         this.afterEntered();
       }
     } else if (type === 'keyup' && aTable.getBrowser().indexOf('ie') !== -1) {
-      if (util.hasClass(this.e.target,'a-table-editable') && this.e.target.parentNode.getAttribute('data-cell-id') === `${b}-${a}`) {
+      if (util.hasClass(this.e.target, 'a-table-editable') && this.e.target.parentNode.getAttribute('data-cell-id') === `${b}-${a}`) {
         data.history.push(clone(data.row));
         data.row[a].col[b].value = this.e.target.innerHTML.replace(/{(.*?)}/g, '&lcub;$1&rcub;');
       }
