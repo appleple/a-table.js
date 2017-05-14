@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "test": "npm run lint && mocha ./test/test.js --timeout 1000000",
-    "lint": "eslint ./src/core/index.js --fix",
+    "lint": "eslint ./src/index.js --fix",
     "build:js": "npm-run-all -p build:lib build:global",
     "build:lib": "npm run babel",
     "build:global": "browserify ./src/index.js -t babelify -p licensify --standalone aTable -o ./build/a-table.js && npm run build:global:min",
