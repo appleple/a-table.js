@@ -363,28 +363,27 @@ class aTable extends aTemplate {
     const self = this;
     const arr1 = [];
     const doc = util.parseHTML(html);
-    const trs = doc.querySelector('tr');
+    const trs = doc.querySelectorAll('tr');
     [].forEach.call(trs, (tr) => {
       const ret2 = {};
       const arr2 = [];
-      const cells = tr.querySelector('th,td');
+      const cells = tr.querySelectorAll('th,td');
       ret2.col = arr2;
       [].forEach.call(cells, (cell) => {
         const obj = {};
         const html = cell.innerHTML;
-        // todo
-        if ($(this).is('th')) {
+        if (cell.tagName === 'th') {
           obj.type = 'th';
         } else {
           obj.type = 'td';
         }
-        obj.colspan = $(this).attr('colspan') || 1;
-        obj.rowspan = $(this).attr('rowspan') || 1;
+        obj.colspan = cell.getAttribute('colspan') || 1;
+        obj.rowspan = cell.getAttribute('rowspan') || 1;
         obj.value = '';
         if (html) {
           obj.value = html.replace(/{(.*?)}/g, '&lcub;$1&rcub;');
         }
-        const classAttr = $(this).attr('class');
+        const classAttr = cell.getAttribute('class');
         let cellClass = '';
         if (classAttr) {
           const classList = classAttr.split(/\s+/);
@@ -433,22 +432,23 @@ class aTable extends aTemplate {
   }
 
   getTableClass(html) {
-    return $(html).attr('class');
+    return util.parseHTML(html).getAttribute('class');
   }
 
   toMarkdown(html) {
-    const $table = $(html);
+    const table = util.parseHTML(html);
     let ret = '';
-    $table.find('tr').each(function (i) {
+    const trs = table.querySelectorAll('tr');
+    [].forEach.call(trs, (tr, i) => {
       ret += '| ';
-      const $children = $(this).children();
-      $children.each(function () {
-        ret += $(this).html();
+      const children = tr.childNodes;
+      [].forEach.call(children, child => {
+        ret += child.innerHTML;
         ret += ' | ';
       });
       if (i === 0) {
         ret += '\n| ';
-        $children.each(() => {
+        [].forEach.call(children, child => {
           ret += '--- | ';
         });
       }
@@ -473,10 +473,9 @@ class aTable extends aTemplate {
     const point = this.getLargePoint.apply(null, points);
     const width = point.width;
     const selectedPoints = this.getSelectedPoints();
-    const $th = $('.js-table-header th', `[data-id='${this.id}']`);
-    const $table = $('table', `[data-id='${this.id}']`);
-    const $inner = $table.parents('.a-table-inner');
-    const elem = $('.a-table-selected .a-table-editable', `[data-id='${this.id}']`)[0];
+    const table = this._getElementByQuery('table');
+    const inner = this._getElementByQuery('.a-table-inner');
+    const elem = this._getElementByQuery('.a-table-selected .a-table-editable');
     if (elem && !this.data.showMenu) {
       setTimeout(() => {
         elem.focus();
