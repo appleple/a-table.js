@@ -360,13 +360,17 @@ class aTable extends aTemplate {
   parse (html) {
     const self = this
     const arr1 = [];
-    $('tr', html).each(function () {
-      const ret2 = {}
-      const arr2 = []
-      ret2.col = arr2
-      $('th,td', this).each(function () {
+    const doc = util.parseHTML(html);
+    const trs = doc.querySelector('tr');
+    [].forEach.call(trs, (tr) => {
+      const ret2 = {};
+      const arr2 = [];
+      const cells = tr.querySelector('th,td');
+      ret2.col = arr2;
+      [].forEach.call(cells, (cell) => {
         const obj = {}
-        const html = $(this).html();
+        const html = cell.innerHTML;
+        // todo
         if ($(this).is('th')) {
           obj.type = 'th'
         } else {
@@ -395,7 +399,7 @@ class aTable extends aTemplate {
         arr2.push(obj)
       })
       arr1.push(ret2)
-    })
+    });
     return arr1
   }
 
