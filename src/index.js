@@ -1,5 +1,4 @@
 import aTemplate from 'a-template';
-import { $ } from 'zepto-browserify';
 import clone from 'clone';
 import template from './table.html';
 import menu from './menu.html';
@@ -48,7 +47,7 @@ class aTable extends aTemplate {
     this.menu_id = aTable.getUniqId();
     this.addTemplate(this.id, template);
     this.addTemplate(this.menu_id, menu);
-    this.data = $.extend(true, {}, defs, option);
+    this.data = util.extend({}, defs, option);
     const data = this.data;
     const selector = document.querySelector(ele);
     data.point = { x: -1, y: -1 };
@@ -108,7 +107,7 @@ class aTable extends aTemplate {
   getCellInfoByIndex(x, y) {
     const id = this.id;
     const cell = this.getCellByIndex(x, y);
-    if ($cell.length === 0) {
+    if (!cell) {
       return false;
     }
     const pos = util.offset(cell);
@@ -116,8 +115,8 @@ class aTable extends aTemplate {
     const top = pos.top;
     let returnLeft = -1;
     let returnTop = -1;
-    const width = parseInt($cell.attr('colspan'));
-    const height = parseInt($cell.attr('rowspan'));
+    const width = parseInt(cell.getAttribute('colspan'));
+    const height = parseInt(cell.getAttribute('rowspan'));
     const headers = this._getElementByQuery('.js-table-header th');
     const sides = this._getElementByQuery('.js-table-side');
     [].forEach.call(headers, (header, index) => {
@@ -500,13 +499,13 @@ class aTable extends aTemplate {
     }
 
     // for scroll
-    $inner.width(9999);
-    const tableWidth = $table.width();
+    inner.style.width = '9999px';
+    const tableWidth = table.offsetWidth;
 
     if (tableWidth) {
-      $inner.width(tableWidth);
+      inner.style.width = `${tableWidth}px`;
     } else {
-      $inner.width('auto');
+      inner.style.width = 'auto';
     }
 
     if (this.afterRendered) {
@@ -734,19 +733,19 @@ class aTable extends aTemplate {
           this.select(a, b);
           this.update();
         }
-      }
+      }//todo
     } else if (type === 'input') {
-      if ($(this.e.target).hasClass('a-table-editable') && $(this.e.target).parents('td').attr('data-cell-id') === `${b}-${a}`) {
+      if (util.hasClass(this.e.target,'a-table-editable') && this.e.target.parentNode.getAttribute('data-cell-id') === `${b}-${a}`) {
         data.history.push(clone(data.row));
-        data.row[a].col[b].value = $(this.e.target).html().replace(/{(.*?)}/g, '&lcub;$1&rcub;');
+        data.row[a].col[b].value = this.e.target.innerHTML.replace(/{(.*?)}/g, '&lcub;$1&rcub;');
       }
       if (this.afterEntered) {
         this.afterEntered();
       }
     } else if (type === 'keyup' && aTable.getBrowser().indexOf('ie') !== -1) {
-      if ($(this.e.target).hasClass('a-table-editable') && $(this.e.target).parents('td').attr('data-cell-id') === `${b}-${a}`) {
+      if (util.hasClass(this.e.target,'a-table-editable') && this.e.target.parentNode.getAttribute('data-cell-id') === `${b}-${a}`) {
         data.history.push(clone(data.row));
-        data.row[a].col[b].value = $(this.e.target).html().replace(/{(.*?)}/g, '&lcub;$1&rcub;');
+        data.row[a].col[b].value = this.e.target.innerHTML.replace(/{(.*?)}/g, '&lcub;$1&rcub;');
       }
       if (this.afterEntered) {
         this.afterEntered();
