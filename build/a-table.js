@@ -5,7 +5,7 @@
  * a-table:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
- *   version: 1.1.6
+ *   version: 1.2.0
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -4509,7 +4509,7 @@ var aTable = function (_aTemplate) {
             this.select(a, b);
             this.update();
           }
-        } //todo
+        } // todo
       } else if (type === 'input') {
         if (_util2.default.hasClass(this.e.target, 'a-table-editable') && this.e.target.parentNode.getAttribute('data-cell-id') === b + '-' + a) {
           data.history.push((0, _clone2.default)(data.row));
