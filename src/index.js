@@ -54,7 +54,8 @@ class aTable extends aTemplate {
     data.selectedRowNo = -1;
     data.selectedColNo = -1;
     data.showBtnList = true;
-    data.row = this.parse(selector.innerHTML);
+    data.row = this.parse(`<table>${selector.innerHTML}</table>`);
+    data.tableResult = this.getTable();
     data.tableClass = this.getTableClass(data.tableResult);
     data.highestRow = this.highestRow;
     data.history = [];
@@ -100,6 +101,14 @@ class aTable extends aTemplate {
     return document.querySelector(`[data-id='${this.id}'] ${query}`);
   }
 
+  _getElementsByQuery(query) {
+    return document.querySelectorAll(`[data-id='${this.id}'] ${query}`);
+  }
+
+  _getSelf() {
+    return document.querySelector(`[data-id='${this.id}']`);
+  }
+
   getCellByIndex(x, y) {
     return this._getElementByQuery(`[data-cell-id='${x}-${y}']`);
   }
@@ -117,8 +126,8 @@ class aTable extends aTemplate {
     let returnTop = -1;
     const width = parseInt(cell.getAttribute('colspan'));
     const height = parseInt(cell.getAttribute('rowspan'));
-    const headers = this._getElementByQuery('.js-table-header th');
-    const sides = this._getElementByQuery('.js-table-side');
+    const headers = this._getElementsByQuery('.js-table-header th');
+    const sides = this._getElementsByQuery('.js-table-side');
     [].forEach.call(headers, (header, index) => {
       if (util.offset(header).left === left) {
         returnLeft = index;
@@ -473,7 +482,7 @@ class aTable extends aTemplate {
     const width = point.width;
     const selectedPoints = this.getSelectedPoints();
     const table = this._getElementByQuery('table');
-    const inner = this._getElementByQuery('.a-table-inner');
+    const inner = this._getSelf().parentNode;
     const elem = this._getElementByQuery('.a-table-selected .a-table-editable');
     if (elem && !this.data.showMenu) {
       setTimeout(() => {
@@ -790,7 +799,7 @@ class aTable extends aTemplate {
     if (pastedData) {
       const tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
       if (tableHtml && tableHtml[0]) {
-        const newRow = this.parse(tableHtml[0]);
+        const newRow = this.parse(`<table>${tableHtml[0]}</table>`);
         if (newRow && newRow.length) {
           e.preventDefault();
           data.row = newRow;
