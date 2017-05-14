@@ -4124,7 +4124,6 @@ var aTable = function (_aTemplate) {
       var self = this;
       var arr1 = [];
       var doc = _util2.default.parseHTML(html);
-      console.log(doc);
       var trs = doc.querySelectorAll('tr');
       [].forEach.call(trs, function (tr) {
         var ret2 = {};
@@ -4266,14 +4265,15 @@ var aTable = function (_aTemplate) {
       }
 
       // for scroll
-      console.log(inner);
-      inner.style.width = '9999px';
-      var tableWidth = table.offsetWidth;
+      if (table) {
+        inner.style.width = '9999px';
+        var tableWidth = table.offsetWidth;
 
-      if (tableWidth) {
-        inner.style.width = tableWidth + 'px';
-      } else {
-        inner.style.width = 'auto';
+        if (tableWidth) {
+          inner.style.width = tableWidth + 'px';
+        } else {
+          inner.style.width = 'auto';
+        }
       }
 
       if (this.afterRendered) {
@@ -5121,9 +5121,9 @@ module.exports.parseHTML = function (string) {
 
 module.exports.hasClass = function (el, className) {
   if (el.classList) {
-    el.classList.contains(className);
+    return el.classList.contains(className);
   } else {
-    new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
+    return new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
   }
 };
 

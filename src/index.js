@@ -508,13 +508,15 @@ class aTable extends aTemplate {
     }
 
     // for scroll
-    inner.style.width = '9999px';
-    const tableWidth = table.offsetWidth;
+    if (table) {
+      inner.style.width = '9999px';
+      const tableWidth = table.offsetWidth;
 
-    if (tableWidth) {
-      inner.style.width = `${tableWidth}px`;
-    } else {
-      inner.style.width = 'auto';
+      if (tableWidth) {
+        inner.style.width = `${tableWidth}px`;
+      } else {
+        inner.style.width = 'auto';
+      }
     }
 
     if (this.afterRendered) {
