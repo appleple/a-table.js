@@ -98,6 +98,29 @@ class aTable extends aTemplate {
     return arr;
   }
 
+  _getTableLength(table) {
+    return {
+      x: this._getRowLength(table[0].col),
+      y: this._getColLength(table)
+    }
+  }
+
+  _getRowLength(row) {
+    let length = 0;
+    row.forEach((item) => {
+      length += parseInt(item.colspan);
+    });
+    return length;
+  }
+
+  _getColLength(table) {
+    let length = 0;
+    table.forEach((row) => {
+      length += parseInt(row.col[0].rowspan);
+    });
+    return length;
+  }
+
   _getElementByQuery(query) {
     return document.querySelector(`[data-id='${this.id}'] ${query}`);
   }
@@ -802,7 +825,12 @@ class aTable extends aTemplate {
         const newRow = this.parse(tableHtml[0]);
         if (newRow && newRow.length) {
           e.preventDefault();
-          data.row = newRow;
+          const cellId = this.e.target.parentNode.getAttribute('data-cell-id');
+          const pos = cellId.split('-');
+          this.insertTable(newRow,{
+            x: parseInt(pos[0]),
+            y: parseInt(pos[1])
+          });
           data.history.push(clone(data.row));
           this.update();
           return;
@@ -816,6 +844,16 @@ class aTable extends aTemplate {
         this.update();
         data.history.push(clone(data.row));
       }
+    }
+  }
+
+  insertTable(table,pos) {
+    const currentLength = this._getTableLength(this.data.row);
+    const copiedLength = this._getTableLength(table);
+    const offsetX = pos.x + copiedLength.x - currentLength.x;
+    const offsetY = pos.y + copiedLength.y - currentLength.y;
+    if (offsetY > 0) {
+      
     }
   }
 
