@@ -49,7 +49,7 @@ class aTable extends aTemplate {
     this.addTemplate(this.menu_id, menu);
     this.data = util.extend({}, defs, option);
     const data = this.data;
-    const selector = document.querySelector(ele);
+    const selector = typeof ele === 'string' ? document.querySelector(ele) : ele;
     data.point = { x: -1, y: -1 };
     data.selectedRowNo = -1;
     data.selectedColNo = -1;
