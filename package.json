@@ -27,6 +27,7 @@
   "dependencies": {
     "a-template": "0.2.0",
     "clone": "^2.0.0",
+    "deep-extend": "^0.5.0",
     "zepto-browserify": "^1.1.6-1"
   },
   "devDependencies": {

@@ -31,6 +31,7 @@ module.exports.hasClass = (el, className) => {
 }
 
 function deepExtend(out){
+
   out = out || {};
 
   for (var i = 1; i < arguments.length; i++) {

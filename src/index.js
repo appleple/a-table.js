@@ -1,5 +1,6 @@
 import aTemplate from 'a-template';
 import clone from 'clone';
+import extend from 'deep-extend';
 import template from './table.html';
 import menu from './menu.html';
 import returnTable from './return-table.html';
@@ -47,7 +48,7 @@ class aTable extends aTemplate {
     this.menu_id = aTable.getUniqId();
     this.addTemplate(this.id, template);
     this.addTemplate(this.menu_id, menu);
-    this.data = util.extend({}, defs, option);
+    this.data = extend(defs, option);
     const data = this.data;
     const selector = typeof ele === 'string' ? document.querySelector(ele) : ele;
     data.point = { x: -1, y: -1 };
@@ -798,7 +799,6 @@ class aTable extends aTemplate {
     if (pastedData) {
       const tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
       if (tableHtml && tableHtml[0]) {
-        console.log(tableHtml[0]);
         const newRow = this.parse(tableHtml[0]);
         if (newRow && newRow.length) {
           e.preventDefault();

@@ -31,6 +31,14 @@
  *   contributors: Blake Miner <miner.blake@gmail.com> (http://www.blakeminer.com/), Tian You <axqd001@gmail.com> (http://blog.axqd.net/), George Stagas <gstagas@gmail.com> (http://stagas.com/), Tobiasz Cudnik <tobiasz.cudnik@gmail.com> (https://github.com/TobiaszCudnik), Pavel Lang <langpavel@phpskelet.org> (https://github.com/langpavel), Dan MacTough (http://yabfog.com/), w1nk (https://github.com/w1nk), Hugh Kennedy (http://twitter.com/hughskennedy), Dustin Diaz (http://dustindiaz.com), Ilya Shaisultanov (https://github.com/diversario), Nathan MacInnes <nathan@macinn.es> (http://macinn.es/), Benjamin E. Coe <ben@npmjs.com> (https://twitter.com/benjamincoe), Nathan Zadoks (https://github.com/nathan7), Róbert Oroszi <robert+gh@oroszi.net> (https://github.com/oroce), Aurélio A. Heckert (http://softwarelivre.org/aurium), Guy Ellis (http://www.guyellisrocks.com/), fscherwi (https://fscherwi.github.io), rictic (https://github.com/rictic), Martin Jurča (https://github.com/jurca), Misery Lee <miserylee@foxmail.com> (https://github.com/miserylee)
  *   version: 2.1.0
  *
+ * deep-extend:
+ *   license: MIT (http://opensource.org/licenses/MIT)
+ *   licenses: MIT (http://opensource.org/licenses/MIT)
+ *   author: Viacheslav Lotsmanov <lotsmanov89@gmail.com>
+ *   contributors: Romain Prieto, Max Maximov, Marshall Bowers
+ *   homepage: https://github.com/unclechu/node-deep-extend
+ *   version: 0.5.0
+ *
  * delegate:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   version: 3.1.2
@@ -697,7 +705,7 @@ var aTemplate = function () {
 
 module.exports = aTemplate;
 
-},{"delegate":6,"morphdom":9}],2:[function(require,module,exports){
+},{"delegate":7,"morphdom":10}],2:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -2606,7 +2614,7 @@ function isnan (val) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":2,"ieee754":7,"isarray":8}],4:[function(require,module,exports){
+},{"base64-js":2,"ieee754":8,"isarray":9}],4:[function(require,module,exports){
 (function (Buffer){
 var clone = (function() {
 'use strict';
@@ -2868,6 +2876,154 @@ if (typeof module === 'object' && module.exports) {
 
 }).call(this,require("buffer").Buffer)
 },{"buffer":3}],5:[function(require,module,exports){
+(function (Buffer){
+/*!
+ * @description Recursive object extending
+ * @author Viacheslav Lotsmanov <lotsmanov89@gmail.com>
+ * @license MIT
+ *
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2013-2015 Viacheslav Lotsmanov
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+'use strict';
+
+function isSpecificValue(val) {
+	return (
+		val instanceof Buffer
+		|| val instanceof Date
+		|| val instanceof RegExp
+	) ? true : false;
+}
+
+function cloneSpecificValue(val) {
+	if (val instanceof Buffer) {
+		var x = new Buffer(val.length);
+		val.copy(x);
+		return x;
+	} else if (val instanceof Date) {
+		return new Date(val.getTime());
+	} else if (val instanceof RegExp) {
+		return new RegExp(val);
+	} else {
+		throw new Error('Unexpected situation');
+	}
+}
+
+/**
+ * Recursive cloning array.
+ */
+function deepCloneArray(arr) {
+	var clone = [];
+	arr.forEach(function (item, index) {
+		if (typeof item === 'object' && item !== null) {
+			if (Array.isArray(item)) {
+				clone[index] = deepCloneArray(item);
+			} else if (isSpecificValue(item)) {
+				clone[index] = cloneSpecificValue(item);
+			} else {
+				clone[index] = deepExtend({}, item);
+			}
+		} else {
+			clone[index] = item;
+		}
+	});
+	return clone;
+}
+
+/**
+ * Extening object that entered in first argument.
+ *
+ * Returns extended object or false if have no target object or incorrect type.
+ *
+ * If you wish to clone source object (without modify it), just use empty new
+ * object as first argument, like this:
+ *   deepExtend({}, yourObj_1, [yourObj_N]);
+ */
+var deepExtend = module.exports = function (/*obj_1, [obj_2], [obj_N]*/) {
+	if (arguments.length < 1 || typeof arguments[0] !== 'object') {
+		return false;
+	}
+
+	if (arguments.length < 2) {
+		return arguments[0];
+	}
+
+	var target = arguments[0];
+
+	// convert arguments to array and cut off target object
+	var args = Array.prototype.slice.call(arguments, 1);
+
+	var val, src, clone;
+
+	args.forEach(function (obj) {
+		// skip argument if isn't an object, is null, or is an array
+		if (typeof obj !== 'object' || obj === null || Array.isArray(obj)) {
+			return;
+		}
+
+		Object.keys(obj).forEach(function (key) {
+			src = target[key]; // source value
+			val = obj[key]; // new value
+
+			// recursion prevention
+			if (val === target) {
+				return;
+
+			/**
+			 * if new value isn't object then just overwrite by new value
+			 * instead of extending.
+			 */
+			} else if (typeof val !== 'object' || val === null) {
+				target[key] = val;
+				return;
+
+			// just clone arrays (and recursive clone objects inside)
+			} else if (Array.isArray(val)) {
+				target[key] = deepCloneArray(val);
+				return;
+
+			// custom cloning and overwrite for specific objects
+			} else if (isSpecificValue(val)) {
+				target[key] = cloneSpecificValue(val);
+				return;
+
+			// overwrite by new value if source isn't object or array
+			} else if (typeof src !== 'object' || src === null || Array.isArray(src)) {
+				target[key] = deepExtend({}, val);
+				return;
+
+			// source value and new value is objects both, extending...
+			} else {
+				target[key] = deepExtend(src, val);
+				return;
+			}
+		});
+	});
+
+	return target;
+}
+
+}).call(this,require("buffer").Buffer)
+},{"buffer":3}],6:[function(require,module,exports){
 var DOCUMENT_NODE_TYPE = 9;
 
 /**
@@ -2899,7 +3055,7 @@ function closest (element, selector) {
 
 module.exports = closest;
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var closest = require('./closest');
 
 /**
@@ -2945,7 +3101,7 @@ function listener(element, selector, type, callback) {
 
 module.exports = delegate;
 
-},{"./closest":5}],7:[function(require,module,exports){
+},{"./closest":6}],8:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -3031,14 +3187,14 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 'use strict';
 
 var range; // Create a range object for efficently rendering strings to elements.
@@ -3713,7 +3869,7 @@ var morphdom = morphdomFactory(morphAttrs);
 
 module.exports = morphdom;
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -3725,6 +3881,10 @@ var _aTemplate3 = _interopRequireDefault(_aTemplate2);
 var _clone = require('clone');
 
 var _clone2 = _interopRequireDefault(_clone);
+
+var _deepExtend = require('deep-extend');
+
+var _deepExtend2 = _interopRequireDefault(_deepExtend);
 
 var _util = require('./util.js');
 
@@ -3788,7 +3948,7 @@ var aTable = function (_aTemplate) {
     _this.menu_id = aTable.getUniqId();
     _this.addTemplate(_this.id, template);
     _this.addTemplate(_this.menu_id, menu);
-    _this.data = _util2.default.extend({}, defs, option);
+    _this.data = (0, _deepExtend2.default)(defs, option);
     var data = _this.data;
     var selector = typeof ele === 'string' ? document.querySelector(ele) : ele;
     data.point = { x: -1, y: -1 };
@@ -4570,7 +4730,6 @@ var aTable = function (_aTemplate) {
       if (pastedData) {
         var tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
         if (tableHtml && tableHtml[0]) {
-          console.log(tableHtml[0]);
           var newRow = this.parse(tableHtml[0]);
           if (newRow && newRow.length) {
             e.preventDefault();
@@ -5088,7 +5247,7 @@ var aTable = function (_aTemplate) {
 
 module.exports = aTable;
 
-},{"./util.js":11,"a-template":1,"clone":4}],11:[function(require,module,exports){
+},{"./util.js":12,"a-template":1,"clone":4,"deep-extend":5}],12:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -5126,6 +5285,7 @@ module.exports.hasClass = function (el, className) {
 };
 
 function deepExtend(out) {
+
   out = out || {};
 
   for (var i = 1; i < arguments.length; i++) {
@@ -5146,5 +5306,5 @@ function deepExtend(out) {
 
 module.exports.extend = deepExtend;
 
-},{}]},{},[10])(10)
+},{}]},{},[11])(11)
 });
