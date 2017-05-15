@@ -780,8 +780,8 @@ class aTable extends aTemplate {
       copy_y = point.y;
     });
     copy_text += '</tr></table>';
-    if (e.originalEvent.clipboardData) {
-      e.originalEvent.clipboardData.setData('text/html', copy_text);
+    if (e.clipboardData) {
+      e.clipboardData.setData('text/html', copy_text);
     } else if (window.clipboardData) {
       window.clipboardData.setData('Text', copy_text);
     }
@@ -790,15 +790,16 @@ class aTable extends aTemplate {
   pasteTable(e) {
     let pastedData;
     const data = this.data;
-    if (e.originalEvent.clipboardData) {
-      pastedData = e.originalEvent.clipboardData.getData('text/html');
+    if (e.clipboardData) {
+      pastedData = e.clipboardData.getData('text/html');
     } else if (window.clipboardData) {
       pastedData = window.clipboardData.getData('Text');
     }
     if (pastedData) {
       const tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
       if (tableHtml && tableHtml[0]) {
-        const newRow = this.parse(`<table>${tableHtml[0]}</table>`);
+        console.log(tableHtml[0]);
+        const newRow = this.parse(tableHtml[0]);
         if (newRow && newRow.length) {
           e.preventDefault();
           data.row = newRow;
