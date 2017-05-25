@@ -4785,7 +4785,27 @@ var aTable = function (_aTemplate) {
     value: function insertTable(table, pos) {
       var currentLength = this._getTableLength(this.data.row);
       var copiedLength = this._getTableLength(table);
-      console.log(currentLength, copiedLength);
+      var offsetX = pos.x + copiedLength.x - currentLength.x;
+      var offsetY = pos.y + copiedLength.y - currentLength.y;
+      var length = currentLength.x;
+      var row = this.data.row;
+      while (offsetY > 0) {
+        var newRow = [];
+        for (var i = 0; i < length; i++) {
+          var newcell = { type: 'td', colspan: 1, rowspan: 1, value: '' };
+          newRow.push(newcell);
+        }
+        this.insertRow(currentLength.y, newRow);
+        offsetY--;
+      }
+      if (offsetX > 0) {
+        this.data.row.forEach(function (item) {
+          for (var _i = 0; _i < offsetX; _i++) {
+            item.col.push({ type: 'td', colspan: 1, rowspan: 1, value: '' });
+          }
+        });
+      }
+      this.update();
     }
   }, {
     key: 'updateResult',
@@ -4923,7 +4943,7 @@ var aTable = function (_aTemplate) {
             cell.rowspan += '';
           } else if (index.row === selectedno + 1) {
             var _length = parseInt(cell.colspan);
-            for (var _i = 0; _i < _length; _i++) {
+            for (var _i2 = 0; _i2 < _length; _i2++) {
               newRow.push({ type: 'td', colspan: 1, rowspan: 1, value: '' });
             }
           } else {
@@ -4976,7 +4996,7 @@ var aTable = function (_aTemplate) {
             cell.rowspan += '';
           } else if (index.row === selectedno - 1) {
             var _length2 = parseInt(cell.colspan);
-            for (var _i2 = 0; _i2 < _length2; _i2++) {
+            for (var _i3 = 0; _i3 < _length2; _i3++) {
               newRow.push({ type: 'td', colspan: 1, rowspan: 1, value: '' });
             }
           } else {
@@ -5085,19 +5105,19 @@ var aTable = function (_aTemplate) {
           return -1;
         });
       }
-      for (var _i3 = selectedPoint.y, _n = _i3 + height; _i3 < _n; _i3++) {
-        if (!rows[_i3]) {
-          rows[_i3] = [];
-          rows[_i3].push({ row: _i3, col: -1 });
+      for (var _i4 = selectedPoint.y, _n = _i4 + height; _i4 < _n; _i4++) {
+        if (!rows[_i4]) {
+          rows[_i4] = [];
+          rows[_i4].push({ row: _i4, col: -1 });
         }
       }
       var first = true;
       rows.forEach(function (row) {
         var index = row[row.length - 1];
-        for (var _i4 = 0; _i4 < width; _i4++) {
+        for (var _i5 = 0; _i5 < width; _i5++) {
           var val = '';
           // スプリットされる前のコルのデータを保存
-          if (first === true && _i4 === width - 1) {
+          if (first === true && _i5 === width - 1) {
             val = currentValue;
             first = false;
           }

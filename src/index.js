@@ -850,11 +850,27 @@ class aTable extends aTemplate {
   insertTable(table,pos) {
     const currentLength = this._getTableLength(this.data.row);
     const copiedLength = this._getTableLength(table);
-    const offsetX = pos.x + copiedLength.x - currentLength.x;
-    const offsetY = pos.y + copiedLength.y - currentLength.y;
-    if (offsetY > 0) {
-      
+    let offsetX = pos.x + copiedLength.x - currentLength.x;
+    let offsetY = pos.y + copiedLength.y - currentLength.y;
+    const length = currentLength.x;
+    const row = this.data.row;
+    while (offsetY > 0) {
+      const newRow = [];
+      for (let i = 0; i < length; i++) {
+        const newcell = { type: 'td', colspan: 1, rowspan: 1, value: '' };
+        newRow.push(newcell);
+      }
+      this.insertRow(currentLength.y,newRow);
+      offsetY--;
     }
+    if (offsetX > 0) {
+      this.data.row.forEach((item) => {
+        for (let i = 0; i < offsetX; i++) {
+          item.col.push({ type: 'td', colspan: 1, rowspan: 1, value: '' });
+        }
+      });
+    }
+    this.update();
   }
 
   updateResult() {
