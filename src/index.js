@@ -870,6 +870,9 @@ class aTable extends aTemplate {
         }
       });
     }
+    this.select(pos.y,pos.x);
+    this.update();
+    this.selectRange(pos.y+copiedLength.y-1,pos.x+copiedLength.x-1);
     this.update();
   }
 
