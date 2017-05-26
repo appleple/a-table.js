@@ -883,8 +883,7 @@ class aTable extends aTemplate {
 
     index.row += copiedLength.y - 1;
     index.col += copiedLength.x - 1;
-    const destIndex = this.getCellIndexByPos(index.col, index.row);
-    this.selectRange(destIndex.row, destIndex.col);//todo
+    this.selectRange(index.row, index.col);//todo
 
     const selectedPoints = this.getSelectedPoints();
     const largePoint = this.getLargePoint.apply(null, selectedPoints);
