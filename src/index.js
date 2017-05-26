@@ -880,10 +880,29 @@ class aTable extends aTemplate {
     this.select(pos.y,pos.x);
     this.update();
     const index = this.getCellIndexByPos(pos.x,pos.y);
+    const destPos = {}
 
     index.row += copiedLength.y - 1;
     index.col += copiedLength.x - 1;
-    this.selectRange(index.row, index.col);//todo
+
+    this.data.row.forEach((item, i) => {
+      if (!item.col) {
+        return false;
+      }
+      item.col.forEach((obj, t) => {
+        const point = this.getCellInfoByIndex(t, i);
+        if(point.x + point.width - 1 === index.col && point.y + point.height - 1 === index.row) {
+          destPos.x = t;
+          destPos.y = i;
+        }
+      });
+    });
+
+    if(!destPos.x) {
+      return;
+    }
+
+    this.selectRange(destPos.y, destPos.x);//todo
 
     const selectedPoints = this.getSelectedPoints();
     const largePoint = this.getLargePoint.apply(null, selectedPoints);
