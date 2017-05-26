@@ -879,7 +879,13 @@ class aTable extends aTemplate {
     }
     this.select(pos.y,pos.x);
     this.update();
-    this.selectRange(pos.y+copiedLength.y-1,pos.x+copiedLength.x-1);
+    const index = this.getCellIndexByPos(pos.x,pos.y);
+
+    index.row += copiedLength.y - 1;
+    index.col += copiedLength.x - 1;
+    const destIndex = this.getCellIndexByPos(index.col, index.row);
+    this.selectRange(destIndex.row, destIndex.col);//todo
+
     const selectedPoints = this.getSelectedPoints();
     const largePoint = this.getLargePoint.apply(null, selectedPoints);
     const bound = { x: 0, y: largePoint.y, width: largePoint.x, height: largePoint.height };
@@ -892,6 +898,7 @@ class aTable extends aTemplate {
         targets.push(index);
       }
     });
+
     targets.forEach((item) => {
       const row = item.row;
       if (item.row < largePoint.y) {
