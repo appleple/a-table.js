@@ -915,13 +915,13 @@ class aTable extends aTemplate {
       }
     }
     this.removeSelectedCellExcept();
+    let t = 0;
     rows.forEach((row) => {
       const index = row[row.length - 1];
-      for (let i = 0; i < largePoint.width; i++) {
-        let val = '';
-        // スプリットされる前のコルのデータを保存
-        this.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: 1, rowspan: 1, value: '', selected: true });
-      }
+      table[t].col.reverse().forEach(cell => {
+        this.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: cell.colspan, rowspan: cell.rowspan, value: cell.value, selected: true });
+      });
+      t++;
     });
     this.update();
   }
