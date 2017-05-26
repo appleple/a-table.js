@@ -861,6 +861,7 @@ class aTable extends aTemplate {
     const row = this.data.row;
     const targets = [];
     const rows = [];
+    const data = this.data;
     while (offsetY > 0) {
       const newRow = [];
       for (let i = 0; i < length; i++) {
@@ -877,7 +878,7 @@ class aTable extends aTemplate {
         }
       });
     }
-    this.select(pos.y,pos.x);
+
     this.update();
     const index = this.getCellIndexByPos(pos.x,pos.y);
     const destPos = {}
@@ -898,14 +899,30 @@ class aTable extends aTemplate {
       });
     });
 
-    if(!destPos.x) {
+    if(typeof destPos.x === 'undefined') {
+      if (data.lang === 'en') {
+        alert('You can\'t paste here');
+      } else if (data.lang === 'ja') {
+        alert('ここには貼り付けできません。');
+      }
       return;
     }
 
+    this.select(pos.y,pos.x);
     this.selectRange(destPos.y, destPos.x);//todo
 
     const selectedPoints = this.getSelectedPoints();
     const largePoint = this.getLargePoint.apply(null, selectedPoints);
+
+    if(largePoint.width !== copiedLength.x || largePoint.height !== copiedLength.y) {
+      if (data.lang === 'en') {
+        alert('You can\'t paste here');
+      } else if (data.lang === 'ja') {
+        alert('ここには貼り付けできません。');
+      }
+      return;
+    }
+
     const bound = { x: 0, y: largePoint.y, width: largePoint.x, height: largePoint.height };
     const points = this.getAllPoints();
 
