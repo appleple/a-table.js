@@ -4014,7 +4014,7 @@ var aTable = function (_aTemplate) {
     value: function _getColLength(table) {
       var length = 0;
       table.forEach(function (row) {
-        length += parseInt(row.col[0].rowspan);
+        length += parseInt(row.col[0].rowspan); //todo
       });
       return length;
     }
@@ -4855,9 +4855,11 @@ var aTable = function (_aTemplate) {
       var t = 0;
       rows.forEach(function (row) {
         var index = row[row.length - 1];
-        table[t].col.reverse().forEach(function (cell) {
-          _this3.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: parseInt(cell.colspan), rowspan: parseInt(cell.rowspan), value: cell.value, selected: true });
-        });
+        if (table[t]) {
+          table[t].col.reverse().forEach(function (cell) {
+            _this3.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: parseInt(cell.colspan), rowspan: parseInt(cell.rowspan), value: cell.value, selected: true });
+          });
+        }
         t++;
       });
       this.update();

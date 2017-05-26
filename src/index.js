@@ -116,7 +116,7 @@ class aTable extends aTemplate {
   _getColLength(table) {
     let length = 0;
     table.forEach((row) => {
-      length += parseInt(row.col[0].rowspan);
+      length += parseInt(row.col[0].rowspan);//todo
     });
     return length;
   }
@@ -918,9 +918,11 @@ class aTable extends aTemplate {
     let t = 0;
     rows.forEach((row) => {
       const index = row[row.length - 1];
-      table[t].col.reverse().forEach(cell => {
-        this.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: parseInt(cell.colspan), rowspan: parseInt(cell.rowspan), value: cell.value, selected: true });
-      });
+      if(table[t]){
+        table[t].col.reverse().forEach(cell => {
+          this.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: parseInt(cell.colspan), rowspan: parseInt(cell.rowspan), value: cell.value, selected: true });
+        });
+      }
       t++;
     });
     this.update();
