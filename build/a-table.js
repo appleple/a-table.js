@@ -4783,12 +4783,16 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'insertTable',
     value: function insertTable(table, pos) {
+      var _this3 = this;
+
       var currentLength = this._getTableLength(this.data.row);
       var copiedLength = this._getTableLength(table);
       var offsetX = pos.x + copiedLength.x - currentLength.x;
       var offsetY = pos.y + copiedLength.y - currentLength.y;
       var length = currentLength.x;
       var row = this.data.row;
+      var targets = [];
+      var rows = [];
       while (offsetY > 0) {
         var newRow = [];
         for (var i = 0; i < length; i++) {
@@ -4808,10 +4812,53 @@ var aTable = function (_aTemplate) {
       this.select(pos.y, pos.x);
       this.update();
       this.selectRange(pos.y + copiedLength.y - 1, pos.x + copiedLength.x - 1);
-      this.data.row.forEach(function (item) {
-        item.col.forEach(function (cell) {
-          if (cell.selected) {}
+      var selectedPoints = this.getSelectedPoints();
+      var largePoint = this.getLargePoint.apply(null, selectedPoints);
+      var bound = { x: 0, y: largePoint.y, width: largePoint.x, height: largePoint.height };
+      var points = this.getAllPoints();
+
+      points.forEach(function (point) {
+        if (_this3.hitTest(bound, point)) {
+          var index = _this3.getCellIndexByPos(point.x, point.y);
+          var cell = _this3.getCellByPos(point.x, point.y);
+          targets.push(index);
+        }
+      });
+      targets.forEach(function (item) {
+        var row = item.row;
+        if (item.row < largePoint.y) {
+          return;
+        }
+        if (!rows[row]) {
+          rows[row] = [];
+        }
+        rows[row].push(item);
+      });
+      for (var _i2 = 1, n = rows.length; _i2 < n; _i2++) {
+        if (!rows[_i2]) {
+          continue;
+        }
+        rows[_i2].sort(function (a, b) {
+          if (a.col > b.col) {
+            return 1;
+          }
+          return -1;
         });
+      }
+      for (var _i3 = largePoint.y, _n = _i3 + largePoint.height; _i3 < _n; _i3++) {
+        if (!rows[_i3]) {
+          rows[_i3] = [];
+          rows[_i3].push({ row: _i3, col: -1 });
+        }
+      }
+      this.removeSelectedCellExcept();
+      rows.forEach(function (row) {
+        var index = row[row.length - 1];
+        for (var _i4 = 0; _i4 < largePoint.width; _i4++) {
+          var val = '';
+          // スプリットされる前のコルのデータを保存
+          _this3.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: 1, rowspan: 1, value: '', selected: true });
+        }
       });
       this.update();
     }
@@ -4951,7 +4998,7 @@ var aTable = function (_aTemplate) {
             cell.rowspan += '';
           } else if (index.row === selectedno + 1) {
             var _length = parseInt(cell.colspan);
-            for (var _i2 = 0; _i2 < _length; _i2++) {
+            for (var _i5 = 0; _i5 < _length; _i5++) {
               newRow.push({ type: 'td', colspan: 1, rowspan: 1, value: '' });
             }
           } else {
@@ -5004,7 +5051,7 @@ var aTable = function (_aTemplate) {
             cell.rowspan += '';
           } else if (index.row === selectedno - 1) {
             var _length2 = parseInt(cell.colspan);
-            for (var _i3 = 0; _i3 < _length2; _i3++) {
+            for (var _i6 = 0; _i6 < _length2; _i6++) {
               newRow.push({ type: 'td', colspan: 1, rowspan: 1, value: '' });
             }
           } else {
@@ -5113,19 +5160,19 @@ var aTable = function (_aTemplate) {
           return -1;
         });
       }
-      for (var _i4 = selectedPoint.y, _n = _i4 + height; _i4 < _n; _i4++) {
-        if (!rows[_i4]) {
-          rows[_i4] = [];
-          rows[_i4].push({ row: _i4, col: -1 });
+      for (var _i7 = selectedPoint.y, _n2 = _i7 + height; _i7 < _n2; _i7++) {
+        if (!rows[_i7]) {
+          rows[_i7] = [];
+          rows[_i7].push({ row: _i7, col: -1 });
         }
       }
       var first = true;
       rows.forEach(function (row) {
         var index = row[row.length - 1];
-        for (var _i5 = 0; _i5 < width; _i5++) {
+        for (var _i8 = 0; _i8 < width; _i8++) {
           var val = '';
           // スプリットされる前のコルのデータを保存
-          if (first === true && _i5 === width - 1) {
+          if (first === true && _i8 === width - 1) {
             val = currentValue;
             first = false;
           }

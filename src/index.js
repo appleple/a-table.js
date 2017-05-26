@@ -854,6 +854,8 @@ class aTable extends aTemplate {
     let offsetY = pos.y + copiedLength.y - currentLength.y;
     const length = currentLength.x;
     const row = this.data.row;
+    const targets = [];
+    const rows = [];
     while (offsetY > 0) {
       const newRow = [];
       for (let i = 0; i < length; i++) {
@@ -873,12 +875,53 @@ class aTable extends aTemplate {
     this.select(pos.y,pos.x);
     this.update();
     this.selectRange(pos.y+copiedLength.y-1,pos.x+copiedLength.x-1);
-    this.data.row.forEach(item => {
-      item.col.forEach(cell => {
-        if(cell.selected) {
+    const selectedPoints = this.getSelectedPoints();
+    const largePoint = this.getLargePoint.apply(null, selectedPoints);
+    const bound = { x: 0, y: largePoint.y, width: largePoint.x, height: largePoint.height };
+    const points = this.getAllPoints();
 
+    points.forEach((point) => {
+      if (this.hitTest(bound, point)) {
+        const index = this.getCellIndexByPos(point.x, point.y);
+        const cell = this.getCellByPos(point.x, point.y);
+        targets.push(index);
+      }
+    });
+    targets.forEach((item) => {
+      const row = item.row;
+      if (item.row < largePoint.y) {
+        return;
+      }
+      if (!rows[row]) {
+        rows[row] = [];
+      }
+      rows[row].push(item);
+    });
+    for (let i = 1, n = rows.length; i < n; i++) {
+      if (!rows[i]) {
+        continue;
+      }
+      rows[i].sort((a, b) => {
+        if (a.col > b.col) {
+          return 1;
         }
+        return -1;
       });
+    }
+    for (let i = largePoint.y, n = i + largePoint.height; i < n; i++) {
+      if (!rows[i]) {
+        rows[i] = [];
+        rows[i].push({ row: i, col: -1 });
+      }
+    }
+    this.removeSelectedCellExcept();
+    rows.forEach((row) => {
+      const index = row[row.length - 1];
+      for (let i = 0; i < largePoint.width; i++) {
+        let val = '';
+        // スプリットされる前のコルのデータを保存
+        this.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: 1, rowspan: 1, value: '', selected: true });
+      }
     });
     this.update();
   }
