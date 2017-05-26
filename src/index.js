@@ -836,7 +836,6 @@ class aTable extends aTemplate {
             y: selectedPoint.y
           });
           data.history.push(clone(data.row));
-          this.update();
           return;
         }
       }
@@ -879,11 +878,14 @@ class aTable extends aTemplate {
     }
 
     this.update();
-    const index = this.getCellIndexByPos(pos.x,pos.y);
     const destPos = {}
+    const vPos = {
+      x: pos.x,
+      y: pos.y
+    };
 
-    index.row += copiedLength.y - 1;
-    index.col += copiedLength.x - 1;
+    vPos.y += copiedLength.y - 1;
+    vPos.x += copiedLength.x - 1;
 
     this.data.row.forEach((item, i) => {
       if (!item.col) {
@@ -891,7 +893,7 @@ class aTable extends aTemplate {
       }
       item.col.forEach((obj, t) => {
         const point = this.getCellInfoByIndex(t, i);
-        if(point.x + point.width - 1 === index.col && point.y + point.height - 1 === index.row) {
+        if(point.x + point.width - 1 === vPos.x && point.y + point.height - 1 === vPos.y) {
           destPos.x = t;
           destPos.y = i;
         }
@@ -904,6 +906,7 @@ class aTable extends aTemplate {
       } else if (data.lang === 'ja') {
         alert('ここには貼り付けできません。');
       }
+      this.unselectCells();
       return;
     }
 
@@ -918,6 +921,7 @@ class aTable extends aTemplate {
       } else if (data.lang === 'ja') {
         alert('ここには貼り付けできません。');
       }
+      this.unselectCells();
       return;
     }
 
