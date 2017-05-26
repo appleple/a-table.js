@@ -830,11 +830,10 @@ class aTable extends aTemplate {
         const newRow = this.parse(tableHtml[0]);
         if (newRow && newRow.length) {
           e.preventDefault();
-          const cellId = this.e.target.parentNode.getAttribute('data-cell-id');
-          const pos = cellId.split('-');
+          const selectedPoint = this.getSelectedPoint();
           this.insertTable(newRow,{
-            x: parseInt(pos[0]),
-            y: parseInt(pos[1])
+            x: selectedPoint.x,
+            y: selectedPoint.y
           });
           data.history.push(clone(data.row));
           this.update();
@@ -908,7 +907,6 @@ class aTable extends aTemplate {
       return;
     }
 
-    this.select(pos.y,pos.x);
     this.selectRange(destPos.y, destPos.x);//todo
 
     const selectedPoints = this.getSelectedPoints();
