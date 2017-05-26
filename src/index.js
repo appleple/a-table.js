@@ -115,8 +115,13 @@ class aTable extends aTemplate {
 
   _getColLength(table) {
     let length = 0;
+    let rowspan = 0;
     table.forEach((row) => {
-      length += parseInt(row.col[0].rowspan);//todo
+      if(rowspan === 0) {
+        rowspan = parseInt(row.col[0].rowspan);
+        length += rowspan;
+      }
+      rowspan--;
     });
     return length;
   }

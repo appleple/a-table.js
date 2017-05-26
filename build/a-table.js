@@ -4013,8 +4013,13 @@ var aTable = function (_aTemplate) {
     key: '_getColLength',
     value: function _getColLength(table) {
       var length = 0;
+      var rowspan = 0;
       table.forEach(function (row) {
-        length += parseInt(row.col[0].rowspan); //todo
+        if (rowspan === 0) {
+          rowspan = parseInt(row.col[0].rowspan);
+          length += rowspan;
+        }
+        rowspan--;
       });
       return length;
     }
