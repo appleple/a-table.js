@@ -919,7 +919,7 @@ class aTable extends aTemplate {
     rows.forEach((row) => {
       const index = row[row.length - 1];
       table[t].col.reverse().forEach(cell => {
-        this.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: cell.colspan, rowspan: cell.rowspan, value: cell.value, selected: true });
+        this.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: parseInt(cell.colspan), rowspan: parseInt(cell.rowspan), value: cell.value, selected: true });
       });
       t++;
     });
