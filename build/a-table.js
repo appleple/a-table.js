@@ -4797,6 +4797,7 @@ var aTable = function (_aTemplate) {
       var targets = [];
       var rows = [];
       var data = this.data;
+      var prevRow = (0, _clone2.default)(data.row);
       while (offsetY > 0) {
         var newRow = [];
         for (var i = 0; i < length; i++) {
@@ -4843,7 +4844,8 @@ var aTable = function (_aTemplate) {
         } else if (data.lang === 'ja') {
           alert('ここには貼り付けできません。');
         }
-        this.unselectCells();
+        this.data.row = prevRow;
+        this.update();
         return;
       }
 
@@ -4858,7 +4860,8 @@ var aTable = function (_aTemplate) {
         } else if (data.lang === 'ja') {
           alert('ここには貼り付けできません。');
         }
-        this.unselectCells();
+        this.data.row = prevRow;
+        this.update();
         return;
       }
 

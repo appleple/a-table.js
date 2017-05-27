@@ -860,6 +860,7 @@ class aTable extends aTemplate {
     const targets = [];
     const rows = [];
     const data = this.data;
+    const prevRow = clone(data.row);
     while (offsetY > 0) {
       const newRow = [];
       for (let i = 0; i < length; i++) {
@@ -906,7 +907,8 @@ class aTable extends aTemplate {
       } else if (data.lang === 'ja') {
         alert('ここには貼り付けできません。');
       }
-      this.unselectCells();
+      this.data.row = prevRow;
+      this.update();
       return;
     }
 
@@ -921,7 +923,8 @@ class aTable extends aTemplate {
       } else if (data.lang === 'ja') {
         alert('ここには貼り付けできません。');
       }
-      this.unselectCells();
+      this.data.row = prevRow;
+      this.update();
       return;
     }
 
