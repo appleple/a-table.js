@@ -464,7 +464,6 @@ class aTable extends aTemplate {
       });
       arr1.push(ret2);
     });
-    arr1.pop();
     return arr1;
   }
 
@@ -824,12 +823,12 @@ class aTable extends aTemplate {
       pastedData = window.clipboardData.getData('Text');
     }
     if (pastedData) {
+      const selectedPoint = this.getSelectedPoint();
       const tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
       if (tableHtml && tableHtml[0]) {
         const newRow = this.parse(tableHtml[0]);
         if (newRow && newRow.length) {
           e.preventDefault();
-          const selectedPoint = this.getSelectedPoint();
           this.insertTable(newRow,{
             x: selectedPoint.x,
             y: selectedPoint.y
@@ -838,11 +837,15 @@ class aTable extends aTemplate {
           return;
         }
       }
-        // for excel;
+      // for excel;
       const row = this.parseText(pastedData);
       if (row && row.length) {
         e.preventDefault();
-        data.row = row;
+        const selectedPoint = this.getSelectedPoint();
+        this.insertTable(row,{
+          x: selectedPoint.x,
+          y: selectedPoint.y
+        });
         this.update();
         data.history.push(clone(data.row));
       }

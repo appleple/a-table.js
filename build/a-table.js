@@ -4382,7 +4382,6 @@ var aTable = function (_aTemplate) {
         });
         arr1.push(ret2);
       });
-      arr1.pop();
       return arr1;
     }
   }, {
@@ -4756,12 +4755,12 @@ var aTable = function (_aTemplate) {
         pastedData = window.clipboardData.getData('Text');
       }
       if (pastedData) {
+        var selectedPoint = this.getSelectedPoint();
         var tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
         if (tableHtml && tableHtml[0]) {
           var newRow = this.parse(tableHtml[0]);
           if (newRow && newRow.length) {
             e.preventDefault();
-            var selectedPoint = this.getSelectedPoint();
             this.insertTable(newRow, {
               x: selectedPoint.x,
               y: selectedPoint.y
@@ -4774,7 +4773,11 @@ var aTable = function (_aTemplate) {
         var row = this.parseText(pastedData);
         if (row && row.length) {
           e.preventDefault();
-          data.row = row;
+          var _selectedPoint = this.getSelectedPoint();
+          this.insertTable(row, {
+            x: _selectedPoint.x,
+            y: _selectedPoint.y
+          });
           this.update();
           data.history.push((0, _clone2.default)(data.row));
         }
