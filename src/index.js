@@ -742,7 +742,7 @@ class aTable extends aTemplate {
         this.selectRange(a, b);
       }
     } else if (type === 'copy') {
-      this.copyTable(e, points);
+      this.copyTable(e);
     } else if (type === 'paste') {
       this.pasteTable(e);
     } else if (type === 'mousedown' && !isSmartPhone) {
@@ -790,25 +790,24 @@ class aTable extends aTemplate {
     }
   }
 
-  copyTable(e, points) {
+  copyTable(e) {
     e.preventDefault();
-    let copy_y = -1;
     let copy_text = '<meta name="generator" content="Sheets"><table>';
-    let first = true;
-    points.forEach((point) => {
-      const cell = this.getCellByPos(point.x, point.y);
-      if (copy_y !== point.y) {
-        if (!first) {
-          copy_text += '</tr>';
-          first = false;
-        }
-        copy_text += `<tr><${cell.type} colspan="${cell.colspan}" rowspan="${cell.rowspan}">${cell.value}</${cell.type}>`;
-      } else {
-        copy_text += `<${cell.type} colspan="${cell.colspan}" rowspan="${cell.rowspan}">${cell.value}</${cell.type}>`;
+    this.data.row.forEach((item, i) => {
+      if (!item.col) {
+        return false;
       }
-      copy_y = point.y;
+      copy_text += '<tr>'
+      item.col.forEach((obj, t) => {
+        if (obj.selected) {
+          copy_text += `<${obj.type} colspan="${obj.colspan}" rowspan="${obj.rowspan}">${obj.value}</${obj.type}>`;
+        }
+      });
+      copy_text += '</tr>'
     });
-    copy_text += '</tr></table>';
+    copy_text += '</table>';
+    copy_text = copy_text.replace(/<table>(<tr><\/tr>)*/g,"<table>");
+    copy_text = copy_text.replace(/(<tr><\/tr>)*<\/table>/g,"</table>");
     if (e.clipboardData) {
       e.clipboardData.setData('text/html', copy_text);
     } else if (window.clipboardData) {

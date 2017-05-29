@@ -4672,7 +4672,7 @@ var aTable = function (_aTemplate) {
           this.selectRange(a, b);
         }
       } else if (type === 'copy') {
-        this.copyTable(e, points);
+        this.copyTable(e);
       } else if (type === 'paste') {
         this.pasteTable(e);
       } else if (type === 'mousedown' && !isSmartPhone) {
@@ -4721,27 +4721,24 @@ var aTable = function (_aTemplate) {
     }
   }, {
     key: 'copyTable',
-    value: function copyTable(e, points) {
-      var _this2 = this;
-
+    value: function copyTable(e) {
       e.preventDefault();
-      var copy_y = -1;
       var copy_text = '<meta name="generator" content="Sheets"><table>';
-      var first = true;
-      points.forEach(function (point) {
-        var cell = _this2.getCellByPos(point.x, point.y);
-        if (copy_y !== point.y) {
-          if (!first) {
-            copy_text += '</tr>';
-            first = false;
-          }
-          copy_text += '<tr><' + cell.type + ' colspan="' + cell.colspan + '" rowspan="' + cell.rowspan + '">' + cell.value + '</' + cell.type + '>';
-        } else {
-          copy_text += '<' + cell.type + ' colspan="' + cell.colspan + '" rowspan="' + cell.rowspan + '">' + cell.value + '</' + cell.type + '>';
+      this.data.row.forEach(function (item, i) {
+        if (!item.col) {
+          return false;
         }
-        copy_y = point.y;
+        copy_text += '<tr>';
+        item.col.forEach(function (obj, t) {
+          if (obj.selected) {
+            copy_text += '<' + obj.type + ' colspan="' + obj.colspan + '" rowspan="' + obj.rowspan + '">' + obj.value + '</' + obj.type + '>';
+          }
+        });
+        copy_text += '</tr>';
       });
-      copy_text += '</tr></table>';
+      copy_text += '</table>';
+      copy_text = copy_text.replace(/<table>(<tr><\/tr>)*/g, "<table>");
+      copy_text = copy_text.replace(/(<tr><\/tr>)*<\/table>/g, "</table>");
       if (e.clipboardData) {
         e.clipboardData.setData('text/html', copy_text);
       } else if (window.clipboardData) {
@@ -4786,7 +4783,7 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'insertTable',
     value: function insertTable(table, pos) {
-      var _this3 = this;
+      var _this2 = this;
 
       var currentLength = this._getTableLength(this.data.row);
       var copiedLength = this._getTableLength(table);
@@ -4830,7 +4827,7 @@ var aTable = function (_aTemplate) {
           return false;
         }
         item.col.forEach(function (obj, t) {
-          var point = _this3.getCellInfoByIndex(t, i);
+          var point = _this2.getCellInfoByIndex(t, i);
           if (point.x + point.width - 1 === vPos.x && point.y + point.height - 1 === vPos.y) {
             destPos.x = t;
             destPos.y = i;
@@ -4869,9 +4866,9 @@ var aTable = function (_aTemplate) {
       var points = this.getAllPoints();
 
       points.forEach(function (point) {
-        if (_this3.hitTest(bound, point)) {
-          var index = _this3.getCellIndexByPos(point.x, point.y);
-          var cell = _this3.getCellByPos(point.x, point.y);
+        if (_this2.hitTest(bound, point)) {
+          var index = _this2.getCellIndexByPos(point.x, point.y);
+          var cell = _this2.getCellByPos(point.x, point.y);
           targets.push(index);
         }
       });
@@ -4909,7 +4906,7 @@ var aTable = function (_aTemplate) {
         var index = row[row.length - 1];
         if (table[t]) {
           table[t].col.reverse().forEach(function (cell) {
-            _this3.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: parseInt(cell.colspan), rowspan: parseInt(cell.rowspan), value: cell.value, selected: true });
+            _this2.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: parseInt(cell.colspan), rowspan: parseInt(cell.rowspan), value: cell.value, selected: true });
           });
         }
         t++;
