@@ -36,6 +36,28 @@ const defs = {
     selector: {
       self: 'a-table-selector'
     }
+  },
+  message: {
+    mergeCells: 'merge cell',
+    splitCell: 'split cell',
+    changeToTh: 'change to th',
+    changeToTd: 'change to td',
+    alignLeft: 'align left',
+    alignCenter: 'align center',
+    alignRight: 'align right',
+    addColumnLeft: 'insert column on the left',
+    addColumnRight: 'insert column on the right',
+    removeColumn: 'remove column',
+    addRowTop: 'insert row above',
+    addRowBottom: 'insert row below',
+    removeRow: 'remove row',
+    source: 'Source',
+    mergeCellError1: 'All possible cells should be selected so to merge cells into one',
+    mergeCellConfirm1: 'The top left cell\'s value of the selected range will only be saved. Are you sure you want to continue?',
+    pasteError1: 'You can\'t paste here',
+    splitError1: 'Cell is not selected',
+    splitError2: 'Only one cell should be selected',
+    splitError3: 'You can\'t split the cell anymore',
   }
 };
 
@@ -904,11 +926,7 @@ class aTable extends aTemplate {
     });
 
     if(typeof destPos.x === 'undefined') {
-      if (data.lang === 'en') {
-        alert('You can\'t paste here');
-      } else if (data.lang === 'ja') {
-        alert('ここには貼り付けできません。');
-      }
+      alert(this.data.message.pasteError1);
       this.data.row = prevRow;
       this.update();
       return;
@@ -920,11 +938,7 @@ class aTable extends aTemplate {
     const largePoint = this.getLargePoint.apply(null, selectedPoints);
 
     if(largePoint.width !== copiedLength.x || largePoint.height !== copiedLength.y) {
-      if (data.lang === 'en') {
-        alert('You can\'t paste here');
-      } else if (data.lang === 'ja') {
-        alert('ここには貼り付けできません。');
-      }
+      alert(this.data.message.pasteError1);
       this.data.row = prevRow;
       this.update();
       return;
@@ -1181,17 +1195,13 @@ class aTable extends aTemplate {
     const data = this.data;
     const points = this.getSelectedPoints();
     if (!this.isSelectedCellsRectangle()) {
-      if (data.lang === 'en') {
-        alert('All possible cells should be selected so to merge cells into one');
-      } else if (data.lang === 'ja') {
-        alert('結合するには、結合範囲のすべてのセルを選択する必要があります。');
-      }
+      alert(this.data.message.mergeCellError1);
       return;
     }
     if (points.length === 0) {
       return;
     }
-    if (!confirm('セルを結合すると、一番左上の値のみが保持されます。 結合しますか？')) {
+    if (!confirm(this.data.message.mergeCellConfirm1)) {
       return;
     }
     const point = this.getLargePoint.apply(null, points);
@@ -1209,18 +1219,10 @@ class aTable extends aTemplate {
     const selectedPoints = this.getSelectedPoints();
     const length = selectedPoints.length;
     if (length === 0) {
-      if (data.lang === 'en') {
-        alert('No cell is selected');
-      } else if (data.lang === 'ja') {
-        alert('セルが選択されていません');
-      }
+      alert(this.data.message.splitError1);
       return;
     } else if (length > 1) {
-      if (data.lang === 'en') {
-        alert('Only One cell should be selected so to split');
-      } else if (data.lang === 'ja') {
-        alert('結合解除するには、セルが一つだけ選択されている必要があります');
-      }
+      alert(this.data.message.splitError2);
       return;
     }
     const selectedPoint = this.getSelectedPoint();
@@ -1236,11 +1238,7 @@ class aTable extends aTemplate {
     const cells = [];
     const rows = [];
     if (width === 1 && height === 1) {
-      if (data.lang === 'en') {
-        alert('Selected cell cannnot be splited anymore');
-      } else if (data.lang === 'ja') {
-        alert('選択されたセルはこれ以上分割できません');
-      }
+      alert(this.data.message.splitError3);
       return;
     }
     points.forEach((point) => {
