@@ -17,7 +17,7 @@ module.exports.offset = (el) => {
 }
 
 module.exports.parseHTML = (string) => {
-  const tmp = document.implementation.createHTMLDocument();
+  const tmp = document.implementation.createHTMLDocument('');
   tmp.body.innerHTML = string;
   return tmp.body.children[0];
 }
