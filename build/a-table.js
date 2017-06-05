@@ -4772,43 +4772,77 @@ var aTable = function (_aTemplate) {
       var pastedData = void 0;
       var data = this.data;
       if (e.clipboardData) {
-        pastedData = e.clipboardData.getData('text/html');
+        this.processPaste(e.clipboardData.getData('text/html'));
       } else if (window.clipboardData) {
-        pastedData = window.clipboardData.getData('Text');
+        this.getClipBoardData();
       }
-      if (pastedData) {
-        var selectedPoint = this.getSelectedPoint();
-        var tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
-        if (tableHtml && tableHtml[0]) {
-          var newRow = this.parse(tableHtml[0]);
-          if (newRow && newRow.length) {
-            e.preventDefault();
-            this.insertTable(newRow, {
-              x: selectedPoint.x,
-              y: selectedPoint.y
-            });
-            data.history.push((0, _clone2.default)(data.row));
-            return;
-          }
-        }
-        // for excel;
-        var row = this.parseText(pastedData);
-        if (row && row.length) {
+    }
+  }, {
+    key: 'getClipBoardData',
+    value: function getClipBoardData() {
+      var savedContent = document.createDocumentFragment();
+      var point = this.getSelectedPoint();
+      var index = this.getCellIndexByPos(point.x, point.y);
+      var cell = this.getCellByIndex(index.col, index.row);
+      var editableDiv = cell.querySelector('.a-table-editable');
+      while (editableDiv.childNodes.length > 0) {
+        savedContent.appendChild(editableDiv.childNodes[0]);
+      }
+      this.waitForPastedData(editableDiv, savedContent);
+      return true;
+    }
+  }, {
+    key: 'waitForPastedData',
+    value: function waitForPastedData(elem, savedContent) {
+      var _this2 = this;
+
+      if (elem.childNodes && elem.childNodes.length > 0) {
+        var pastedData = elem.innerHTML;
+        elem.innerHTML = "";
+        elem.appendChild(savedContent);
+        this.processPaste(pastedData);
+      } else {
+        setTimeout(function () {
+          _this2.waitForPastedData(elem, savedContent);
+        }, 20);
+      }
+    }
+  }, {
+    key: 'processPaste',
+    value: function processPaste(pastedData) {
+      var e = this.e;
+      var selectedPoint = this.getSelectedPoint();
+      var tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
+      var data = this.data;
+      if (tableHtml && tableHtml[0]) {
+        var newRow = this.parse(tableHtml[0]);
+        if (newRow && newRow.length) {
           e.preventDefault();
-          var _selectedPoint = this.getSelectedPoint();
-          this.insertTable(row, {
-            x: _selectedPoint.x,
-            y: _selectedPoint.y
+          this.insertTable(newRow, {
+            x: selectedPoint.x,
+            y: selectedPoint.y
           });
-          this.update();
           data.history.push((0, _clone2.default)(data.row));
+          return;
         }
+      }
+      // for excel;
+      var row = this.parseText(pastedData);
+      if (row && row.length) {
+        e.preventDefault();
+        var _selectedPoint = this.getSelectedPoint();
+        this.insertTable(row, {
+          x: _selectedPoint.x,
+          y: _selectedPoint.y
+        });
+        this.update();
+        data.history.push((0, _clone2.default)(data.row));
       }
     }
   }, {
     key: 'insertTable',
     value: function insertTable(table, pos) {
-      var _this2 = this;
+      var _this3 = this;
 
       var currentLength = this._getTableLength(this.data.row);
       var copiedLength = this._getTableLength(table);
@@ -4852,7 +4886,7 @@ var aTable = function (_aTemplate) {
           return false;
         }
         item.col.forEach(function (obj, t) {
-          var point = _this2.getCellInfoByIndex(t, i);
+          var point = _this3.getCellInfoByIndex(t, i);
           if (point.x + point.width - 1 === vPos.x && point.y + point.height - 1 === vPos.y) {
             destPos.x = t;
             destPos.y = i;
@@ -4883,9 +4917,9 @@ var aTable = function (_aTemplate) {
       var points = this.getAllPoints();
 
       points.forEach(function (point) {
-        if (_this2.hitTest(bound, point)) {
-          var index = _this2.getCellIndexByPos(point.x, point.y);
-          var cell = _this2.getCellByPos(point.x, point.y);
+        if (_this3.hitTest(bound, point)) {
+          var index = _this3.getCellIndexByPos(point.x, point.y);
+          var cell = _this3.getCellByPos(point.x, point.y);
           targets.push(index);
         }
       });
@@ -4923,7 +4957,7 @@ var aTable = function (_aTemplate) {
         var index = row[row.length - 1];
         if (table[t]) {
           table[t].col.reverse().forEach(function (cell) {
-            _this2.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: parseInt(cell.colspan), rowspan: parseInt(cell.rowspan), value: cell.value, selected: true });
+            _this3.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: parseInt(cell.colspan), rowspan: parseInt(cell.rowspan), value: cell.value, selected: true });
           });
         }
         t++;

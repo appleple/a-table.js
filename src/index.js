@@ -840,37 +840,66 @@ class aTable extends aTemplate {
     let pastedData;
     const data = this.data;
     if (e.clipboardData) {
-      pastedData = e.clipboardData.getData('text/html');
+      this.processPaste(e.clipboardData.getData('text/html'));
     } else if (window.clipboardData) {
-      pastedData = window.clipboardData.getData('Text');
+      this.getClipBoardData();
     }
-    if (pastedData) {
-      const selectedPoint = this.getSelectedPoint();
-      const tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
-      if (tableHtml && tableHtml[0]) {
-        const newRow = this.parse(tableHtml[0]);
-        if (newRow && newRow.length) {
-          e.preventDefault();
-          this.insertTable(newRow,{
-            x: selectedPoint.x,
-            y: selectedPoint.y
-          });
-          data.history.push(clone(data.row));
-          return;
-        }
-      }
-      // for excel;
-      const row = this.parseText(pastedData);
-      if (row && row.length) {
+  }
+
+  getClipBoardData() {
+    const savedContent = document.createDocumentFragment();
+    const point = this.getSelectedPoint();
+    const index = this.getCellIndexByPos(point.x, point.y);
+    const cell = this.getCellByIndex(index.col,index.row);
+    const editableDiv = cell.querySelector('.a-table-editable');
+    while(editableDiv.childNodes.length > 0) {
+    	savedContent.appendChild(editableDiv.childNodes[0]);
+    }
+    this.waitForPastedData(editableDiv, savedContent);
+    return true;
+  }
+
+  waitForPastedData (elem, savedContent) {
+    if (elem.childNodes && elem.childNodes.length > 0) {
+      const pastedData = elem.innerHTML;
+      elem.innerHTML = "";
+      elem.appendChild(savedContent);
+      this.processPaste(pastedData);
+    } else {
+      setTimeout(() => {
+        this.waitForPastedData(elem, savedContent)
+      }, 20);
+    }
+  }
+
+  processPaste (pastedData) {
+    const e = this.e;
+    const selectedPoint = this.getSelectedPoint();
+    const tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
+    const data = this.data;
+    if (tableHtml && tableHtml[0]) {
+      const newRow = this.parse(tableHtml[0]);
+      if (newRow && newRow.length) {
         e.preventDefault();
-        const selectedPoint = this.getSelectedPoint();
-        this.insertTable(row,{
+        this.insertTable(newRow,{
           x: selectedPoint.x,
           y: selectedPoint.y
         });
-        this.update();
         data.history.push(clone(data.row));
+        return;
       }
+    }
+    // for excel;
+    const row = this.parseText(pastedData);
+    if (row && row.length) {
+      e.preventDefault();
+      const selectedPoint = this.getSelectedPoint();
+      this.insertTable(row,{
+        x: selectedPoint.x,
+        y: selectedPoint.y
+      });
+      this.update();
+      data.history.push(clone(data.row));
     }
   }
 
