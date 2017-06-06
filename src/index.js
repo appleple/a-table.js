@@ -527,8 +527,7 @@ class aTable extends aTemplate {
   }
 
   putCaret(elem) {
-    const selectedPoints = this.getSelectedPoints();
-    if(!elem || selectedPoints.length === 1) {
+    if(!elem) {
       return;
     }
     elem.focus();
@@ -555,7 +554,8 @@ class aTable extends aTemplate {
     const table = this._getElementByQuery('table');
     const inner = this._getSelf().parentNode;
     const elem = this._getElementByQuery('.a-table-selected .a-table-editable');
-    if (elem && !this.data.showMenu) {
+    const selectedPoints = this.getSelectedPoints();
+    if (elem && !this.data.showMenu && selectedPoints.length === 1) {
       setTimeout(() => {
         this.putCaret(elem);
       }, 1);
@@ -790,7 +790,9 @@ class aTable extends aTemplate {
     } else if (type === 'mouseup' && !isSmartPhone) {
       this.mousedown = false;
       const elem = this._getElementByQuery('.a-table-selected .a-table-editable');
-      this.putCaret(elem);
+      if (points.length > 1) {
+        this.putCaret(elem);
+      }
     } else if (type === 'contextmenu') {
       this.mousedown = false;
       this.contextmenu();
