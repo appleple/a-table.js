@@ -4346,7 +4346,7 @@ var aTable = function (_aTemplate) {
         [].forEach.call(cells, function (cell) {
           var obj = {};
           var html = cell.innerHTML;
-          if (cell.tagName === 'th') {
+          if (cell.tagName === 'TH') {
             obj.type = 'th';
           } else {
             obj.type = 'td';

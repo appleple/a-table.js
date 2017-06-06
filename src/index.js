@@ -431,7 +431,7 @@ class aTable extends aTemplate {
       [].forEach.call(cells, (cell) => {
         const obj = {};
         const html = cell.innerHTML;
-        if (cell.tagName === 'th') {
+        if (cell.tagName === 'TH') {
           obj.type = 'th';
         } else {
           obj.type = 'td';
