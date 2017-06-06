@@ -70,7 +70,7 @@ class aTable extends aTemplate {
     this.menu_id = aTable.getUniqId();
     this.addTemplate(this.id, template);
     this.addTemplate(this.menu_id, menu);
-    this.data = extend(defs, option);
+    this.data = extend({}, defs, option);
     const data = this.data;
     const selector = typeof ele === 'string' ? document.querySelector(ele) : ele;
     data.point = { x: -1, y: -1 };

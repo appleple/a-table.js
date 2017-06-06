@@ -67,6 +67,43 @@
 				<pre class="markdown"></pre>
 			</div>
 		</div>
+				<table class="table2">
+				<tr>
+					<td>test</td>
+					<td>hoge</td>
+					<td>test</td>
+					<td>hoge</td>
+					<td>test</td>
+				</tr>
+				<tr>
+					<td>test</td>
+					<td>hoge</td>
+					<td>test</td>
+					<td>hoge</td>
+					<td>test</td>
+				</tr>
+				<tr>
+					<td>test</td>
+					<td>hoge</td>
+					<td>test</td>
+					<td>hoge</td>
+					<td>test</td>
+				</tr>
+				<tr>
+					<td>test</td>
+					<td>hoge</td>
+					<td>test</td>
+					<td>hoge</td>
+					<td>test</td>
+				</tr>
+				<tr>
+					<td>test</td>
+					<td>hoge</td>
+					<td>test</td>
+					<td>hoge</td>
+					<td>test</td>
+				</tr>
+			</table>
 	</div>
 	<script
 	src="https://code.jquery.com/jquery-2.2.4.min.js"
@@ -74,7 +111,23 @@
 	crossorigin="anonymous"></script>
 	<script src="../build/a-table.js"></script>
 	<script>
-		var table = new aTable('.table',{
+		window.table = new aTable('.table',{
+			lang:'en',
+			mark:{
+			  icon: {
+				  td:false,
+				  th:false
+				}
+			},
+			selector:{
+				option:[
+					{label:'赤',value:'red'},
+					{label:'青',value:'blue'},
+					{label:'黄色',value:'yellow'}
+				]
+			}
+		});
+		window.table2 = new aTable('.table2',{
 			lang:'ja',
 			mark:{
 			  icon: {
@@ -90,12 +143,6 @@
 				]
 			}
 		});
-		table.afterRendered =
-		table.afterEntered = function(){
-			document.querySelector('.test').innerText = this.getTable();
-			document.querySelector('.markdown').innerText = this.getMarkdown();
-		}
-		table.afterRendered();
-	</script>
+		</script>
 </body>
 </html>
