@@ -537,7 +537,7 @@ class aTable extends aTemplate {
     if (elem && !this.data.showMenu) {
       setTimeout(() => {
         elem.focus();
-        if (selectedPoints.length !== 1) {
+        if (selectedPoints.length !== 1 && this.e.type !== 'mouseup') {
           return;
         }
         if (typeof window.getSelection !== 'undefined'
@@ -762,6 +762,9 @@ class aTable extends aTemplate {
       if (this.e.shiftKey) {
         this.selectRange(a, b);
       }
+    } else if (type === 'keydown' && e.keyCode == 67 && (e.ctrlKey || e.metaKey)) {
+      const elem = this._getElementByQuery('.a-table-selected .a-table-editable');
+      util.triggerEvent(elem,'copy');
     } else if (type === 'copy') {
       this.copyTable(e);
     } else if (type === 'paste') {

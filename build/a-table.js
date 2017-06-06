@@ -4447,6 +4447,8 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'onUpdated',
     value: function onUpdated() {
+      var _this2 = this;
+
       var points = this.getAllPoints();
       var point = this.getLargePoint.apply(null, points);
       var width = point.width;
@@ -4457,7 +4459,7 @@ var aTable = function (_aTemplate) {
       if (elem && !this.data.showMenu) {
         setTimeout(function () {
           elem.focus();
-          if (selectedPoints.length !== 1) {
+          if (selectedPoints.length !== 1 && _this2.e.type !== 'mouseup') {
             return;
           }
           if (typeof window.getSelection !== 'undefined' && typeof document.createRange !== 'undefined') {
@@ -4692,6 +4694,9 @@ var aTable = function (_aTemplate) {
         if (this.e.shiftKey) {
           this.selectRange(a, b);
         }
+      } else if (type === 'keydown' && e.keyCode == 67 && (e.ctrlKey || e.metaKey)) {
+        var elem = this._getElementByQuery('.a-table-selected .a-table-editable');
+        _util2.default.triggerEvent(elem, 'copy');
       } else if (type === 'copy') {
         this.copyTable(e);
       } else if (type === 'paste') {
@@ -4794,7 +4799,7 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'waitForPastedData',
     value: function waitForPastedData(elem, savedContent) {
-      var _this2 = this;
+      var _this3 = this;
 
       if (elem.childNodes && elem.childNodes.length > 0) {
         var pastedData = elem.innerHTML;
@@ -4803,7 +4808,7 @@ var aTable = function (_aTemplate) {
         this.processPaste(pastedData);
       } else {
         setTimeout(function () {
-          _this2.waitForPastedData(elem, savedContent);
+          _this3.waitForPastedData(elem, savedContent);
         }, 20);
       }
     }
@@ -4842,7 +4847,7 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'insertTable',
     value: function insertTable(table, pos) {
-      var _this3 = this;
+      var _this4 = this;
 
       var currentLength = this._getTableLength(this.data.row);
       var copiedLength = this._getTableLength(table);
@@ -4886,7 +4891,7 @@ var aTable = function (_aTemplate) {
           return false;
         }
         item.col.forEach(function (obj, t) {
-          var point = _this3.getCellInfoByIndex(t, i);
+          var point = _this4.getCellInfoByIndex(t, i);
           if (point.x + point.width - 1 === vPos.x && point.y + point.height - 1 === vPos.y) {
             destPos.x = t;
             destPos.y = i;
@@ -4917,9 +4922,9 @@ var aTable = function (_aTemplate) {
       var points = this.getAllPoints();
 
       points.forEach(function (point) {
-        if (_this3.hitTest(bound, point)) {
-          var index = _this3.getCellIndexByPos(point.x, point.y);
-          var cell = _this3.getCellByPos(point.x, point.y);
+        if (_this4.hitTest(bound, point)) {
+          var index = _this4.getCellIndexByPos(point.x, point.y);
+          var cell = _this4.getCellByPos(point.x, point.y);
           targets.push(index);
         }
       });
@@ -4957,7 +4962,7 @@ var aTable = function (_aTemplate) {
         var index = row[row.length - 1];
         if (table[t]) {
           table[t].col.reverse().forEach(function (cell) {
-            _this3.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: parseInt(cell.colspan), rowspan: parseInt(cell.rowspan), value: cell.value, selected: true });
+            _this4.insertCellAt(index.row, index.col + 1, { type: 'td', colspan: parseInt(cell.colspan), rowspan: parseInt(cell.rowspan), value: cell.value, selected: true });
           });
         }
         t++;
@@ -5504,6 +5509,17 @@ function deepExtend(out) {
 };
 
 module.exports.extend = deepExtend;
+
+module.exports.triggerEvent = function (el, eventName, options) {
+  var event = void 0;
+  if (window.CustomEvent) {
+    event = new CustomEvent(eventName, { cancelable: true });
+  } else {
+    event = document.createEvent('CustomEvent');
+    event.initCustomEvent(eventName, false, false, options);
+  }
+  el.dispatchEvent(event);
+};
 
 },{}]},{},[11])(11)
 });

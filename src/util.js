@@ -54,3 +54,14 @@ function deepExtend(out){
 };
 
 module.exports.extend = deepExtend;
+
+module.exports.triggerEvent = (el, eventName, options) => {
+  let event;
+  if (window.CustomEvent) {
+    event = new CustomEvent(eventName, {cancelable:true});
+  } else {
+    event = document.createEvent('CustomEvent');
+    event.initCustomEvent(eventName, false, false, options);
+  }
+  el.dispatchEvent(event);
+}
