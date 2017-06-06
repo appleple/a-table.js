@@ -5,12 +5,12 @@
  * a-table:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: appleple
- *   version: 1.4.3
+ *   version: 1.4.4
  *
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: steelydylan
- *   version: 0.2.0
+ *   version: 0.2.2
  *
  * base64-js:
  *   license: MIT (http://opensource.org/licenses/MIT)
