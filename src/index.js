@@ -526,34 +526,38 @@ class aTable extends aTemplate {
     return this.toMarkdown(this.getHtml(returnTable, true));
   }
 
+  putCaret(elem) {
+    const selectedPoints = this.getSelectedPoints();
+    if(!elem || selectedPoints.length === 1) {
+      return;
+    }
+    elem.focus();
+    if (typeof window.getSelection !== 'undefined'
+      && typeof document.createRange !== 'undefined') {
+      const range = document.createRange();
+      range.selectNodeContents(elem);
+      range.collapse(false);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } else if (typeof document.body.createTextRange !== 'undefined') {
+      const textRange = document.body.createTextRange();
+      textRange.moveToElementText(elem);
+      textRange.collapse(false);
+      textRange.select();
+    }
+  }
+
   onUpdated() {
     const points = this.getAllPoints();
     const point = this.getLargePoint.apply(null, points);
     const width = point.width;
-    const selectedPoints = this.getSelectedPoints();
     const table = this._getElementByQuery('table');
     const inner = this._getSelf().parentNode;
     const elem = this._getElementByQuery('.a-table-selected .a-table-editable');
     if (elem && !this.data.showMenu) {
       setTimeout(() => {
-        elem.focus();
-        if (selectedPoints.length !== 1 && this.e.type !== 'mouseup') {
-          return;
-        }
-        if (typeof window.getSelection !== 'undefined'
-          && typeof document.createRange !== 'undefined') {
-          const range = document.createRange();
-          range.selectNodeContents(elem);
-          range.collapse(false);
-          const sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(range);
-        } else if (typeof document.body.createTextRange !== 'undefined') {
-          const textRange = document.body.createTextRange();
-          textRange.moveToElementText(elem);
-          textRange.collapse(false);
-          textRange.select();
-        }
+        this.putCaret(elem);
       }, 1);
     }
 
@@ -785,6 +789,8 @@ class aTable extends aTemplate {
       }
     } else if (type === 'mouseup' && !isSmartPhone) {
       this.mousedown = false;
+      const elem = this._getElementByQuery('.a-table-selected .a-table-editable');
+      this.putCaret(elem);
     } else if (type === 'contextmenu') {
       this.mousedown = false;
       this.contextmenu();
