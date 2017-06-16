@@ -430,7 +430,7 @@ class aTable extends aTemplate {
       ret2.col = arr2;
       [].forEach.call(cells, (cell) => {
         const obj = {};
-        const html = cell.innerHTML;
+        const html = cell.innerText;
         if (cell.tagName === 'TH') {
           obj.type = 'th';
         } else {
@@ -885,13 +885,13 @@ class aTable extends aTemplate {
 
   processPaste (pastedData) {
     const e = this.e;
+    e.preventDefault();
     const selectedPoint = this.getSelectedPoint();
     const tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
     const data = this.data;
     if (tableHtml && tableHtml[0]) {
       const newRow = this.parse(tableHtml[0]);
       if (newRow && newRow.length) {
-        e.preventDefault();
         this.insertTable(newRow,{
           x: selectedPoint.x,
           y: selectedPoint.y
@@ -902,8 +902,7 @@ class aTable extends aTemplate {
     }
     // for excel;
     const row = this.parseText(pastedData);
-    if (row && row.length) {
-      e.preventDefault();
+    if (row && row[0] && row[0].col && row[0].col.length > 1) {
       const selectedPoint = this.getSelectedPoint();
       this.insertTable(row,{
         x: selectedPoint.x,
@@ -911,6 +910,14 @@ class aTable extends aTemplate {
       });
       this.update();
       data.history.push(clone(data.row));
+    } else {
+      if (e.clipboardData) {
+        let content = e.clipboardData.getData('text/plain');
+        document.execCommand('insertText', false, content);
+      } else if (window.clipboardData) {
+        let content = window.clipboardData.getData('Text');
+        document.selection.createRange().pasteHTML(content);
+      }
     }
   }
 
