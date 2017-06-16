@@ -418,7 +418,7 @@ class aTable extends aTemplate {
     this.update();
   }
 
-  parse(html) {
+  parse(html, format = 'html') {
     const self = this;
     const arr1 = [];
     const doc = util.parseHTML(html);
@@ -430,7 +430,7 @@ class aTable extends aTemplate {
       ret2.col = arr2;
       [].forEach.call(cells, (cell) => {
         const obj = {};
-        const html = cell.innerText;
+        const html = format === 'html' ? cell.innerHTML : cell.innerText;
         if (cell.tagName === 'TH') {
           obj.type = 'th';
         } else {
@@ -890,7 +890,7 @@ class aTable extends aTemplate {
     const tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
     const data = this.data;
     if (tableHtml && tableHtml[0]) {
-      const newRow = this.parse(tableHtml[0]);
+      const newRow = this.parse(tableHtml[0],'text');
       if (newRow && newRow.length) {
         this.insertTable(newRow,{
           x: selectedPoint.x,
