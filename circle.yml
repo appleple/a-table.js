@@ -7,6 +7,3 @@ dependencies:
 test:
   override:
     - "npm run test"
-
-
-    a b c
