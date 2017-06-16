@@ -79,7 +79,7 @@ class aTable extends aTemplate {
     data.showBtnList = true;
     data.row = this.parse(`<table>${selector.innerHTML}</table>`);
     data.tableResult = this.getTable();
-    data.tableClass = this.getTableClass(data.tableResult);
+    data.tableClass = selector.getAttribute('class');
     data.highestRow = this.highestRow;
     data.history = [];
     data.inputMode = 'table';
