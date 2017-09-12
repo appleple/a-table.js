@@ -10,7 +10,7 @@
  * a-template:
  *   license: MIT (http://opensource.org/licenses/MIT)
  *   author: steelydylan
- *   version: 0.2.4
+ *   version: 0.2.3
  *
  * base64-js:
  *   license: MIT (http://opensource.org/licenses/MIT)
@@ -121,7 +121,7 @@ var findAncestor = function findAncestor(element, selector) {
   if (typeof element.closest === 'function') {
     return element.closest(selector) || null;
   }
-  while (element && element !== document) {
+  while (element) {
     if (matches(element, selector)) {
       return element;
     }
@@ -4688,6 +4688,10 @@ var aTable = function (_aTemplate) {
   }, {
     key: 'copyTable',
     value: function copyTable(e) {
+      var points = this.getSelectedPoints();
+      if (points.length <= 1) {
+        return;
+      }
       e.preventDefault();
       var copy_text = '<meta name="generator" content="Sheets"><table>';
       this.data.row.forEach(function (item, i) {

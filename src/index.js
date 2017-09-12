@@ -823,6 +823,10 @@ class aTable extends aTemplate {
   }
 
   copyTable(e) {
+    const points = this.getSelectedPoints();
+    if(points.length <= 1) {
+      return;
+    }
     e.preventDefault();
     let copy_text = '<meta name="generator" content="Sheets"><table>';
     this.data.row.forEach((item, i) => {
