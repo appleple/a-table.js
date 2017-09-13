@@ -1,3 +1,5 @@
+require('custom-event-polyfill');
+
 module.exports.before = (el, html) => {
   el.insertAdjacentHTML('beforebegin', html);
 }
@@ -27,6 +29,24 @@ module.exports.hasClass = (el, className) => {
     return el.classList.contains(className);
   } else {
     return new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
+  }
+}
+
+module.exports.replaceSelectionWithHtml = (html) => {
+  let range;
+  if (window.getSelection && window.getSelection().getRangeAt) {
+    range = window.getSelection().getRangeAt(0);
+    range.deleteContents();
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    let frag = document.createDocumentFragment(), child;
+    while ((child = div.firstChild)) {
+      frag.appendChild(child);
+    }
+    range.insertNode(frag);
+  } else if (document.selection && document.selection.createRange) {
+    range = document.selection.createRange();
+    range.pasteHTML(html);
   }
 }
 

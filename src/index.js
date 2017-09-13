@@ -920,7 +920,7 @@ class aTable extends aTemplate {
         document.execCommand('insertText', false, content);
       } else if (window.clipboardData) {
         let content = window.clipboardData.getData('Text');
-        document.selection.createRange().pasteHTML(content);
+        util.replaceSelectionWithHtml(content);
       }
     }
   }
