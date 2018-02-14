@@ -69,7 +69,7 @@ class aTable extends aTemplate {
     this.id = aTable.getUniqId();
     this.menu_id = aTable.getUniqId();
     this.addTemplate(this.id, template);
-    this.addTemplate(this.menu_id, menu);
+    this.addTemplate(this.menu_id, util.removeIndentNewline(menu));
     this.data = extend({}, defs, option);
     const data = this.data;
     const selector = typeof ele === 'string' ? document.querySelector(ele) : ele;
