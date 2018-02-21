@@ -40,7 +40,7 @@
 .a-table {
 	border-collapse: collapse;
 	table-layout: fixed;
-	font-family: "Open Sans", Helvetica, Arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	width: auto !important;
 }
 
@@ -107,9 +107,29 @@
 }
 
 .a-table-editable {
+	position: relative;
 	min-width: 100%;
 	min-height: 100%;
 }
+
+.a-table-editable:before {
+	content: "";
+	position: absolute;
+	top: -2px;
+	right: -2px;
+	bottom: -2px;
+	left: -2px;
+	border: 2px solid transparent;
+}
+
+.a-table td:hover {
+	cursor: text;
+}
+
+.a-table td:hover .a-table-editable:before {
+	border-color: #a7a7aa;
+}
+
 
 .a-table-pseudo {
 	background-color: #ffffff;
@@ -288,21 +308,21 @@
 	width: 15px;
 }
 
-.a-table .a-table-border-left {
+.a-table td.a-table-border-left .a-table-editable:before {
 	border-left: 2px solid #006dec;
 }
 
-.a-table .a-table-border-top {
+.a-table td.a-table-border-top .a-table-editable:before {
 	border-top: 2px solid #006dec;
 }
 
-.a-table .a-table-border-right {
+.a-table td.a-table-border-right .a-table-editable:before {
 	border-right: 2px solid #006dec;
 }
-
-.a-table .a-table-border-bottom {
+.a-table td.a-table-border-bottom .a-table-editable:before {
 	border-bottom: 2px solid #006dec;
 }
+
 
 .a-table-border-top.a-table-border-left .a-table-pseudo:before {
 	content: "";
