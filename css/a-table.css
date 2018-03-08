@@ -73,6 +73,7 @@
 }
 
 .a-table td {
+	position: relative;
 	border: 1px solid #cccccc;
 }
 
@@ -107,7 +108,6 @@
 }
 
 .a-table-editable {
-	position: relative;
 	min-width: 100%;
 	min-height: 100%;
 }
@@ -115,11 +115,11 @@
 .a-table-editable:before {
 	content: "";
 	position: absolute;
-	top: -2px;
-	right: -2px;
-	bottom: -2px;
-	left: -2px;
-	border: 2px solid transparent;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	border: 1px solid transparent;
 }
 
 .a-table td:hover {
@@ -309,20 +309,19 @@
 }
 
 .a-table td.a-table-border-left .a-table-editable:before {
-	border-left: 2px solid #006dec;
+	border-left: 1px solid #006dec;
 }
 
 .a-table td.a-table-border-top .a-table-editable:before {
-	border-top: 2px solid #006dec;
+	border-top: 1px solid #006dec;
 }
 
 .a-table td.a-table-border-right .a-table-editable:before {
-	border-right: 2px solid #006dec;
+	border-right: 1px solid #006dec;
 }
 .a-table td.a-table-border-bottom .a-table-editable:before {
-	border-bottom: 2px solid #006dec;
+	border-bottom: 1px solid #006dec;
 }
-
 
 .a-table-border-top.a-table-border-left .a-table-pseudo:before {
 	content: "";
