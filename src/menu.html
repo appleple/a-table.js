@@ -32,7 +32,7 @@
 	<div class="\{mark.btn.group\}">
 		<div class="\{mark.actionGroup\}">
 			<label class="\{mark.label\}">テーブル</label>
-			<select class="\{mark.selector.self\}" data-bind="tableClass">
+			<select class="\{mark.selector.self\}" data-bind="tableClass" data-action-change="update">
 				<option value="">---</option>
 				<!-- BEGIN tableOption:loop -->
 				<option value="{value}">{label}</option>
