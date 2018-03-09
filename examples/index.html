@@ -15,7 +15,7 @@
 		<div class="acms-admin-table-container">
 			<div class="acms-admin-table-wrap">
 			<div class="acms-admin-table-inner">
-			<table class="table">
+			<table>
 				<tr>
 					<td class="center">test</td>
 					<td class="red">hoge</td>
@@ -74,7 +74,7 @@
 	crossorigin="anonymous"></script>
 	<script src="../build/a-table.js"></script>
 	<script>
-		var table = new aTable('.table',{
+		var table = new aTable('table',{
 			lang:'ja',
 			mark:{
 			  icon: {
@@ -88,7 +88,12 @@
 					{label:'青',value:'blue'},
 					{label:'黄色',value:'yellow'}
 				]
-			}
+			},
+			tableOption: [
+				{label:'赤',value:'red'},
+				{label:'青',value:'blue'},
+				{label:'黄色',value:'yellow'}
+			]
 		});
 		table.afterRendered =
 		table.afterEntered = function(){

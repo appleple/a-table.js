@@ -33,6 +33,8 @@ const defs = {
       td: 'a-table-icon a-table-icon-td03',
       th: 'a-table-icon a-table-icon-th02'
     },
+    label: 'a-table-label',
+    actionGroup: 'a-table-action-group',
     selector: {
       self: 'a-table-selector'
     }
@@ -62,7 +64,7 @@ const defs = {
 };
 
 
-class aTable extends aTemplate {
+export default class aTable extends aTemplate {
 
   constructor(ele, option) {
     super();
@@ -79,7 +81,7 @@ class aTable extends aTemplate {
     data.showBtnList = true;
     data.row = this.parse(`<table>${selector.innerHTML}</table>`);
     data.tableResult = this.getTable();
-    data.tableClass = selector.getAttribute('class');
+    data.tableClass = selector.getAttribute('class') || "";
     data.highestRow = this.highestRow;
     data.history = [];
     data.inputMode = 'table';
@@ -1451,7 +1453,7 @@ class aTable extends aTemplate {
         }
       });
     });
-    if (flag) {
+    if (flag && cellClass) {
       data.cellClass = cellClass;
     } else {
       data.cellClass = '';
@@ -1505,5 +1507,3 @@ class aTable extends aTemplate {
   }
 
 }
-
-module.exports = aTable;

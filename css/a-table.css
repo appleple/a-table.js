@@ -261,6 +261,9 @@
 	padding: 5px 30px 5px 10px;
 	font-size: 11px;
 	line-height: 1.4;
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAFCAYAAABIHbx0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTNui8sowAAAAWdEVYdENyZWF0aW9uIFRpbWUAMTMuMTEuMTnMGoPBAAAAdElEQVQYlY3OwQnCUBRE0ZN0YAu2YC9BXIr814FdWMCrQOzFjbiXVGAH+t0kghDhX5jNDAy3y8wLBsucSym7P9sPPfa4L2w3HFpOoIPMXOOK1dQ/sYmIsdbadNRDRDywxXvKEBFjq83XaCYzj3hFxGnuWo0+M1AfO0Vm+NoAAAAASUVORK5CYII=);
+	background-repeat: no-repeat;
+	background-position: right center;
 }
 
 .a-table-toggle-btn {
@@ -357,4 +360,35 @@
 	border: 1px solid #ccc;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
+}
+
+.a-table-label {
+	font-size: 12px;
+}
+
+.a-table-action-group {
+	display: table;
+    border-collapse: separate;
+}
+
+.a-table-action-group .a-table-label {
+	width: 1%;
+    padding: 0 6px;
+    background: #FFF;
+    border: 1px solid #a7a7aa;
+    border-radius: 3px;
+    vertical-align: middle;
+    color: #333;
+	line-height: 1.5;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+	border-right: none;
+	display: table-cell;
+	white-space: nowrap;
+}
+
+.a-table-action-group .a-table-selector {
+	display: table-cell;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
 }
