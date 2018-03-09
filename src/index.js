@@ -616,6 +616,15 @@ export default class aTable extends aTemplate {
     }
   }
 
+  unselect() {
+    const data = this.data;
+    this.unselectCells();
+    data.selectedColNo = -1;
+    data.selectedRowNo = -1;
+    data.showMenu = false;
+    this.update();
+  }
+
   selectRow(i) {
     const data = this.data;
     this.unselectCells();
