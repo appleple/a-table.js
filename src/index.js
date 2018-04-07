@@ -822,13 +822,16 @@ export default class aTable extends aTemplate {
       if (this.afterEntered) {
         this.afterEntered();
       }
-    } else if (type === 'keyup' && aTable.getBrowser().indexOf('ie') !== -1) {
-      if (util.hasClass(this.e.target, 'a-table-editable') && this.e.target.parentNode.getAttribute('data-cell-id') === `${b}-${a}`) {
-        data.history.push(clone(data.row));
-        data.row[a].col[b].value = this.e.target.innerHTML.replace(/{(.*?)}/g, '&lcub;$1&rcub;');
-      }
-      if (this.afterEntered) {
-        this.afterEntered();
+    } else if (type === 'keyup') {
+      const browser = aTable.getBrowser();
+      if (browser.indexOf('ie') !== -1 || browser === 'edge') {
+        if (util.hasClass(this.e.target, 'a-table-editable') && this.e.target.parentNode.getAttribute('data-cell-id') === `${b}-${a}`) {
+          data.history.push(clone(data.row));
+          data.row[a].col[b].value = this.e.target.innerHTML.replace(/{(.*?)}/g, '&lcub;$1&rcub;');
+        }
+        if (this.afterEntered) {
+          this.afterEntered();
+        }
       }
     }
   }
@@ -1499,6 +1502,8 @@ export default class aTable extends aTemplate {
       }
     } else if (ua.indexOf('trident/7') != -1) {
       name = 'ie11';
+    } else if (ua.indexOf('edge') != -1) {
+      name = 'edge';
     } else if (ua.indexOf('chrome') != -1) {
       name = 'chrome';
     } else if (ua.indexOf('safari') != -1) {
