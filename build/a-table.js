@@ -5478,6 +5478,7 @@ var aTable = function (_aTemplate) {
           obj.value = '';
           if (html) {
             obj.value = html.replace(/{(.*?)}/g, '&lcub;$1&rcub;');
+            obj.value = obj.value.replace(/\\/g, '&#92;');
           }
           var classAttr = cell.getAttribute('class');
           var cellClass = '';
@@ -5872,6 +5873,7 @@ var aTable = function (_aTemplate) {
         if (_util2.default.hasClass(this.e.target, 'a-table-editable') && this.e.target.parentNode.getAttribute('data-cell-id') === b + '-' + a) {
           data.history.push((0, _clone2.default)(data.row));
           data.row[a].col[b].value = this.e.target.innerHTML.replace(/{(.*?)}/g, '&lcub;$1&rcub;');
+          data.row[a].col[b].value = data.row[a].col[b].value.replace(/\\/g, '&#92;');
         }
         if (this.afterEntered) {
           this.afterEntered();
@@ -5882,6 +5884,7 @@ var aTable = function (_aTemplate) {
           if (_util2.default.hasClass(this.e.target, 'a-table-editable') && this.e.target.parentNode.getAttribute('data-cell-id') === b + '-' + a) {
             data.history.push((0, _clone2.default)(data.row));
             data.row[a].col[b].value = this.e.target.innerHTML.replace(/{(.*?)}/g, '&lcub;$1&rcub;');
+            data.row[a].col[b].value = data.row[a].col[b].value.replace(/\\/g, '&#92;');
           }
           if (this.afterEntered) {
             this.afterEntered();
