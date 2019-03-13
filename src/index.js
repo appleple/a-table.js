@@ -869,10 +869,12 @@ export default class aTable extends aTemplate {
   }
 
   pasteTable(e) {
-    let pastedData;
-    const data = this.data;
     if (e.clipboardData) {
-      this.processPaste(e.clipboardData.getData('text/html'));
+      let html = e.clipboardData.getData('text/html');
+      if (!html) {
+        html = e.clipboardData.getData('text/plain');
+      }
+      this.processPaste(html);
     } else if (window.clipboardData) {
       this.getClipBoardData();
     }
