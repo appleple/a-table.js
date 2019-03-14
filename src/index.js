@@ -910,7 +910,7 @@ export default class aTable extends aTemplate {
     const e = this.e;
     e.preventDefault();
     const selectedPoint = this.getSelectedPoint();
-    const tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
+    const tableHtml = pastedData.match(/<table(([\n\r\t]|.)*?)>(([\n\r\t]|.)*?)<\/table>/i);
     const data = this.data;
     if (tableHtml && tableHtml[0]) {
       const newRow = this.parse(tableHtml[0],'text');

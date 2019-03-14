@@ -4904,7 +4904,7 @@ var aTable = function (_aTemplate) {
       var e = this.e;
       e.preventDefault();
       var selectedPoint = this.getSelectedPoint();
-      var tableHtml = pastedData.match(/<table(.*)>(([\n\r\t]|.)*?)<\/table>/i);
+      var tableHtml = pastedData.match(/<table(([\n\r\t]|.)*?)>(([\n\r\t]|.)*?)<\/table>/i);
       var data = this.data;
       if (tableHtml && tableHtml[0]) {
         var newRow = this.parse(tableHtml[0], 'text');
