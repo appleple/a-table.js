@@ -21,7 +21,7 @@
     "major": "npm run test && npm version major && npm run build:js && node ./tools/index.js"
   },
   "dependencies": {
-    "a-template": "^0.5.4",
+    "a-template": "^0.5.5",
     "clone": "^2.0.0",
     "custom-event-polyfill": "^0.3.0",
     "deep-extend": "^0.5.0"
