@@ -442,8 +442,8 @@ export default class aTable extends aTemplate {
         obj.rowspan = cell.getAttribute('rowspan') || 1;
         obj.value = '';
         if (html) {
-          obj.value = html.replace(/{(.*?)}/g, '&lcub;$1&rcub;');
-          obj.value = html.replace(/{{(.*?)}}/g, '&lcub;&lcub;$1&rcub;&rcub;');
+          obj.value = html.replace(/{(.*?)/g, '&lcub;$1');
+          obj.value = html.replace(/(.*?)}/g, '$1&rcub;');
           obj.value = obj.value.replace(/\\/g, '&#92;');
         }
         const classAttr = cell.getAttribute('class');
@@ -484,7 +484,8 @@ export default class aTable extends aTemplate {
         obj.rowspan = 1;
         obj.value = '';
         if (cell) {
-          obj.value = cell.replace(/{(.*?)}/g, '&lcub;$1&rcub;');
+          obj.value = cell.replace(/{(.*?)/g, '&lcub;$1');
+          obj.value = cell.replace(/(.*?)}/g, '$1&rcub;');
         }
         arr2.push(obj);
       });
@@ -819,7 +820,8 @@ export default class aTable extends aTemplate {
     } else if (type === 'input') {
       if (util.hasClass(this.e.target, 'a-table-editable') && this.e.target.parentNode.getAttribute('data-cell-id') === `${b}-${a}`) {
         data.history.push(clone(data.row));
-        data.row[a].col[b].value = this.e.target.innerHTML.replace(/{(.*?)}/g, '&lcub;$1&rcub;');
+        data.row[a].col[b].value = this.e.target.innerHTML.replace(/{(.*?)/g, '&lcub;$1');
+        data.row[a].col[b].value = this.e.target.innerHTML.replace(/(.*?)}/g, '$1&rcub;');
         data.row[a].col[b].value = data.row[a].col[b].value.replace(/\\/g, '&#92;');
       }
       if (this.afterEntered) {
@@ -830,7 +832,8 @@ export default class aTable extends aTemplate {
       if (browser.indexOf('ie') !== -1 || browser === 'edge') {
         if (util.hasClass(this.e.target, 'a-table-editable') && this.e.target.parentNode.getAttribute('data-cell-id') === `${b}-${a}`) {
           data.history.push(clone(data.row));
-          data.row[a].col[b].value = this.e.target.innerHTML.replace(/{(.*?)}/g, '&lcub;$1&rcub;');
+          data.row[a].col[b].value = this.e.target.innerHTML.replace(/{(.*?)/g, '&lcub;$1');
+          data.row[a].col[b].value = this.e.target.innerHTML.replace(/(.*?)}/g, '$1&rcub;');
           data.row[a].col[b].value = data.row[a].col[b].value.replace(/\\/g, '&#92;');
         }
         if (this.afterEntered) {
