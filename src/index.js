@@ -79,7 +79,6 @@ export default class aTable extends aTemplate {
     data.selectedRowNo = -1;
     data.selectedColNo = -1;
     data.showBtnList = true;
-    console.log(this)
     data.row = this.parse(`<table>${selector.innerHTML}</table>`);
     data.tableResult = this.getTable();
     data.tableClass = selector.getAttribute('class') || "";
