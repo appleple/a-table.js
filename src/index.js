@@ -79,6 +79,7 @@ export default class aTable extends aTemplate {
     data.selectedRowNo = -1;
     data.selectedColNo = -1;
     data.showBtnList = true;
+    console.log(this)
     data.row = this.parse(`<table>${selector.innerHTML}</table>`);
     data.tableResult = this.getTable();
     data.tableClass = selector.getAttribute('class') || "";
@@ -443,6 +444,7 @@ export default class aTable extends aTemplate {
         obj.value = '';
         if (html) {
           obj.value = html.replace(/{(.*?)}/g, '&lcub;$1&rcub;');
+          obj.value = html.replace(/{{(.*?)}}/g, '&lcub;&lcub;$1&rcub;&rcub;');
           obj.value = obj.value.replace(/\\/g, '&#92;');
         }
         const classAttr = cell.getAttribute('class');
