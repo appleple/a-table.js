@@ -99,7 +99,50 @@ export default class aTable extends aTemplate {
     </div>`;
     util.before(selector, html);
     util.removeElement(selector);
+    // destroy() でページを元に戻せるよう、差し替えた元の table をノードごと保持しておく。
+    // 作り直すのではなく同じノードを再挿入するので、ホスト側が付けていた
+    // id や data 属性、リスナーもそのまま復帰する
+    this.originalElement = selector;
     this.update();
+  }
+
+  destroy() {
+    // .a-table-container は識別子を持たないため自分の [data-id] から辿る。
+    // 同一ページに複数インスタンスがあるとき他のラッパーを消さないようにするため。
+    // closest() は IE11 に無いので hasClass で手動に辿る。
+    // super.destroy() はテンプレートコンテナ ([data-id='id'] 等) を個別に
+    // 撤去するため、その探索の起点が消える前に先に container を確定させておく
+    let container = document.querySelector(`[data-id='${this.id}']`);
+    while (container && container !== document.body && !util.hasClass(container, 'a-table-container')) {
+      container = container.parentNode;
+    }
+    if (!container || container === document.body) {
+      container = null;
+    }
+    if (this.originalElement) {
+      // 編集結果を元の table に書き戻す。撤去するだけでは編集内容が失われてしまう
+      const edited = util.parseHTML(this.data.tableResult);
+      if (edited) {
+        this.originalElement.innerHTML = edited.innerHTML;
+        const tableClass = edited.getAttribute('class');
+        if (tableClass) {
+          this.originalElement.setAttribute('class', tableClass);
+        } else {
+          this.originalElement.removeAttribute('class');
+        }
+      }
+      if (container && container.parentNode) {
+        container.parentNode.insertBefore(this.originalElement, container);
+      }
+      this.originalElement = null;
+    }
+    util.removeElement(container);
+    this.data.history = [];
+    // removeTemplateEvents() 相当のイベント解除とテンプレートコンテナの撤去、
+    // this.e のクリアは a-template 側の後片付けに委譲する。container を
+    // ここまでに削除済みなので、super 側のコンテナ探索は実質 no-op になる
+    super.destroy();
+    return this;
   }
 
   highestRow() {
