@@ -6,12 +6,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/appleple/a-table.git"
+    "url": "git+https://github.com/appleple/a-table.js.git"
   },
   "bugs": {
-    "url": "https://github.com/appleple/a-table/issues"
+    "url": "https://github.com/appleple/a-table.js/issues"
   },
-  "homepage": "https://github.com/appleple/a-table#readme",
+  "homepage": "https://github.com/appleple/a-table.js#readme",
   "scripts": {
     "test": "npm run lint && npm run test:ci",
     "test:ci": "vitest run",
