@@ -1,55 +1,63 @@
 {
   "name": "a-table",
   "version": "1.5.10",
-  "main": "lib/index.js",
-  "description": "Editable table library",
   "author": "appleple",
+  "description": "Editable table library",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/appleple/a-table.git"
+  },
+  "bugs": {
+    "url": "https://github.com/appleple/a-table/issues"
+  },
+  "homepage": "https://github.com/appleple/a-table#readme",
   "scripts": {
-    "test": "mocha ./test/test.js --timeout 1000000",
-    "lint": "eslint ./src/index.js --fix",
-    "build:js": "npm-run-all -p build:lib build:global",
-    "build:lib": "npm run babel",
-    "build:global": "browserify ./src/index.js -t babelify -p licensify --standalone aTable -o ./build/a-table.js && npm run build:global:min",
-    "build:global:min": "uglifyjs ./build/a-table.js -m -c --comments -o ./build/a-table.min.js",
-    "babel": "babel src --out-dir lib",
-    "watch:js": "onchange \"src/\" -- npm run build:js",
-    "sync": "browser-sync start --server './' --files './build/*.js' './css/*.css' --startPath '/examples/index.html'",
-    "start": "npm-run-all -p watch:js sync",
-    "patch": "npm run test && npm version patch && npm run build:js && node ./tools/index.js",
-    "minor": "npm run test && npm version minor && npm run build:js && node ./tools/index.js",
-    "major": "npm run test && npm version major && npm run build:js && node ./tools/index.js"
+    "test": "npm run lint && npm run test:ci",
+    "test:ci": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint . --fix",
+    "lint:check": "eslint .",
+    "build": "tsup",
+    "watch": "tsup --watch",
+    "serve": "vite",
+    "dev": "concurrently \"npm:watch\" \"npm:serve\"",
+    "prepack": "npm run lint:check && npm run test:ci && npm run build",
+    "release:patch": "npm version patch && git push --follow-tags",
+    "release:minor": "npm version minor && git push --follow-tags",
+    "release:major": "npm version major && git push --follow-tags"
+  },
+  "main": "./lib/index.js",
+  "module": "./lib/index.mjs",
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js"
+    },
+    "./build/*": "./build/*",
+    "./css/*": "./css/*",
+    "./fonts/*": "./fonts/*"
+  },
+  "files": [
+    "lib",
+    "build",
+    "css",
+    "fonts"
+  ],
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@vitest/coverage-v8": "^4.1.10",
+    "concurrently": "^10.0.4",
+    "eslint": "^10.8.0",
+    "globals": "^17.9.0",
+    "jsdom": "^30.0.1",
+    "tsup": "^8.5.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.1",
+    "vitest": "^4.1.10"
   },
   "dependencies": {
-    "a-template": "^0.5.4",
-    "clone": "^2.0.0",
-    "custom-event-polyfill": "^0.3.0",
-    "deep-extend": "^0.5.0"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.18.0",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-transform-html-import-to-string": "^0.0.1",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-es2015": "^6.18.0",
-    "babelify": "^7.3.0",
-    "browser-sync": "^2.29.3",
-    "browserify": "^13.1.1",
-    "co": "^4.6.0",
-    "eslint": "^3.15.0",
-    "eslint-config-airbnb": "^14.1.0",
-    "eslint-plugin-import": "^2.2.0",
-    "fs-extra": "^2.1.2",
-    "http-server": "^0.9.0",
-    "licensify": "^3.1.2",
-    "mocha": "^3.3.0",
-    "nightmare": "^2.8.1",
-    "node-cmd": "^2.0.0",
-    "nodemon": "^1.11.0",
-    "npm-run-all": "^4.1.1",
-    "onchange": "^3.2.1",
-    "power-assert": "^1.4.2",
-    "uglify-js": "^3.17.4",
-    "watchify": "^3.9.0"
+    "a-template": "^0.8.1"
   }
 }
