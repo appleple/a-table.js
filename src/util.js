@@ -1,45 +1,43 @@
-require('custom-event-polyfill');
-
-module.exports.before = (el, html) => {
+export const before = (el, html) => {
   el.insertAdjacentHTML('beforebegin', html);
-}
+};
 
-module.exports.removeElement = (el) => {
-  if(el && el.parentNode) {
+export const removeElement = (el) => {
+  if (el && el.parentNode) {
     el.parentNode.removeChild(el);
   }
-}
+};
 
-module.exports.offset = (el) => {
+export const offset = (el) => {
   const rect = el.getBoundingClientRect();
   return {
     top: rect.top + document.body.scrollTop,
     left: rect.left + document.body.scrollLeft
-  }
-}
+  };
+};
 
-module.exports.parseHTML = (string) => {
+export const parseHTML = (string) => {
   const tmp = document.implementation.createHTMLDocument('');
   tmp.body.innerHTML = string;
   return tmp.body.children[0];
-}
+};
 
-module.exports.hasClass = (el, className) => {
+export const hasClass = (el, className) => {
   if (el.classList) {
     return el.classList.contains(className);
-  } else {
-    return new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
   }
-}
+  return new RegExp(`(^| )${className}( |$)`, 'gi').test(el.className);
+};
 
-module.exports.replaceSelectionWithHtml = (html) => {
+export const replaceSelectionWithHtml = (html) => {
   let range;
   if (window.getSelection && window.getSelection().getRangeAt) {
     range = window.getSelection().getRangeAt(0);
     range.deleteContents();
-    const div = document.createElement("div");
+    const div = document.createElement('div');
     div.innerHTML = html;
-    let frag = document.createDocumentFragment(), child;
+    const frag = document.createDocumentFragment();
+    let child;
     while ((child = div.firstChild)) {
       frag.appendChild(child);
     }
@@ -48,44 +46,37 @@ module.exports.replaceSelectionWithHtml = (html) => {
     range = document.selection.createRange();
     range.pasteHTML(html);
   }
-}
-
-function deepExtend(out){
-
-  out = out || {};
-
-  for (var i = 1; i < arguments.length; i++) {
-    var obj = arguments[i];
-    if (!obj) {
-      continue;
-    }
-
-    for (var key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        if (typeof obj[key] === 'object')
-          out[key] = deepExtend(out[key], obj[key]);
-        else
-          out[key] = obj[key];
-      }
-    }
-  }
-
-  return out;
 };
 
-module.exports.extend = deepExtend;
-
-module.exports.triggerEvent = (el, eventName, options) => {
+export const triggerEvent = (el, eventName, options) => {
   let event;
   if (window.CustomEvent) {
-    event = new CustomEvent(eventName, {cancelable:true});
+    event = new CustomEvent(eventName, { cancelable: true });
   } else {
     event = document.createEvent('CustomEvent');
     event.initCustomEvent(eventName, false, false, options);
   }
   el.dispatchEvent(event);
-}
+};
 
-module.exports.removeIndentNewline = (str) => {
-  return str.replace(/(\n|\t)/g, '');
-}
+export const removeIndentNewline = str => str.replace(/(\n|\t)/g, '');
+
+// deep-extend 相当のシンプルな再帰マージ。deep-extend 自体は Buffer の
+// クローンに対応するため `instanceof Buffer` を参照しており、Buffer が
+// 存在しないブラウザではその式自体が ReferenceError になる。
+// aTable のデフォルト設定マージは Buffer を含まないプレーンオブジェクトのみ
+// なので、その分岐を持たない最小実装で十分。
+export const extend = (out, ...sources) => {
+  const target = out || {};
+  sources.forEach((obj) => {
+    if (!obj) {
+      return;
+    }
+    Object.keys(obj).forEach((key) => {
+      target[key] = typeof obj[key] === 'object' && obj[key] !== null
+        ? extend(target[key], obj[key])
+        : obj[key];
+    });
+  });
+  return target;
+};
