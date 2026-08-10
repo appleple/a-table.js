@@ -9,21 +9,6 @@
   padding-bottom: 2px;
 }
 
-.a-table-outer::-webkit-scrollbar {
-  width: 15px;
-  height: 1px;
-}
-
-.a-table-outer::-webkit-scrollbar-thumb {
-  border-radius: 8px;
-  background-color: #999999;
-}
-
-.a-table-outer::-webkit-scrollbar-track {
-  border-radius: 8px;
-  background-color: #ffffff;
-}
-
 .a-table-pseudo {
   position: absolute;
   top: 0;
