@@ -4,3 +4,11 @@ node_modules
 /lib
 /build
 .DS_Store
+
+# AI
+.claude/
+!.claude/skills
+.cursor/
+*.local.md
+.codex/
+.gemini/
