@@ -88,6 +88,10 @@ export default class aTable extends aTemplate {
     this.convert = {};
     this.convert.getStyleByAlign = this.getStyleByAlign;
     this.convert.setClass = this.setClass;
+    // getCellInfoByIndex が参照するヘッダー座標のスナップショット。
+    // _withGeometryCache() のスコープ内だけ保持し、その外では常に null
+    this._geo = null;
+    this._geoDepth = 0;
     const html = `
     <div class='a-table-container'>
         <div data-id='${this.menu_id}'></div>
@@ -207,6 +211,47 @@ export default class aTable extends aTemplate {
     return this._getElementByQuery(`[data-cell-id='${x}-${y}']`);
   }
 
+  // getCellInfoByIndex はセル 1 個の論理座標を求めるたびに
+  // .js-table-header th (列数) と .js-table-side (行数) の座標を読み直すため、
+  // 全セルを走査する処理では getBoundingClientRect が
+  // 「セル数 × (列数 + 行数)」回発生する。レイアウトが変化しない同期処理の
+  // 間だけ 1 回分をスナップショットして共有するためのキャッシュ
+  _buildGeometryCache() {
+    const headers = this._getElementsByQuery('.js-table-header th');
+    const sides = this._getElementsByQuery('.js-table-side');
+    return {
+      headerLefts: [].map.call(headers, header => util.offset(header).left),
+      sideTops: [].map.call(sides, side => util.offset(side).top)
+    };
+  }
+
+  // スコープ外 (_geoDepth === 0) では保持せず毎回読み直すので、
+  // ラップされていない経路の挙動・コストは変更前と同じ
+  _getGeometryCache() {
+    if (this._geo) {
+      return this._geo;
+    }
+    const geo = this._buildGeometryCache();
+    if (this._geoDepth > 0) {
+      this._geo = geo;
+    }
+    return geo;
+  }
+
+  // fn の実行中だけスナップショットを共有する。入れ子で呼ばれた場合は
+  // 最も外側のスコープが閉じるまで保持し、閉じた時点で必ず破棄する
+  _withGeometryCache(fn) {
+    this._geoDepth += 1;
+    try {
+      return fn();
+    } finally {
+      this._geoDepth -= 1;
+      if (this._geoDepth === 0) {
+        this._geo = null;
+      }
+    }
+  }
+
   getCellInfoByIndex(x, y) {
     const cell = this.getCellByIndex(x, y);
     if (!cell) {
@@ -219,15 +264,14 @@ export default class aTable extends aTemplate {
     let returnTop = -1;
     const width = parseInt(cell.getAttribute('colspan'));
     const height = parseInt(cell.getAttribute('rowspan'));
-    const headers = this._getElementsByQuery('.js-table-header th');
-    const sides = this._getElementsByQuery('.js-table-side');
-    [].forEach.call(headers, (header, index) => {
-      if (util.offset(header).left === left) {
+    const geometry = this._getGeometryCache();
+    geometry.headerLefts.forEach((headerLeft, index) => {
+      if (headerLeft === left) {
         returnLeft = index;
       }
     });
-    [].forEach.call(sides, (side, index) => {
-      if (util.offset(side).top === top) {
+    geometry.sideTops.forEach((sideTop, index) => {
+      if (sideTop === top) {
         returnTop = index;
       }
     });
@@ -593,6 +637,8 @@ export default class aTable extends aTemplate {
   }
 
   onUpdated() {
+    // 直前に update() が DOM を作り直しているのでスナップショットは無効
+    this._geo = null;
     const table = this._getElementByQuery('table');
     const inner = this._getSelf().parentNode;
     const elem = this._getElementByQuery('.a-table-selected .a-table-editable');
@@ -611,6 +657,8 @@ export default class aTable extends aTemplate {
     } else {
       inner.style.width = 'auto';
     }
+    // 上の幅の書き換えでレイアウトが動くため、ここでも破棄しておく
+    this._geo = null;
 
     if (this.afterRendered) {
       this.afterRendered();
@@ -1196,6 +1244,8 @@ export default class aTable extends aTemplate {
   }
 
   beforeUpdated() {
+    // update() の呼び出し元が DOM を触っている可能性があるので破棄してから測り直す
+    this._geo = null;
     this.changeSelectOption();
     this.markup();
   }
@@ -1575,3 +1625,43 @@ export default class aTable extends aTemplate {
   }
 
 }
+
+// 1 回の同期処理の中で getCellInfoByIndex を複数回呼ぶメソッド。
+// 実行中だけヘッダー座標のスナップショットを共有させることで、
+// getBoundingClientRect の呼び出しを「セル数 × (列数 + 行数)」から
+// 「列数 + 行数 + セル数」へ減らす。
+// ラップは前後で _geoDepth を増減するだけで、引数・戻り値・例外・
+// 副作用はいずれも元のメソッドのまま変わらない。
+//
+// 一方、次のメソッドは意図的に対象外にしている。
+// - updateTable: イベントの振り分け役で、分岐の中で update() や
+//   putCaret()、コピー / ペーストが走り DOM が変わるため
+// - mergeCells: 座標を読んだあとに confirm() でブラウザへ制御を返すため
+//   (重い isSelectedCellsRectangle() 側でキャッシュは効く)
+// - getClipBoardData / processPaste: DOM を直接書き換える、または
+//   setTimeout でペーストを待つ非同期経路のため
+const GEOMETRY_SCOPED_METHODS = [
+  'getSelectedPoints',
+  'getAllPoints',
+  'getCellIndexByPos',
+  'markup',
+  'selectRange',
+  'selectRow',
+  'selectCol',
+  'removeRow',
+  'removeCol',
+  'insertRowAbove',
+  'insertRowBelow',
+  'insertColLeft',
+  'insertColRight',
+  'insertTable',
+  'splitCell',
+  'isSelectedCellsRectangle'
+];
+
+GEOMETRY_SCOPED_METHODS.forEach((name) => {
+  const method = aTable.prototype[name];
+  aTable.prototype[name] = function geometryScoped(...args) {
+    return this._withGeometryCache(() => method.apply(this, args));
+  };
+});
