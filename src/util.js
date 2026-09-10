@@ -80,7 +80,14 @@ export const extend = (out, ...sources) => {
         // (Array.isArray 前提) が描画されなくなる
         target[key] = obj[key];
       } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-        target[key] = extend(target[key], obj[key]);
+        const base = target[key];
+        // マージ先が undefined/null/配列/プリミティブの場合はそのまま渡すと
+        // ES Module の strict mode で「プリミティブへのプロパティ代入」が
+        // TypeError になる (例: defs.lang = 'en' を option.lang = {...} で
+        // 上書きしようとした場合)。マージ不能な値は捨てて新規オブジェクトから
+        // 組み立てる
+        const canMergeInto = base !== null && typeof base === 'object' && !Array.isArray(base);
+        target[key] = extend(canMergeInto ? base : {}, obj[key]);
       } else {
         target[key] = obj[key];
       }

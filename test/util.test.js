@@ -156,4 +156,19 @@ describe('extend', () => {
     expect(Array.isArray(result.selector.option)).toBe(true);
     expect(result.selector.option).toEqual(option);
   });
+
+  it('マージ先がプリミティブでもマージ元がオブジェクトなら例外を投げず新規オブジェクトで上書きする', () => {
+    // defs.lang のようなプリミティブ値のキーを option 側がオブジェクトで
+    // 上書きしようとするケース。ES Module は strict mode のため、素朴な実装
+    // だと「プリミティブへのプロパティ代入」で TypeError になってしまう
+    expect(() => extend({}, { lang: 'en' }, { lang: { foo: 'bar' } })).not.toThrow();
+    const result = extend({}, { lang: 'en' }, { lang: { foo: 'bar' } });
+    expect(result).toEqual({ lang: { foo: 'bar' } });
+  });
+
+  it('マージ先が配列でもマージ元がオブジェクトなら例外を投げず新規オブジェクトで上書きする', () => {
+    expect(() => extend({}, { tableOption: [1, 2] }, { tableOption: { foo: 'bar' } })).not.toThrow();
+    const result = extend({}, { tableOption: [1, 2] }, { tableOption: { foo: 'bar' } });
+    expect(result).toEqual({ tableOption: { foo: 'bar' } });
+  });
 });
