@@ -73,9 +73,17 @@ export const extend = (out, ...sources) => {
       return;
     }
     Object.keys(obj).forEach((key) => {
-      target[key] = typeof obj[key] === 'object' && obj[key] !== null
-        ? extend(target[key], obj[key])
-        : obj[key];
+      if (Array.isArray(obj[key])) {
+        // 配列はキー単位のオブジェクトマージ対象にせず、そのまま差し替える。
+        // typeof [] === 'object' のため素通しすると {0: ..., 1: ...} という
+        // プレーンオブジェクトに化けてしまい、a-template の `:loop` ディレクティブ
+        // (Array.isArray 前提) が描画されなくなる
+        target[key] = obj[key];
+      } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+        target[key] = extend(target[key], obj[key]);
+      } else {
+        target[key] = obj[key];
+      }
     });
   });
   return target;

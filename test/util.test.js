@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import {
   before, removeElement, offset, parseHTML, hasClass,
-  replaceSelectionWithHtml, triggerEvent, removeIndentNewline
+  replaceSelectionWithHtml, triggerEvent, removeIndentNewline, extend
 } from '../src/util.js';
 
 describe('before', () => {
@@ -130,5 +130,30 @@ describe('triggerEvent', () => {
 describe('removeIndentNewline', () => {
   it('改行とタブ文字を取り除く', () => {
     expect(removeIndentNewline('a\n\tb\nc')).toBe('abc');
+  });
+});
+
+describe('extend', () => {
+  it('プレーンオブジェクトは再帰的にマージする', () => {
+    const result = extend({}, { mark: { selector: { self: 'a' } } }, { mark: { label: 'b' } });
+    expect(result).toEqual({ mark: { selector: { self: 'a' }, label: 'b' } });
+  });
+
+  it('配列はマージ対象にせず Array のまま差し替える', () => {
+    // typeof [] === 'object' のため、配列をプレーンオブジェクトと同様に
+    // キー単位でマージすると {0: ..., 1: ...} という配列でない値に化けてしまう。
+    // aTableOption / aTableSelector のようにホスト側が配列で渡すオプションは
+    // Array.isArray を維持できないと a-template の `:loop` が描画されない
+    const tableOption = [{ label: 'a', value: 'b' }, { label: 'c', value: 'd' }];
+    const result = extend({}, {}, { tableOption });
+    expect(Array.isArray(result.tableOption)).toBe(true);
+    expect(result.tableOption).toEqual(tableOption);
+  });
+
+  it('ネストしたオブジェクト配下の配列も Array のまま差し替える', () => {
+    const option = [{ label: 'red', value: 'bg_red' }];
+    const result = extend({}, { selector: { self: 'x' } }, { selector: { option } });
+    expect(Array.isArray(result.selector.option)).toBe(true);
+    expect(result.selector.option).toEqual(option);
   });
 });
