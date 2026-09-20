@@ -482,8 +482,12 @@ export default class aTable extends aTemplate {
         obj.rowspan = cell.getAttribute('rowspan') || 1;
         obj.value = '';
         if (html) {
-          obj.value = html.replace(/{(.*?)/g, '&lcub;$1');
-          obj.value = html.replace(/(.*?)}/g, '$1&rcub;');
+          const sanitized = html
+            .replace(/<script[^>]*>[\s\S]*?<\/script\s*>/gi, '')
+            .replace(/\son\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+            .replace(/(href|src)\s*=\s*(["'])\s*javascript:[^"']*\2/gi, '$1=$2#$2');
+          obj.value = sanitized.replace(/{(.*?)/g, '&lcub;$1');
+          obj.value = obj.value.replace(/(.*?)}/g, '$1&rcub;');
           obj.value = obj.value.replace(/\\/g, '&#92;');
         }
         const classAttr = cell.getAttribute('class');
